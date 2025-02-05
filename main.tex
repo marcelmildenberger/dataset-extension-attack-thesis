@@ -21,11 +21,11 @@
   ]{scrbook}                 %% Uses KOMA-Script class based on book, allows chapters and parts
 
 %%%%  Packages/settings/options all in settings.tex
-\input{settings}
+\input{frontmatter/settings}
 %%%%  Custom commands/definitions/macros all in definitions.tex
-\input{definitions}
+\input{frontmatter/definitions}
 %%%%  All acronyms in acronyms.tex
-\input{acronyms}
+\input{frontmatter/acronyms}
 
 \ifluatex
   %%%%  For biber, all bib files need to be loaded in the preamble, one per macro
@@ -40,13 +40,13 @@
 \frontmatter    %% Declares the front matter follows, uses roman numbers for pages etc.
 
 % TODO: Put your name, topic, and everything there
-\input{titleinfo}    %% Contains all relevant information about title, author, etc.
+\input{frontmatter/titleinfo}    %% Contains all relevant information about title, author, etc.
 
 %% The title page, please do not change anything there unless necessary
-\input{titlepage}    %% The title page containing all relevant info on author etc.
+\input{frontmatter/titlepage}    %% The title page containing all relevant info on author etc.
 
 % TODO Write the abstract
-\input{abstract}     %% The abstract
+\input{frontmatter/abstract}     %% The abstract
 
 \tableofcontents     %% The Table of Contents
 %% (Un)comment the following lines as needed
@@ -61,20 +61,20 @@
 \acresetall          %% Make sure that all acronyms are set to not-yet-used
 
 % TODO Write the main part of your thesis
-\input{intro}        %% The introduction chapter
-\input{background}   %% The background chapter
-\input{methodology}  %% The methodology chapter
-\input{results}      %% The results chapter
-\input{conclusion}   %% The conclusion chapter
+\input{chapters/intro}        %% The introduction chapter
+\input{chapters/background}   %% The background chapter
+\input{chapters/methodology}  %% The methodology chapter
+\input{chapters/results}      %% The results chapter
+\input{chapters/conclusion}   %% The conclusion chapter
 
 \printbibliography   %% Print all cited references here
 
 %% Comment if you do not need the appendix
 \appendix               %% Marks beginning of Appendix
-\input{additional}      %% Some additional Information
+\input{appendices/additional}      %% Some additional Information
 
 \backmatter
-\input{declaration}  %% The declaration of originality as defined in PO-BSc-Wifo-2013
+\input{backbackmatter/declaration}  %% The declaration of originality as defined in PO-BSc-Wifo-2013
 
 \end{document}
 %
