@@ -1,0 +1,51 @@
+% !TeX root = main.tex
+%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% $Date: 2020-08-07 17:04:16 +0200 (Fr, 07 Aug 2020) $
+%% $Author: cmueller $
+%% $Rev: 8 $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Some PDF Info things first
+\makeatletter
+\hypersetup{pdfinfo={
+    Title={\@title},
+    Author={\@author},
+    Subject={\@title},
+    Keywords={{\@keywords}}
+}}
+\makeatother
+
+%%% Now the actual title page setup
+\begin{titlepage}
+  \begin{addmargin}[2.0cm]{0.5cm}
+    {\vspace*{-2cm}%
+      \hbox{\hspace{10cm} \includegraphics[width=8cm]{img/school-logo.eps}}\par
+    }
+    {\vspace*{-0.7cm}%
+      \hbox{\hspace{10.8cm} \textsf{Chair of Practical Computer Science IV:}}
+      \hbox{\hspace{10.8cm} \textsf{Dependable Systems Engineering}}\par
+    }
+    \vspace{3.5cm}
+    \makeatletter
+    {{\noindent\Large\@thesisType\unskip\strut}\par}
+    \vspace{1.5cm}
+    {\linespread{0.9}\noindent\sffamily\huge\bfseries\@title\unskip\strut\par} %1.0 is default spacing
+    \vspace{1.5cm}
+    {\noindent as part of the degree program \@degree{} of \@degreeType{} \@degreeProgram{} submitted by\par}
+    \vspace{1.5cm}
+    {\noindent \textsf{\Large{\@author\unskip\strut}\\
+      \normalsize Matriculation number~~{\@matriNo\unskip\strut}}\par}
+    \vspace{1.5cm}
+    {\noindent on \DTMifsaveddate{handindate}{\DTMusedate{handindate}}{\DTMtoday}.\par}
+    \vfill
+    \noindent
+    \begin{tabular}{@{}l  l}
+      \textsf{Supervisor:} & \textsf{\@supervisor\unskip\strut} \\
+                           & \textsf{\@advisorA\unskip\strut} \\
+                           & \textsf{\@advisorB\unskip\strut}
+    \end{tabular}
+    \par
+    \makeatother
+  \end{addmargin}
+\end{titlepage}
+

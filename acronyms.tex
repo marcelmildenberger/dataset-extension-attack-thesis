@@ -1,0 +1,82 @@
+% !TeX root = main.tex
+%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% $Date: 2020-08-07 17:04:16 +0200 (Fr, 07 Aug 2020) $
+%% $Author: cmueller $
+%% $Rev: 8 $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%% Put all acronyms here
+% Detailed information:    http://mirrors.ctan.org/macros/latex/contrib/acro/acro_en.pdf
+% For use in the text, usually \ac{ID} or \Ac{ID} (at beginning of sentence) should be sufficient.
+% For section titles use starred variant, e.g., \ac*{ID}, \Ac*{ID}, or \acs*{ID} (print the short form) to prevent this being the first use
+% \ac{ID},  \acs{ID},  \acl{ID},  \aca{ID},  \acf{ID}  --  regular, short, long, alternative, first-time
+% \acp{ID}, \acsp{ID}, \aclp{ID}, \acap{ID}, \acfp{ID} --  plural forms
+% Use 'i' or 'I' plus singular command to get in-sentence or beginning-of-sentence acro with prepended indefinite article, e.g., \iac{ID} or \Iacs{ID}.
+
+%% Dummy form of an acronym with probably most useful keys
+\DeclareAcronym{gma}{%
+  short = {GMA},
+  long  = {Graph Matching Attack},
+}
+
+\DeclareAcronym{dea}{%
+  short = {DEA},
+  long  = {Dataset Extension Attack},
+}
+
+\DeclareAcronym{pprl}{%
+  short = {PPRL},
+  long  = {Privacy-Preserving Record Linkage},
+}
+
+\DeclareAcronym{ai}{%
+  short = {AI},
+  long  = {Artifical Intelligence},
+}
+
+%\DeclareAcronym{ID}{%
+%%  %%%   REQUIRED   %%%
+%  short = {SHT},         % Needs to be first, the abbreviated form
+%  long = {long form},    % The long form
+%%  %%%   OPTIONAL, use only if needed   %%%
+%  short-plural = {},         % Append a different letter than 's' for short form in plural
+%  short-plural-form = {},    % Explicitly provide the plural version for short form if needed
+%  long-plural = {},          % Long version ending, if different from 's', e.g. 'n'
+%  long-plural-form = {},     % Explicitly provide the plural version for long form
+%  alt-plural = {},           % Ending of alternative form if different from 's'
+%  alt-plural-form = {},      % Explicit alternative plural form
+%  list = {},                 % Instead of long form, put this in List of Acronyms (LoA)
+%  short-indefinite = {},     % Indefinite article for short form, default 'a'
+%  long-indefinite = {},      % Indefinite article for long form, default 'a'
+%  long-pre = {},             % Prepend this to the long form in the text (not in LoA)
+%  long-post = {},            % Append this to the long form in the text (not in LoA)
+%  alt = {},                  % Alternative short form
+%  alt-indefinite = {}        % Indefinite article for alternative short form, default 'a'
+%  extra = {},                % Add this to the LoA entry
+%  foreign = {},              % Foreign language long form
+%  foreign-lang = {},         % Babel language of the foreign (long) form, language needs to be loaded by babel
+%  single = {},               % Use this instead of long form if acronym is used only once, requires option 'single'
+%  sort = {},                 % Use this for sorting instead of its ID
+%  class = {},                % A CSV list of classes this acronym belongs to
+%  cite = {[pre][post]{key}}, % TBD
+%  short-format = {},         % Use a different format for short form than default/globally set
+%  long-format = {},          % Use a different format for long form than default/globally set
+%  first-long-format = {},    % Use a different format for first-time long form than default/globally set
+%  single-format = {},        % Use a different format for acronym used only once than default/globally set
+%  first-style = {},          % Style of first time long form: default | empty | square | short | long | reversed | footnote | sidenote | footnote-reversed | sidenote-reversed
+%  pdfstring = {},            % Pdf string replacement for bookmarks+hyperref: string[/plural-ending]
+%  accsup = {},               % Accessibility support, sets 'ActualText' as by 'accsupp' package
+%  tooltip = {},              % Set tooltip description, requires option 'tooltip' or appropriate 'tooltip-cmd'
+%  index-sort = {},           % Provide individual sort option for index
+%  index = {},                % Overwrite automatic index entry with this one
+%  index-cmd = {},            % Set an individual index creating command here, should take one mandatory argument
+%}
+
+\DeclareAcronym{rssi}{%
+  short = {RSSI},
+  long  = {Received Signal Strength Indicator},
+  short-indefinite   = {an},
+  short-plural       = {},
+  long-plural        = {}
+}

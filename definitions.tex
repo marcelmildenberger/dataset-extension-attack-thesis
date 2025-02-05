@@ -1,0 +1,68 @@
+% !TeX root = main.tex
+%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% $Date: 2020-08-07 17:04:16 +0200 (Fr, 07 Aug 2020) $
+%% $Author: cmueller $
+%% $Rev: 8 $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% Meta data for title page;
+%%%% Please do not change anything below this line
+%%%% ------------------------
+\makeatletter
+%% The pursued degree, defaults to Bachelor
+\newcommand*{\degree}[1]{\gdef\@degree{#1}%
+}
+\newcommand*{\@degree}{Bachelor}
+%% The degree type, defaults to Science
+\newcommand*{\degreeType}[1]{\gdef\@degreeType{#1}%
+}
+\newcommand*{\@degreeType}{Science}
+%% The degree program, defaults to Business Informatics
+\newcommand*{\degreeProgram}[1]{\gdef\@degreeProgram{#1}%
+}
+\newcommand*{\@degreeProgram}{Business Informatics}
+%% The type of Thesis, uses degreeType
+\newcommand*{\thesisType}[1]{\gdef\@thesisType{#1}%
+}
+\newcommand*{\@thesisType}{\@degree 's Thesis}
+%% The supervisor, prints text if not set.
+\newcommand*{\supervisor}[1]{\gdef\@supervisor{#1}%
+}
+\newcommand*{\@supervisor}{\texttt{\textbackslash supervisor} currently not set.}
+%% The (first) advisor, prints text if not set.
+\newcommand*{\advisorA}[1]{\gdef\@advisorA{#1}%
+}
+\newcommand*{\@advisorA}{Please set \texttt{\textbackslash advisorA} if there is only one advisor.}
+%% The (second) advisor, simply blank if not set.
+\newcommand*{\advisorB}[1]{\gdef\@advisorB{#1}%
+}
+\newcommand*{\@advisorB}{}
+%% The matriculation number, defaults to 0123456.
+\newcommand*{\matriNo}[1]{\gdef\@matriNo{#1}%
+}
+\newcommand*{\@matriNo}{0123456}
+%% The keywords, defaults to empty.
+\newcommand*{\keywords}[1]{\gdef\@keywords{#1}%
+}
+\newcommand*{\@keywords}{}
+\makeatother
+%%%% ------------------------
+%%%% Please do not change anything above this line
+
+
+%%%% Sets
+\newcommand{\parties}{\mathcal{P}}                 %% The set of all primes
+\newcommand{\N}{\mathbb{N}}                        %% The natural numbers
+
+%%%% Functions
+%% Typesetting
+\DeclareMathOperator{\Read}{\mathsf{Read}}         %% Denotes the read function
+\DeclareMathOperator{\Write}{\mathsf{Write}}       %% Denotes the write function
+
+%%%% Misc.
+\newcommand{\ie}{i.\,e., }
+\newcommand{\eg}{e.\,g., }
+\newcommand{\etal}{et\,al.}
+\newcommand{\mitm}{\mathrm{mim}}
+\newcommand{\eav}{\mathrm{eav}}
+\newcommand{\adversary}{\mathrm{adv}}

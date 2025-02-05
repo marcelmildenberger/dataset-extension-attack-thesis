@@ -1,0 +1,236 @@
+% !TeX root = main.tex
+%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% $Date: 2024-07-23 16:35:07 +0200 (Tue, 23 Jul 2024) $
+%% $Author: cmueller $
+%% $Rev: 79 $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\listfiles    % Prints all required files to the log
+
+%%%%%%%%%%  Packages & Options  %%%%%%%%%%
+\usepackage{blindtext}
+\usepackage{xifthen}            % Offers some more sophisticated if-then-else stuff
+\usepackage{ifdraft}            % Provides simple draft/final mode if-then
+\usepackage{ifluatex}           % Detects Lua(la)tex engine, provides if-then-else command
+\usepackage[%
+    draft=false,                % Remove rulers in draft mode
+    , headsepline               % Show header separation line
+%    , footsepline               % Show footer separation line
+    ]{scrlayer-scrpage}         % The recommended package for headers and footers
+\usepackage{amsmath}            % Some maths stuff
+\usepackage{amsthm}             % Some more maths stuff
+\usepackage{amssymb}            % And even more maths stuff
+\usepackage{siunitx}            % For typesetting SI units nicely
+\usepackage{csquotes}           % Advanced quotation stuff, recommended for biblatex
+\usepackage{booktabs}           % For high-quality tables
+\usepackage{multirow}           % To have nicer table layout (merging 2 rows in tables)
+\usepackage{multicol}           % Also for nicer table layout (but columns this time)
+%%
+\ifluatex                       % If compiling with LuaTeX
+  \usepackage{fontspec}           % Requires XeTeX or LuaTeX, provides easier font management
+  \usepackage{polyglossia}        % Modern hyphenation and more language-dependent settings, recommended for Lua/fontspec
+  \setdefaultlanguage[%
+    variant = american]%          % Set american...
+    {english}                     % ...english for polyglossia
+  \setotherlanguage{german}       % Also load the german language files
+  \setsansfont[%
+    Scale = .92]%                % Use scaling factor (92%) to match normal font size
+    {TeXGyreHeros}              % Use Helvetica-replacement as sans serif font
+  \usepackage[%                   % Preferred settings
+    sortcites = true,               % Sort references
+    style     = alphabetic,         % Use alphabetic style
+    maxnames  = 15,                 % Only use "et al." in for more than 15 authors (in general)
+    maxalphanames = 4,              % Use max 4 authors last names for labels in alphabetic style
+    minalphanames = 3,              % Use 3 author names in labels if more than maxalphanames authors present, generates sth. like [ABC+12]
+    backend   = biber]              % Explicitly set to use biber
+    {biblatex}                    % BibLaTeX
+\else                           % No LuaTeX detected
+  \usepackage[T1]{fontenc}        % Font encoding
+  \usepackage{lmodern}            % Modern fonts
+  \usepackage[scaled=.92]%        % Scale to 92% to match Times 12pt (defaults to 95%)
+    {helvet}                      % Use Helvetica as sans serif font
+  \usepackage[ngerman             % Use 'new' german language as secondary...
+    , main=american               % ... use american english as main language
+    ]{babel}                      % Hyphenation and more language-dependent settings
+    \babeltags{german=ngerman}    % Define environment for German text, similar to polyglossia
+  \usepackage[%                   % Assuming no LuaLaTeX also means no Biber, so use bibtex as fallback
+    sortcites = true,               % Sort references
+    style     = alphabetic,         % Use alphabetic style
+    maxnames  = 15,                 % Only use "et al." in for more than 15 authors (in general)
+    maxalphanames = 4,              % Use max 4 authors last names for labels in alphabetic style
+    minalphanames = 3,              % Use 3 author names in labels if more than maxalphanames authors present, generates sth. like [ABC+12]
+    backend = bibtex8]              % Choose backend for bib processing, biber recommended but bibtex[8] driver also works (limited)
+    {biblatex}                    % BibLaTeX
+\fi
+%%
+\usepackage[%
+    useregional                 % Use regional date style
+]{datetime2}                  % Obvious, should be loaded after babel/polyglossia
+
+\usepackage[%
+    dvipsnames,                 % Load dvips driver colors immediately
+    x11names,                   % Load x11names colors immediately
+    cmyk]                       % Convert all colors to CMYK model
+    {xcolor}                    % Obvious, but load before TikZ
+\usepackage{tikz}               % For fancy graphics and so on
+\usepackage[%
+    xcolor                      % Use the xcolor package, already loaded
+    , framemethod = tikz        % Use tikz for framing options
+    ]{mdframed}                 % For drawing (colored) boxes around amsthm stuff
+\usepackage[%
+    obeyFinal                   % Disable notes in final state
+%   , obeyDraft                 % Enable notes only in draft state
+    ]%
+    {todonotes}                 % Enables fancy todo sticky-notes in page margin
+\usepackage{listings}           % For typesetting source code in a nice way
+\usepackage{algorithm2e}        % For typesetting algorithms in pseudocode
+\usepackage{acro}               % Provides stuff for acronyms
+\usepackage[%
+    colorlinks= true,           % Use different color for links, colors are defined later
+    breaklinks= true,           % Allow linebreaks in links
+    bookmarks = true,           % Create bookmarks from sections etc.
+    linktoc = all               % Make Section names and page numbers links in ToC
+  ] {hyperref}                  % Make clickable hyperlinks
+\usepackage[listings]{scrhack}  % Correct listings macros to work with KOMA-Script
+\usepackage{hypcap}             % Help hyperlinks to point to 'more correct' location
+%%%% IMPORTANT: cleveref needs to be loaded last %%%%
+\usepackage[%
+    capitalize,                 % Capitalize all identifiers
+    noabbrev]                   % Do not abbreviate
+    {cleveref}                  % For sophisticated/automated referencing
+
+%%%%%%%%%% More Settings %%%%%%%%%%
+%%%% Define theorem env's %%%%
+\newtheoremstyle{myStyle}  % name
+  {\topsep}                % space before
+  {\topsep}                % space after
+  {}                       % body font (was: \itshape)
+  {}                       % indentation
+  {\bfseries\sffamily}     % header font
+  {.}                      % punctuation
+  {.5em}                   % space after header
+  {}                       % head spec, defaults to 'normal'
+\theoremstyle{myStyle}
+
+\mdfdefinestyle{myMdfStyle}{%
+  innertopmargin = 0pt,
+  innerbottommargin = 10pt,
+  innermargin = 0pt,
+  outermargin = 7pt,
+  linewidth = 1pt,
+  linecolor = black,
+  backgroundcolor = lightgray!30,
+  roundcorner = 5pt%
+}
+
+\newmdtheoremenv[%
+  style = myMdfStyle%
+]{definition}{Definition}[section]
+
+%%%% Load required TikZ libs %%%%
+\usetikzlibrary{chains, calc, shapes}
+
+%%%% Colors %%%%
+\definecolor{notes-color}{cmyk}{.51, .23, 0, 0}
+\definecolor{my-color}{cmyk}{0.5, 0.0, 0.5, 0.2}
+\definecolor{uma-main}{cmyk}{1, 0.9, 0.35, 0.25}
+\definecolor{uma-wim}{cmyk}{0.53, 0.0, 0.02, 0.46}
+
+%%%% Hyperref coloring %%%%
+\hypersetup{%
+  citecolor = uma-main,       % Use UMA-Blue for citations
+  linkcolor = uma-main,       % Use UMA-Blue for links
+  urlcolor  = magenta,        % Use standard magenta for URLs
+  anchorcolor = black         % Use standard black for anchors
+}
+
+%%%% Acronym setup %%%%
+\acsetup{
+  single = true,              % Do not make used-only-once acronyms real acronyms
+  single-style = long,        % Use the long form for used-only-once acronyms
+  make-links = true,          % Provide a link to the definition in the list
+  list/sort = true,           % Try sorting the acronyms alphabetically by short form
+%  format/short = {\upshape\bfseries\sffamily},  % Use sans-serif+bold+up for short-form list entry
+}
+
+%%%% Listings setup %%%%
+\newcommand{\clstrefname}{Code Snippet}
+\newcommand{\clstrefnames}{Code Snippets}
+
+\lstset{numberbychapter = true        % Listings are numbered by chapter and not (globally) sequentially
+}
+
+\lstset{
+  showstringspaces=false,
+  basicstyle=\normalsize\mdseries\ttfamily,
+  keywordstyle=\color{blue},
+  commentstyle={\ttfamily\itshape\color{Chartreuse4}},
+  stringstyle=\mdseries\color[cmyk]{0, .41, .71, .40 },
+  breaklines=true,
+  backgroundcolor=\color{Snow2},
+  xleftmargin=1em,
+  xrightmargin=0em,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=5pt,
+  tabsize=2,
+  literate={°}{\textdegree}1,
+  language=java
+}
+
+\newcommand{\inlinecode}[2][java]{\colorbox{Snow2}{\lstinline[language=#1]$#2$}}
+
+\renewcommand{\lstlistingname}{\clstrefname}
+\renewcommand{\lstlistlistingname}{List of \clstrefnames}
+
+
+%%%% Note setup %%%%
+\presetkeys{todonotes}{color=notes-color, size=\small}{}
+\newcommand{\myNote}[1]{\todo[color={my-color}, size=\tiny]{\textsf{\textbf{[Note:]}} #1}}
+
+%%%% Define cross-referencing %%%%
+%\crefname{definition}{Definition}{Definitions}
+%\Crefname{definition}{Definition}{Definitions}
+%\crefname{equation}{Equation}{Equations}
+%\Crefname{equation}{Equation}{Equations}
+%\crefname{algorithm}{Algorithm}{Algorithms}
+%\Crefname{algorithm}{Algorithm}{Algorithms}
+%%% Hack to rename Listings to \clstrefname as the high-level command doesn't work
+%% Standard reference formats
+\crefformat{listing}{\clstrefname~#2#1#3}
+\crefrangeformat{listing}{\clstrefnames~#3#1#4 to~#5#2#6}
+\crefmultiformat{listing}{\clstrefnames~#2#1#3}%
+  { and~#2#1#3}{, #2#1#3}{ and~#2#1#3}
+\crefrangemultiformat{listing}{\clstrefnames~#3#1#4 to~#5#2#6}%
+  { and~#3#1#4 to~#5#2#6}{, #3#1#4 to~#5#2#6}{ and~#3#1#4 to~#5#2#6}
+%% Beginning-of-Sentence reference formats
+\Crefformat{listing}{\clstrefname~#2#1#3}
+\Crefrangeformat{listing}{\clstrefnames~#3#1#4 to~#5#2#6}
+\Crefmultiformat{listing}{\clstrefnames~#2#1#3}%
+{ and~#2#1#3}{, #2#1#3}{ and~#2#1#3}
+\Crefrangemultiformat{listing}{\clstrefnames~#3#1#4 to~#5#2#6}%
+{ and~#3#1#4 to~#5#2#6}{, #3#1#4 to~#5#2#6}{ and~#3#1#4 to~#5#2#6}
+%%%
+
+%%%% Change some labelling typesetting
+\setkomafont{captionlabel}{\upshape\bfseries\sffamily}
+
+%%%% Set the algorithm layout
+\RestyleAlgo{algoruled}
+\LinesNumbered
+\SetNlSty{textsf}{}{}
+%\hypcapredef{algorithm}
+%% Style the Algorithm caption accordingly
+\renewcommand\AlCapFnt{\sffamily}
+
+%%%% Set the header and footer
+\pagestyle{scrheadings}
+
+%%%% Numbering subsubsections
+\setcounter{secnumdepth}{\subsubsectionnumdepth}
+
+%%%% Include subsubsections in ToC
+\setcounter{tocdepth}{\subsubsectiontocdepth}
+
+\recalctypearea   %% Recalculate type area after fonts and everything is set
