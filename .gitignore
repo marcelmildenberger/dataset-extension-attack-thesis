@@ -1,0 +1,14 @@
+*.aux
+*.bbl
+*.loa
+*.lof
+*.log
+*.lot
+*.out
+*.xml
+*.gz
+*.toc
+main-blx.bib
+*.lol
+school-logo-eps-converted-to.pdf
+*.synctex(busy)
