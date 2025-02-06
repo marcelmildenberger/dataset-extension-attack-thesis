@@ -14,7 +14,7 @@
 % \acp{ID}, \acsp{ID}, \aclp{ID}, \acap{ID}, \acfp{ID} --  plural forms
 % Use 'i' or 'I' plus singular command to get in-sentence or beginning-of-sentence acro with prepended indefinite article, e.g., \iac{ID} or \Iacs{ID}.
 
-%% Dummy form of an acronym with probably most useful keys
+
 \DeclareAcronym{gma}{%
   short = {GMA},
   long  = {Graph Matching Attack},
@@ -33,6 +33,26 @@
 \DeclareAcronym{ai}{%
   short = {AI},
   long  = {Artifical Intelligence},
+}
+
+\DeclareAcronym{pii}{%
+  short = {PII},
+  long  = {personally identifiable information},
+}
+
+\DeclareAcronym{bf}{%
+  short = {BF},
+  long  = {Bloom Filter},
+}
+
+\DeclareAcronym{tmh}{%
+  short = {TMH},
+  long  = {Tabulation MinHash Encoding},
+}
+
+\DeclareAcronym{tsh}{%
+  short = {TSH},
+  long  = {Two-Step Hash Encoding},
 }
 
 %\DeclareAcronym{ID}{%
@@ -72,11 +92,3 @@
 %  index = {},                % Overwrite automatic index entry with this one
 %  index-cmd = {},            % Set an individual index creating command here, should take one mandatory argument
 %}
-
-\DeclareAcronym{rssi}{%
-  short = {RSSI},
-  long  = {Received Signal Strength Indicator},
-  short-indefinite   = {an},
-  short-plural       = {},
-  long-plural        = {}
-}
