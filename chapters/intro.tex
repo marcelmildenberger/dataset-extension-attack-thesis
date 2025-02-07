@@ -21,11 +21,11 @@ For example, integrating data from various healthcare providers, laboratories, a
 However, the reliance on \ac{pii} introduces significant privacy concerns, as improper handling of such data can lead to the re-identification of individuals, potentially resulting in severe consequences such as data breaches, identity theft, or unauthorized access to personal health information.
 
 To address these privacy risks, various techniques have been developed to protect \ac{pii}, primarily by encrypting or encoding the data prior to linkage. 
-\ac{pprl} techniques are designed to facilitate data integration without exposing sensitive information, ensuring that datasets can be linked securely across different entities. 
-However, the use of encrypted \ac{pii} as pseudo-identifiers presents additional challenges. 
+However, the use of encrypted \ac{pii} as pseudo-identifiers presents additional challenges.
 Key questions arise regarding how to efficiently encode sensitive information while preserving the ability to match records accurately. 
-Furthermore, performing linkage on encrypted or encoded data requires specialized algorithms that can operate effectively without compromising the privacy of the underlying information \cite{}.
+Furthermore, performing linkage on encoded data requires specialized procedures that can operate effectively without compromising the privacy of the underlying information.
 
+Therefore \ac{pprl} techniques are designed to facilitate data integration without exposing sensitive information, ensuring that datasets can be linked securely across different entities.
 In order to still be able to perform linkage while preserving privacy, similarity preserving encodings are applied to the identifiers.
 Without such similiraty preserving encoding, matches between encrypted entities in different databases would not be possible.
 Over time, three main privacy-preserving encoding schemes have emerged as enablers for \ac{pprl}. \cite{vidanage2020graph, schaefer2024}
