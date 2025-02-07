@@ -16,52 +16,52 @@ In the United States, for example, the fragmented healthcare and public health e
 The COVID-19 pandemic highlighted the critical importance of timely, accurate and efficient data linkage, as the lack of it led to problems in integrating disease and vaccination data.
 In response, organisations such as the Centers for Disease Control and Prevention and the Food and Drug Administration have launched projects to address these challenges and further develop linkage techniques. \cite{pathak2024privacy}
 
-In scenarios such as the COVID-19 pandemic, data integration efforts often involve linking records related to natural persons across multiple sources. 
-For example, integrating data from various healthcare providers, laboratories, and public health agencies typically requires the use of pseudo-identifiers derived from \ac{pii} such as names, dates of birth, or other sensitive information. 
-However, the reliance on \ac{pii} introduces significant privacy concerns, as improper handling of such data can lead to the re-identification of individuals, potentially resulting in severe consequences such as data breaches, identity theft, or unauthorized access to personal health information.
+In scenarios such as the COVID-19 pandemic, data integration efforts often involve linking records on natural persons from multiple sources.
+For example, integrating data from different healthcare providers, laboratories and public health agencies typically requires the use of pseudo-identifiers derived from \ac{pii} such as names, dates of birth or other sensitive information. 
+However, reliance on \ac{pii} raises significant privacy concerns, as improper handling of such data can lead to re-identification of individuals, with potentially serious consequences such as data breaches, identity theft or unauthorised access to personal health information.
 
-To address these privacy risks, various techniques have been developed to protect \ac{pii}, primarily by encrypting or encoding the data prior to linkage. 
+To address these privacy risks, various techniques have been developed to protect \ac{pii}, primarily by encrypting the data prior to linking. 
 However, the use of encrypted \ac{pii} as pseudo-identifiers presents additional challenges.
-Key questions arise regarding how to efficiently encode sensitive information while preserving the ability to match records accurately. 
-Furthermore, performing linkage on encoded data requires specialized procedures that can operate effectively without compromising the privacy of the underlying information.
+The key question is how to efficiently encrypt sensitive information while maintaining the ability to accurately match records. 
+In addition, performing linkage on encrypted data requires specialised procedures that work effectively without compromising the privacy of the underlying information.
 
-Therefore \ac{pprl} techniques are designed to facilitate data integration without exposing sensitive information, ensuring that datasets can be linked securely across different entities.
+Therefore, \ac{pprl} techniques are designed to facilitate data integration without exposing sensitive information, ensuring that datasets can be securely linked across different entities.
 In order to still be able to perform linkage while preserving privacy, similarity preserving encodings are applied to the identifiers.
-Without such similiraty preserving encoding, matches between encrypted entities in different databases would not be possible.
+Without such similarity preserving encryption, matches between encrypted entities in different databases would not be possible.
 Over time, three main privacy-preserving encoding schemes have emerged as enablers for \ac{pprl}. \cite{vidanage2020graph, schaefer2024}
 
-%DeppL
-\ac{bf} encoding is the most widely used technique in \ac{pprl} and is often regarded as the reference standard. 
-\ac{bf}s were introduced to \ac{pprl} due to their simplicity and efficiency in both storage and the computation of private set similarities. 
+
+\ac{bf} encoding is the most widely used technique in \ac{pprl} and is often considered the reference standard. 
+\ac{bf}s were introduced to \ac{pprl} for their simplicity and efficiency in both storing and computing set similarities. 
 Their compact representation and probabilistic nature make them ideal for scalable \ac{pprl} systems.
-Further research has sought to enhance the security of \ac{bf} encoding by incorporating diffusion layers, which help obscure patterns and reduce vulnerability to certain attacks. % Cite Armknecht
-\ac{tmh} is a more recent encoding method that offers distinct advantages in specific use cases. 
-While it is less commonly used in \ac{pprl}, its simplicity and efficiency in calculating set similarities make it a viable option. 
+Further research has sought to improve the security of \ac{bf} encoding by incorporating diffusion layers, which help to obscure patterns and reduce vulnerability to certain attacks. %Cite Armknecht
+\ac{tmh} is a newer encoding method that offers distinct advantages in certain use cases. 
+Although less commonly used in \ac{pprl}, its simplicity and efficiency in calculating set similarities make it a viable option. 
 Compared to \ac{bf} encoding, \ac{tmh} generally provides stronger security guarantees. 
 However, this added security comes at the cost of increased computational complexity and memory usage.
-\ac{tsh} introduces a novel approach designed to address some of the limitations associated with \ac{bf} and \ac{tmh}. 
-This method employs a two-step process: initially encoding data into multiple \ac{bf}s, followed by an additional hashing step that converts the encoded data into a set of integers for similarity comparisons. 
-This layered approach enhances security while maintaining efficient similarity computations. \cite{vidanage2020graph, schaefer2024}
+\ac{tsh} introduces a novel approach to overcome some of the limitations associated with \ac{bf} and \ac{tmh}. 
+This method uses a two-step process: an initial encoding of data into multiple \ac{bf}s, followed by an additional hashing step that converts the encoded data into a set of integers for similarity comparisons. 
+This layered approach increases security while maintaining efficient similarity calculations. \cite{vidanage2020graph, schaefer2024}
 
-%DeepL
-In practice, \ac{bf} based \ac{pprl} has become the dominant standard and is widely adopted in areas such as crime detection, fraud prevention, and national security. 
+
+In practice, \ac{bf}-based \ac{pprl} has become the dominant standard and is widely used in areas such as crime detection, fraud prevention and national security. 
 However, \ac{pprl} systems are not without limitations and vulnerabilities. 
-Previous research has demonstrated that several attacks exist targeting \ac{pprl} systems, with a primary focus on exploiting the weaknesses inherent in \ac{bf} encodings.
+Previous research has shown that there are several attacks targeting \ac{pprl} systems, with a focus on exploiting the weaknesses inherent in \ac{bf} encodings.
 These attacks specifically target vulnerabilities in \ac{bf} constructions, such as the weaknesses introduced by double hashing, structural flaws in the filter design, and susceptibility to frequent pattern-mining techniques. 
-Additionally, language model-based attacks and graph-based dictionary attacks have been employed to compromise \ac{bf} encoded data. 
-Notably, no specialized attacks have yet been developed for \ac{tmh} or \ac{tsh} encodings, which suggests that research has primarily concentrated on the more widely used \ac{bf} scheme. \cite{vidanage2020graph}
+In addition, language model-based attacks and graph-based dictionary attacks have been used to compromise \ac{bf}-encoded data. 
+Notably, no specific attacks have been developed for \ac{tmh} or \ac{tsh} encodings, suggesting that research has focused primarily on the more widely used \ac{bf} scheme. \cite{vidanage2020graph}
 
-%DeepL
-Nevertheless, a more recent and sophisticated attack has emerged that exploits vulnerabilities common to all \ac{pprl} encoding schemes. 
-The \ac{gma} leverages publicly available data, such as phone books, to re-identify encrypted individuals based on overlapping records between plaintext and encrypted databases \cite{vidanage2020graph, schaefer2024}. 
-Unlike earlier attacks that focused solely on the encoding scheme of \ac{bf}s, the \ac{gma} operates independently of the encoding scheme by solving a graph isomorphism problem to match records. 
+
+However, a more recent and sophisticated attack has emerged that exploits vulnerabilities common to all \ac{pprl} encoding schemes. 
+The \ac{gma} uses publicly available data, such as telephone books, to re-identify encrypted individuals based on overlapping records between plaintext and encrypted databases \cite{vidanage2020graph, schaefer2024}. 
+Unlike previous attacks that focused solely on the encoding scheme of \ac{bf}s, the \ac{gma} works independently of the encoding scheme by solving a graph isomorphism problem to match records. 
 While \ac{gma}s can successfully re-identify individuals present in both the plaintext and encrypted datasets, their effectiveness is limited to the overlapping subset of the two databases \cite{schaefer2024}.
 
-%DeepL
-This work aims to advance beyond traditional \ac{gma}s by re-identifying not only individuals present in the overlapping datasets but as many individuals as possible from the encrypted \ac{pprl} data. 
-To accomplish this, the newly introduced \ac{dea} builds upon the foundation established by \ac{gma}s. 
-The \ac{dea} leverages a neural network trained on the subset of previously re-identified individuals to predict and decode the remaining encrypted records. 
-By doing so, the \ac{dea} significantly expands the scope and effectiveness of the attack, enabling broader de-anonymization of \ac{pprl} datasets beyond the limitations of existing graph-based methods.
+
+This work aims to go beyond traditional \ac{gma}s by re-identifying not only individuals present in the overlapping datasets, but as many individuals as possible from the encrypted \ac{pprl} data. 
+To achieve this, the newly introduced \ac{dea} builds on the foundations laid by \ac{gma}s. 
+The \ac{dea} uses a neural network trained on the subset of previously re-identified individuals to predict and decode the remaining encrypted records. 
+In doing so, the \ac{dea} significantly expands the scope and effectiveness of the attack, enabling broader de-anonymisation of \ac{pprl} datasets beyond the limitations of existing graph-based methods.
 
 
 \section{Motivation}  \label{sec:motivation}
@@ -69,29 +69,29 @@ By doing so, the \ac{dea} significantly expands the scope and effectiveness of t
 % Highlight the risks associated with PPRL systems when they are vulnerable to attacks such as GMAs and DEAs
 % Explain why it is crucial to understand and mitigate these vulnerabilities to ensure the security of linked data
 % Mention the lack of sufficient research in extending the scope of attacks beyond the intersection of datasets, which motivates your study
-The increasing use of \ac{pprl} in highly sensitive domains such as healthcare, finance, national security, and fraud detection necessitates rigorous research to validate existing techniques and ensure robust data protection. 
-As data-driven technologies continue to evolve requiring approaches like \ac{pprl}, so do the methods used by malicious actors to exploit these systems.
-While data privacy has always been a critical concern, its importance has surged in an era dominated by \ac{ai} and \ac{ml}. 
-These technologies increasingly rely on large datasets, many of which contain \ac{pii} that, if compromised, could lead to significant privacy violations. 
-Furthermore, the rise of data brokerage, where personal data is collected, aggregated, and sold—often without explicit user consent has intensified concerns around data misuse. 
-As AI models grow more sophisticated, the demand for extensive, high-quality data escalates, making privacy protection a pressing issue \cite{ldc2024,cacgroup2024,arxiv2024}.
+The increasing use of \ac{pprl} in highly sensitive areas such as healthcare, finance, national security and fraud detection requires rigorous research to validate existing techniques and ensure robust data protection. 
+As data-driven technologies that require approaches like \ac{pprl} continue to evolve, so do the methods used by malicious actors to exploit these systems.
+While privacy has always been a critical concern, its importance has grown in an era dominated by \ac{ai} and \ac{ml}. 
+These technologies increasingly rely on large data sets, many of which contain \ac{pii} that, if compromised, could lead to significant privacy violations. 
+In addition, the rise of data brokerage, where personal data is collected, aggregated and sold - often without explicit user consent - has increased concerns about data misuse. 
+As \ac{ai} models become more advanced, the demand for rich, high-quality data increases, making privacy a pressing issue \cite{ldc2024,cacgroup2024,arxiv2024}.
 
-In this context, the vulnerabilities of \ac{pprl} systems to emerging attack vectors become particularly alarming. 
-As highlighted in the introduction, researchers have demonstrated that \ac{pprl} systems are susceptible to \ac{gma}s, which exploit the similarity preserving properties of common encoding schemes to re-identify individuals. 
-These attacks directly undermine the primary objective of \ac{pprl}: to protect sensitive data during the linkage process. 
+In this context, the vulnerability of \ac{pprl} systems to emerging attack modes is of particular concern. 
+As highlighted in the introduction, researchers have shown that \ac{pprl} systems are vulnerable to \ac{gma}s, which exploit the similarity preserving properties of common encoding schemes to re-identify individuals. 
+These attacks directly undermine the primary objective of \ac{pprl}: to protect sensitive data during the linking process. 
 Although current \ac{gma}s are limited to re-identifying individuals present in both encrypted and plaintext datasets, this still represents a significant privacy risk, especially in domains where even partial data exposure can have serious implications.
 
-The potential implementation of a \ac{dea} introduces even greater risks. 
-Unlike \ac{gma}s, which are confined to the intersection of datasets, \ac{dea}s aim to extend the attack to re-identify as many individuals as possible from the encrypted database. 
-By leveraging neural networks trained on previously decoded data, \ac{dea}s can predict and decode additional records, potentially leading to the complete de-anonymization of entire encrypted datasets. 
-This not only nullifies the privacy guarantees offered by \ac{pprl} systems but also raises critical questions about the future viability of widely used techniques, such as \ac{bf} based \ac{pprl}.
+The potential implementation of a \ac{dea} poses even greater risks. 
+Unlike \ac{gma}s, which are limited to the intersection of records, \ac{dea}s aim to extend the attack to re-identify as many people as possible from the encrypted database. 
+Using neural networks trained on previously decoded data, \ac{dea}s can predict and decode additional records, potentially leading to the complete de-anonymisation of entire encrypted datasets. 
+This not only undermines the privacy guarantees offered by \ac{pprl} systems, but also raises critical questions about the future viability of widely used techniques such as \ac{bf}-based \ac{pprl}.
 
-The primary motivation for this research is to proactively investigate and demonstrate the consequences of such advanced attacks to prevent their realization in real-world scenarios.
-By exposing the potential vulnerabilities of \ac{pprl} systems, this work aims to highlight how attackers could exploit encrypted data to compromise privacy at scale. 
-A successful implementation of the \ac{dea} will reveal that state-of-the-art methods are insufficiently secure, emphasizing the urgent need for more robust privacy-preserving techniques.
-Moreover, the lack of comprehensive research into extending the scope of attacks beyond the intersection of datasets underscores the necessity of this study. 
-While significant efforts have been made to address the vulnerabilities exposed by \ac{gma}s, there is a notable gap in understanding how these systems can be compromised on a broader scale.
-By addressing this gap, this thesis seeks to contribute to the body of knowledge on \ac{pprl} vulnerabilities and serve as a foundation for future research aimed at fortifying these systems against increasingly sophisticated threats.
+The primary motivation for this research is to proactively investigate and demonstrate the consequences of such advanced attacks in order to prevent their realisation in real-world scenarios.
+By exposing the potential vulnerabilities of \ac{pprl} systems, this work aims to show how attackers could exploit decrypted data to compromise privacy on a large scale. 
+A successful implementation of the \ac{dea} will show that state-of-the-art methods are insufficiently secure, emphasising the urgent need for more robust privacy-preserving techniques.
+Furthermore, the lack of comprehensive research into extending the scope of attacks beyond the intersection of datasets underscores the need for this study. 
+While significant efforts have been made to address the vulnerabilities exposed by \ac{gma}s, there is a notable gap in understanding how these systems can be compromised on a wider scale.
+By addressing this gap, this thesis aims to contribute to the body of knowledge on \ac{pprl} vulnerabilities and serve as a foundation for future research aimed at fortifying these systems against increasingly advanced threats.
 
 
 
@@ -101,20 +101,20 @@ By addressing this gap, this thesis seeks to contribute to the body of knowledge
 % Highlight the gap in current research regarding decoding complete databases.
 
 The work of Vidanage et al. \cite{vidanage2020graph} introduces a novel attack against \ac{pprl}, known as the \ac{gma}.
-There the authors first provide an overview about \ac{pprl}, encoding methods and present attacks on \ac{prrl} systems so far.
-Their novel attack exploits the similarity preserving properties of commonly used encoding schemes, such as \ac{bf}, making it universally applicable across various \ac{pprl} methods.
-By utilizing a graph-based approach and solving a graph-isomorphism problem, the \ac{gma} aligns nodes in similarity graphs to successfully re-identify individuals using a plain database \cite{vidanage2020graph}.
-This work is critical for this thesis, as the \ac{dea} builds upon the re-identified individuals produced by the \ac{gma} and is extending the attack.
+The authors begin with an overview of \ac{pprl}, encoding methods, and present attacks on \ac{prrl} systems to date.
+Their novel attack exploits the similarity preserving properties of commonly used coding schemes, such as \ac{bf}, making it universally applicable to various \ac{pprl} schemes.
+Using a graph-based approach and solving a graph isomorphism problem, the \ac{gma} aligns nodes in similarity graphs to successfully re-identify individuals using a publicly available database \cite{vidanage2020graph}.
+This work is fundamental to this thesis, as the \ac{dea} builds on the re-identified individuals produced by the \ac{gma} and extends the attack.
 
-Another key contribution comes from Schäfer et al. \cite{schaefer2024}, who revisit and extend the work of Vidanage et al. \cite{vidanage2020graph}
-The authors provide a thorough reproduction and replication of the proposed \ac{gma}, uncovering an undocumented preprocessing step in the original codebase that unintentionally impacted the attack's success rate.
-This undocumented prepropcessing step was intended to improve performance but instead introduced implementation errors.
-Schäfer et al. addressed this issue by correcting the preprocessing and enhancing the \ac{gma} to improve both robustness and efficiency.
-Their improved implementation achieved higher re-identification rates compared to the original approach by Vidanage et al. \cite{schaefer2024}.
-The work of Schäfer et al. is particularly relevant to this thesis, as their enhanced \ac{gma} implementation and corresponding code base serves as the foundation for the \ac{dea} proposed in this thesis.
-Therefore small adjustments to the \ac{gma} implementation will be done to build upon it.
+Another important contribution comes from Schäfer et al. \cite{schaefer2024}, who revisit and extend the work of Vidanage et al. \cite{vidanage2020graph}.
+The authors provide a thorough reproduction and replication of the proposed \ac{gma}, uncovering an undocumented pre-processing step in the original codebase that unintentionally affected the success rate of the attack.
+This undocumented pre-processing step was intended to improve performance, but instead introduced implementation errors.
+Schäfer et al. addressed this problem by correcting the pre-processing and enhancing the \ac{gma} to improve both robustness and efficiency.
+Their improved implementation achieved higher re-identification rates than the original approach of Vidanage et al. \cite{schaefer2024}.
+The work of Schäfer et al. is particularly relevant to this thesis, as their improved \ac{gma} implementation and corresponding code base serve as the basis for the \ac{dea} proposed in this thesis.
+Therefore, small tweaks will be made to the \ac{gma} implementation to build on the results of the attack.
 
-Currently there is no approach like the proposed \ac{dea} in research present. Therefore this thesis aims to fill this gap.
+Currently there exists no approach like the proposed \ac{dea} in research. Therefore, this thesis aims to fill this gap.
 
 
 %Bloom Filters
@@ -136,28 +136,28 @@ Currently there is no approach like the proposed \ac{dea} in research present. T
 % - Evaluation of the impact of different encoding schemes on the effectiveness of DEAs
 % - Provide insights into the broader implications of these attacks on data privacy
 
-The contribution of this thesis is structured into three primary components. 
-First, a comprehensive analysis of \ac{pprl} systems is conducted, with particular emphasis on the three major encoding schemes: \ac{bf} Encoding, \ac{tsh} Encoding, and \ac{tmh} Encoding. 
-This analysis aims to highlight the fundamental principles, strengths, and vulnerabilities of each encoding method, setting the stage for the subsequent investigation of their susceptibility to privacy attacks.
+The contribution of this thesis is divided into three main parts. 
+First, a comprehensive analysis of \ac{pprl} systems is carried out, with particular emphasis on the three major encoding schemes: \ac{bf} encoding, \ac{tsh} encoding, and \ac{tmh} encoding. 
+This analysis aims to highlight the basic principles, strengths and weaknesses of each encryption scheme, setting the stage for the subsequent investigation of their susceptibility to the \ac{dea}.
 
-Next, the current state-of-the-art \ac{gma} is analyzed, and its limitations are discussed in detail. 
-Although \ac{gma}s have proven effective in re-identifying individuals within overlapping datasets, their applicability is restricted to the intersection of plaintext and encrypted records. 
-This inherent limitation underscores the need for more advanced attack strategies that can extend beyond this.
+Next, the current state of the art \ac{gma} is analysed and its limitations are discussed in detail. 
+Although \ac{gma}s have proven effective in re-identifying individuals within overlapping datasets, their applicability is limited to the intersection of plaintext and encrypted records. 
+This inherent limitation highlights the need for more advanced attack strategies that can go beyond this.
 
-The primary focus of this thesis is the implementation and evaluation of the \ac{dea}, which seeks to surpass the capabilities of \ac{gma}s by decoding a larger proportion of encrypted records. 
-To achieve this, the thesis delves into the conceptual foundations, theoretical underpinnings, and technical requirements of the \ac{dea}. 
-Building upon the initial re-identifications obtained through the \ac{gma}, the \ac{dea} employs a supervised machine learning approach, specifically utilizing neural networks trained on previously decoded data to predict and re-identify remaining encrypted records. 
-This method significantly broadens the scope of de-anonymization in \ac{pprl} systems and provides a novel approach to the current research.
+The main focus of this thesis is the implementation and evaluation of \ac{dea}, which attempts to surpass the capabilities of \ac{gma}s by decrypting a larger fraction of encrypted records. 
+To achieve this, the thesis examines the conceptual foundations, theoretical underpinnings and technical requirements of the \ac{dea}. 
+Building on the initial re-identifications made by the \ac{gma}, the \ac{dea} employs a supervised machine learning approach, specifically using neural networks trained on previously decoded data to predict and re-identify remaining encrypted records. 
+This method significantly extends the scope of de-anonymisation in \ac{pprl} systems and provides a novel approach to current research.
 
 The \ac{dea} is then evaluated against the three major \ac{pprl} encoding schemes. 
 While the specific encoding method has minimal impact on the \ac{gma}, which relies primarily on solving graph isomorphism problems, it plays a pivotal role in the \ac{dea}. 
 This is due to the fact that the neural network must be trained separately for each encoding scheme to account for the unique structural characteristics and encoding nuances. 
-However, the \ac{dea} is designed with adaptability in mind, ensuring that it can be effectively applied across different encoding schemes, thus enhancing its generalizability and practical relevance.
+However, the \ac{dea} is designed with adaptability in mind, ensuring that it can be effectively applied across different coding schemes, thus increasing its generalisability and practical relevance.
 
-Through this research, the thesis aims to answer critical questions concerning the robustness of \ac{pprl} systems. 
-It investigates how effective supervised machine learning-based \ac{dea}s are in re-identifying the remaining entries that \ac{gma}s cannot uncover.
-Furthermore, it explores how different encoding schemes influence the performance and accuracy of the \ac{dea}, providing insights into which schemes are more susceptible to such attacks and why. 
-By addressing these questions, the thesis contributes to a deeper understanding of the vulnerabilities inherent in \ac{pprl} systems and lays the groundwork for developing more secure privacy-preserving techniques.
+Through this research, the thesis aims to answer critical questions about the robustness of \ac{pprl} systems. 
+It investigates how effective supervised machine learning-based \ac{dea}s are at re-identifying the remaining entries that \ac{gma}s cannot uncover.
+It also examines how different encoding schemes affect the performance and accuracy of the \ac{dea}, providing insight into which schemes are more susceptible to such attacks and why. 
+By addressing these questions, the thesis contributes to a deeper understanding of the vulnerabilities inherent in \ac{pprl} systems and lays the groundwork for the development of more secure privacy-preserving techniques.
 
 
 
@@ -172,11 +172,11 @@ By addressing these questions, the thesis contributes to a deeper understanding 
 % - conclude the thesis with a summary of contributions, implications, and suggestions for future research
 
 This thesis is divided into X main sections.
-First, an overview of \ac{pprl} systems will be provided, with a particular focus on a thorough analysis of the most commonly used encoding techniques.
-Following this, the existing \ac{gma} will be introduced and explained to establish the foundation for the study.
-Additionally, an overview of neural networks will be presented to provide necessary background knowledge.
+First, an overview of \ac{pprl} systems is given, with particular emphasis on a thorough analysis of the most commonly used encoding techniques.
+Next, the existing \ac{gma} is introduced and explained in order to provide the basis for the study.
+In addition, an overview of neural networks is given to provide the necessary background knowledge.
 
-Next, a detailed description of the attack model for the \ac{dea} will be outlined, including how neural networks are leveraged to enhance the attack.
+Next, a detailed description of the attack model for the \ac{dea} is outlined, including how neural networks are used to enhance the attack.
 This is followed by an explanation of the actual implementation of the \ac{dea}, along with a discussion of the experiments conducted.
-The results of the \ac{dea} across different encoding schemes will then be analyzed and evaluated.
-Finally, the thesis will conclude with a summary of the key contributions, a discussion of the broader implications, and suggestions for future research.
+The results of the \ac{dea} on different encryption schemes are then analysed and evaluated.
+Finally, the thesis concludes with a summary of the main contributions, a discussion of the broader implications, and suggestions for future research.
