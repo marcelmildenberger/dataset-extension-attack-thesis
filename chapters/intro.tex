@@ -1,50 +1,73 @@
-% !TeX root = main.tex
-%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% $Date: 2020-02-05 16:17:49 +0100 (Mi, 05 Feb 2020) $
-%% $Author: cmueller $
-%% $Rev: 5 $
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \chapter{Introduction}  \label{sec:introduction}
-% Introduce the concept of Privacy-Preserving Record Linkage (PPRL) and its importance in sectors such as healthcare, criminal justice, and finance
-% Briefly explain the primary challenge of maintaining privacy while linking datasets across different sources
-% Introduce the concept of Graph Matching Attacks (GMAs) and the more advanced Dataset Extension Attacks (DEAs)
-% State the objective of your thesis: to investigate the vulnerabilities of PPRL systems to DEAs and improve attack techniques using neural networks
-Data and record linkage is an important aspect of research and software projects, enabling the integration of data from different sources about the same entity to gain additional insights.
-This is particularly important in sectors such as healthcare or social sciences.
-In the United States, for example, the fragmented healthcare and public health ecosystem can benefit greatly from effective data linkage.
-The COVID-19 pandemic highlighted the critical importance of timely, accurate and efficient data linkage, as the lack of it led to problems in integrating disease and vaccination data.
-In response, organisations such as the Centers for Disease Control and Prevention and the Food and Drug Administration have launched projects to address these challenges and further develop linkage techniques. \cite{pathak2024privacy}
+
+Data and record linkage is a critical component of both research and software development, facilitating the integration of data from diverse sources to generate richer, more comprehensive insights about the same entity. 
+Initially, deterministic record linkage—which relies on exact matches across predefined identifiers like unique id's was the predominant method used in early database systems. 
+However, deterministic approaches often fail in real-world scenarios where data may suffer from inconsistent formatting, typographical errors, or missing values, making exact matches impossible.
+
+The introduction of a probabilistic record linkage framework by Fellegi et al. \cite{fellegi1969theory} 1969 marked a significant advancement in overcoming these limitations. 
+Their work, \enquote{A Theory for Record Linkage} \cite{fellegi1969theory}, proposed a statistical method for linking records across datasets by calculating the probability that two records refer to the same entity, even when discrepancies are present in the data. 
+This approach evaluates common attributes assigning weights based on the likelihood of a match versus a coincidental similarity. 
+By accounting for the inherent imperfections in real-world data, the so called Fellegi-Sunter model became a foundational methodology for data integration, particularly in heterogeneous and distributed data environments where traditional deterministic methods fall short.
+
+Such a record linkage approach is particularly important in sectors such as healthcare and the social sciences, where data is often distributed across multiple institutions and sources. 
+In these fields, the ability to integrate disparate datasets is essential for gaining comprehensive insights, improving outcomes, and informing policy decisions.
+For example, in the United States, the healthcare system is highly fragmented, consisting of numerous independent entities such as hospitals, clinics, insurance providers, public health agencies, and research institutions. 
+Each of these organizations collects and stores patient data independently, often using different systems and formats. 
+This fragmentation creates significant challenges when attempting to track patient outcomes, monitor disease outbreaks, or evaluate the effectiveness of treatments across the entire population.
+Effective data linkage can bridge these gaps by connecting records that refer to the same individual across multiple datasets. In healthcare, this means a patient's hospital records, insurance claims, laboratory test results, and public health data can be combined to provide a more complete picture of their health status and treatment history. 
+This integration is critical for tasks such as epidemiological research, public health surveillance, personalized medicine, and healthcare quality improvement.
+
+For instance, during the COVID-19 pandemic, the inability to efficiently link data between testing centers, hospitals, and vaccination sites hindered the timely tracking of infection rates and vaccination outcomes. 
+Had more robust data linkage mechanisms been in place, public health officials could have responded more effectively to outbreaks and tailored interventions to specific populations. 
+Thus, record linkage plays a pivotal role in transforming fragmented data landscapes into unified, actionable insights, ultimately leading to better health outcomes and more informed decision-making.
+In response, organisations such as the Centers for Disease Control and Prevention and the Food and Drug Administration have launched projects to address these challenges and further develop linkage techniques \cite{pathak2024privacy}.
 
 In scenarios such as the COVID-19 pandemic, data integration efforts often involve linking records on natural persons from multiple sources.
 For example, integrating data from different healthcare providers, laboratories and public health agencies typically requires the use of pseudo-identifiers derived from \ac{pii} such as names, dates of birth or other sensitive information. 
-However, reliance on \ac{pii} raises significant privacy concerns, as improper handling of such data can lead to re-identification of individuals, with potentially serious consequences such as data breaches, identity theft or unauthorised access to personal health information.
+However, reliance on \ac{pii} raises significant privacy concerns, as improper handling of such data can lead to re-identification of individuals, with potentially serious consequences such as data breaches, identity theft or unauthorised access to personal health information \cite{pathak2024privacy}.
 
-To address these privacy risks, various techniques have been developed to protect \ac{pii}, primarily by encrypting the data prior to linking. 
+The increasing digitization of personal data has already led to large-scale privacy breaches, demonstrating the risks of improperly secured data. 
+Notable incidents, such as the Cambridge Analytica scandal, where personal data was misused for political profiling, highlight the ethical and regulatory challenges in data integration \cite{isaak2018user}. 
+Similarly, healthcare data leaks have raised concerns about the implications of unauthorized access to medical histories, genetic data, and insurance records.
+Leaks of personal healthcare data can lead to severe consequences, including blackmail, discrimination, and scams, which can cause significant personal harm. 
+For instance, individuals whose medical histories are exposed may face discrimination in employment or insurance, while others may become targets for scams exploiting their health conditions. 
+The potential for such misuse underscores the critical importance of robust data protection measures by working with \ac{pii}.
+
+To address these privacy risks, various techniques have been developed to protect \ac{pii} during the linking process, primarily by encrypting the data prior to linking. 
 However, the use of encrypted \ac{pii} as pseudo-identifiers presents additional challenges.
 The key question is how to efficiently encrypt sensitive information while maintaining the ability to accurately match records. 
 In addition, performing linkage on encrypted data requires specialised procedures that work effectively without compromising the privacy of the underlying information.
 
 Therefore, \ac{pprl} techniques are designed to facilitate data integration without exposing sensitive information, ensuring that datasets can be securely linked across different entities.
-In order to still be able to perform linkage while preserving privacy, similarity preserving encodings are applied to the identifiers.
+In order to still be able to perform linkage while preserving privacy, similarity preserving encodings are applied to the \ac{pii}.
 Without such similarity preserving encryption, matches between encrypted entities in different databases would not be possible.
+
+One of the core challenges in \ac{pprl} is therefore balancing data privacy with usability. 
+While strong encryption techniques provide excellent protection, they make record linkage infeasible due to the loss of structural similarity. 
+On the other hand, similarity-preserving encodings, enable matching while still attempting to obscure exact values. 
+This trade-off between privacy and utility is a key aspect, as stronger privacy mechanisms often degrade the quality of linkage, making it difficult to achieve high matching accuracy.
+
 Over time, three main privacy-preserving encoding schemes have emerged as enablers for \ac{pprl}. \cite{vidanage2020graph, schaefer2024}
 
-
 \ac{bf} encoding is the most widely used technique in \ac{pprl} and is often considered the reference standard. 
-\ac{bf}s were introduced to \ac{pprl} for their simplicity and efficiency in both storing and computing set similarities. 
-Their compact representation and probabilistic nature make them ideal for scalable \ac{pprl} systems.
-Further research has sought to improve the security of \ac{bf} encoding by incorporating diffusion layers, which help to obscure patterns and reduce vulnerability to certain attacks. %Cite Armknecht
-\ac{tmh} is a newer encoding method that offers distinct advantages in certain use cases. 
-Although less commonly used in \ac{pprl}, its simplicity and efficiency in calculating set similarities make it a viable option. 
-Compared to \ac{bf} encoding, \ac{tmh} generally provides stronger security guarantees. 
-However, this added security comes at the cost of increased computational complexity and memory usage.
-\ac{tsh} introduces a novel approach to overcome some of the limitations associated with \ac{bf} and \ac{tmh}. 
-This method uses a two-step process: an initial encoding of data into multiple \ac{bf}s, followed by an additional hashing step that converts the encoded data into a set of integers for similarity comparisons. 
-This layered approach increases security while maintaining efficient similarity calculations. \cite{vidanage2020graph, schaefer2024}
+Originally introduced by Burton Bloom in 1970 as a probabilistic data structure for efficient set membership testing \cite{bloom1970space}, Bloom Filters (BFs) were later adapted for PPRL due to their simplicity and efficiency in both storing and computing set similarities. 
+Their compact representation and probabilistic nature make them ideal for scalable \ac{pprl} systems, particularly in environments dealing with large datasets. 
+The seminal work by Schnell et al. demonstrated the application of Bloom Filters in privacy-preserving record linkage, particularly within healthcare settings, highlighting their ability to perform secure record matching without exposing sensitive identifiers \cite{schnell2009privacy}.
+However, BFs are not without limitations. 
+Their vulnerability to frequency-based attacks and pattern exploitation has driven research into enhancing their security. 
+Techniques such as diffusion layers have been proposed to obscure recognizable patterns and reduce susceptibility to attacks like graph-based re-identification. 
+For instance, Armknecht et al. explored methods to reinforce the security of Bloom Filters by introducing additional randomization, which complicates adversarial analysis and pattern mining attacks.
 
+To address some of these vulnerabilities,\ac{tmh} has been introduced as a more secure alternative. 
+\ac{tmh}, first developed by Broder (1997) for estimating set similarities in large-scale document collections \cite{broder1997resemblance}, was adapted using tabulation hashing to enhance its randomness and reduce collision rates in PPRL applications. 
+Although less commonly used than BFs, TMH offers distinct advantages, including stronger security guarantees against re-identification attacks. 
+However, these benefits come at the cost of increased computational complexity and greater memory usage, which may limit its applicability in resource-constrained environments.
 
-In practice, \ac{bf}-based \ac{pprl} has become the dominant standard and is widely used in areas such as crime detection, fraud prevention and national security. 
+A further advancement in encoding techniques is the introduction of \ac{tsh}, which aims to combine the strengths of both \ac{bf}s and \ac{tmh} while mitigating their respective weaknesses.
+As detailed by Vatsalan and Christen (2016), \ac{tsh} employs a two-phase process: data is first encoded using multiple \ac{bf}s, followed by an additional hashing layer that transforms the encoded data into a set of integers suitable for similarity comparisons \cite{vatsalan2016privacy}. 
+This layered approach enhances privacy by adding an extra layer of obfuscation, making it more resistant to attacks while maintaining efficient similarity computations.
+
+In practice, \ac{bf}-based \ac{pprl} has become the dominant standard and is widely used in areas such as crime detection, fraud prevention, and national security due to its balance of efficiency and ease of implementation.
 However, \ac{pprl} systems are not without limitations and vulnerabilities. 
 Previous research has shown that there are several attacks targeting \ac{pprl} systems, with a focus on exploiting the weaknesses inherent in \ac{bf} encodings.
 These attacks specifically target vulnerabilities in \ac{bf} constructions, such as the weaknesses introduced by double hashing, structural flaws in the filter design, and susceptibility to frequent pattern-mining techniques. 
@@ -54,9 +77,11 @@ Notably, no specific attacks have been developed for \ac{tmh} or \ac{tsh} encodi
 
 However, a more recent and sophisticated attack has emerged that exploits vulnerabilities common to all \ac{pprl} encoding schemes. 
 The \ac{gma} uses publicly available data, such as telephone books, to re-identify encrypted individuals based on overlapping records between plaintext and encrypted databases \cite{vidanage2020graph, schaefer2024}. 
-Unlike previous attacks that focused solely on the encoding scheme of \ac{bf}s, the \ac{gma} works independently of the encoding scheme by solving a graph isomorphism problem to match records. 
+Unlike previous attacks that focused solely on the encoding scheme of \ac{bf}s, the \ac{gma} works independently of the encoding scheme.
+It therefore exploits the graph structure of encoded datasets to re-identify records. Given two datasets — a plaintext reference dataset and an encoded dataset — an attacker can construct similarity graphs where nodes represent individuals and edges represent similarity scores. 
+Using graph isomorphism techniques, attackers can infer one-to-one mappings between encoded and plaintext records, effectively breaking the privacy guarantees of \ac{pprl}. 
+The effectiveness of \ac{gma}s depends on the overlap between the two datasets; the larger the intersection, the higher the probability of successful re-identification. 
 While \ac{gma}s can successfully re-identify individuals present in both the plaintext and encrypted datasets, their effectiveness is limited to the overlapping subset of the two databases \cite{schaefer2024}.
-
 
 This work aims to go beyond traditional \ac{gma}s by re-identifying not only individuals present in the overlapping datasets, but as many individuals as possible from the encrypted \ac{pprl} data. 
 To achieve this, the newly introduced \ac{dea} builds on the foundations laid by \ac{gma}s. 
@@ -65,12 +90,8 @@ In doing so, the \ac{dea} significantly expands the scope and effectiveness of t
 
 
 \section{Motivation}  \label{sec:motivation}
-% Discuss the growing importance of data privacy and the increasing need for PPRL systems in sensitive domains
-% Highlight the risks associated with PPRL systems when they are vulnerable to attacks such as GMAs and DEAs
-% Explain why it is crucial to understand and mitigate these vulnerabilities to ensure the security of linked data
-% Mention the lack of sufficient research in extending the scope of attacks beyond the intersection of datasets, which motivates your study
-The increasing use of \ac{pprl} in highly sensitive areas such as healthcare, finance, national security and fraud detection requires rigorous research to validate existing techniques and ensure robust data protection. 
-As data-driven technologies that require approaches like \ac{pprl} continue to evolve, so do the methods used by malicious actors to exploit these systems.
+The increasing use of \ac{pprl} in highly sensitive areas such as healthcare, finance and national security requires rigorous research to validate existing techniques and ensure robust data protection. 
+As data-driven use cases that require approaches like \ac{pprl} continue to evolve, so do the methods used by malicious actors to exploit these systems.
 While privacy has always been a critical concern, its importance has grown in an era dominated by \ac{ai} and \ac{ml}. 
 These technologies increasingly rely on large data sets, many of which contain \ac{pii} that, if compromised, could lead to significant privacy violations. 
 In addition, the rise of data brokerage, where personal data is collected, aggregated and sold - often without explicit user consent - has increased concerns about data misuse. 
@@ -91,6 +112,7 @@ By exposing the potential vulnerabilities of \ac{pprl} systems, this work aims t
 A successful implementation of the \ac{dea} will show that state-of-the-art methods are insufficiently secure, emphasising the urgent need for more robust privacy-preserving techniques.
 Furthermore, the lack of comprehensive research into extending the scope of attacks beyond the intersection of datasets underscores the need for this study. 
 While significant efforts have been made to address the vulnerabilities exposed by \ac{gma}s, there is a notable gap in understanding how these systems can be compromised on a wider scale.
+
 By addressing this gap, this thesis aims to contribute to the body of knowledge on \ac{pprl} vulnerabilities and serve as a foundation for future research aimed at fortifying these systems against increasingly advanced threats.
 
 
@@ -101,7 +123,7 @@ By addressing this gap, this thesis aims to contribute to the body of knowledge 
 % Highlight the gap in current research regarding decoding complete databases.
 
 The work of Vidanage et al. \cite{vidanage2020graph} introduces a novel attack against \ac{pprl}, known as the \ac{gma}.
-The authors begin with an overview of \ac{pprl}, encoding methods, and present attacks on \ac{prrl} systems to date.
+The authors begin with an overview of \ac{pprl}, encoding methods, and present attacks on \ac{pprl} systems to date.
 Their novel attack exploits the similarity preserving properties of commonly used coding schemes, such as \ac{bf}, making it universally applicable to various \ac{pprl} schemes.
 Using a graph-based approach and solving a graph isomorphism problem, the \ac{gma} aligns nodes in similarity graphs to successfully re-identify individuals using a publicly available database \cite{vidanage2020graph}.
 This work is fundamental to this thesis, as the \ac{dea} builds on the re-identified individuals produced by the \ac{gma} and extends the attack.
