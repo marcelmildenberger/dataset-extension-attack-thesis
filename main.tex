@@ -1,12 +1,3 @@
-% !TeX encoding = UTF-8
-% !BIB program = biber
-% !TeX program = lualatex
-%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% $Date: 2022-03-23 15:41:58 +0100 (Mi, 23 Mrz 2022) $
-%% $Author: cmueller $
-%% $Rev: 14 $
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \documentclass[a4paper       % Use DIN A4 paper format
   , twoside                  % Use duplex printing; comment this line for one-sided printing and ...
 %  , oneside                 % ... uncomment this line
@@ -39,7 +30,6 @@
 \begin{document}
 \frontmatter    %% Declares the front matter follows, uses roman numbers for pages etc.
 
-% TODO: Put your name, topic, and everything there
 \input{frontmatter/titleinfo}    %% Contains all relevant information about title, author, etc.
 
 %% The title page, please do not change anything there unless necessary
@@ -48,6 +38,7 @@
 % TODO Write the abstract
 \input{frontmatter/abstract}     %% The abstract
 
+\raggedbottom %TODO: needed?
 \tableofcontents     %% The Table of Contents
 %% (Un)comment the following lines as needed
 \listoffigures            %% The list of figures
@@ -60,7 +51,6 @@
 \mainmatter     %% Declares the main matter follows, uses arabic numbers for pages etc.
 \acresetall          %% Make sure that all acronyms are set to not-yet-used
 
-% TODO Write the main part of your thesis
 \input{chapters/intro}        %% The introduction chapter
 \input{chapters/background}   %% The background chapter
 \input{chapters/methodology}  %% The methodology chapter
