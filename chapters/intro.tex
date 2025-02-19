@@ -1,5 +1,14 @@
 \chapter{Introduction}  \label{sec:introduction}
 
+% Hypotheses:
+% DEAs can reconstruct plaintexts with high accuracy even for non-intersecting records by leveraging patterns in the encoded data.
+%
+% key research questions:
+% How can GMAs be enhanced to exploit additional information beyond simple intersections?
+% What are the theoretical and practical limits of DEAs in reconstructing plaintext from encoded databases?
+% How do different encoding parameters (e.g., Bloom Filter size, number of hash functions, n-gram size) affect the success rate of DEAs?
+
+
 Linking data and records is an important component of research, software development and software projects.
 The primary reason for integrating data from different sources is to gain richer, more comprehensive insights about the same entity.
 Initially, deterministic record linkage, which relies on exact matches between predefined identifiers such as unique IDs, was the main method used in early linkage techniques. 
@@ -78,7 +87,7 @@ While \ac{gma}s can successfully re-identify individuals present in both the pla
 
 This work aims to go beyond traditional \ac{gma}s by re-identifying not only individuals present in the overlapping datasets, but as many individuals as possible from the encrypted \ac{pprl} data. 
 To achieve this, the newly introduced \ac{dea} builds on the foundations laid by \ac{gma}s. 
-The \ac{dea} uses a neural network trained on the subset of previously re-identified individuals to predict and decode the remaining encrypted records. 
+The \ac{dea} uses an \ac{ann} trained on the subset of previously re-identified individuals to predict and decode the remaining encrypted records. 
 In doing so, the \ac{dea} significantly expands the scope and effectiveness of the attack, enabling broader de-anonymisation of \ac{pprl} datasets beyond the limitations of existing graph-based methods.
 
 \section{Motivation} \label{sec:motivation}
@@ -101,7 +110,7 @@ Although current \ac{gma}s are limited to re-identifying individuals present in 
 
 The introduction of \ac{dea}s poses an even greater threat to the integrity of \ac{pprl} systems. 
 Unlike \ac{gma}s, \ac{dea}s aim to extend the scope of re-identification to as many individuals as possible within the encrypted database. 
-Using neural networks trained on previously decoded data from \ac{gma}s, \ac{dea}s can predict and decode additional records, potentially leading to the complete de-anonymisation of entire encrypted datasets. 
+Using \ac{ann}s trained on previously decoded data from \ac{gma}s, \ac{dea}s can predict and decode additional records, potentially leading to the complete de-anonymisation of entire encrypted datasets. 
 This represents a paradigm shift, as it challenges the viability of widely used \ac{pprl} techniques, such as \ac{bf}-based encryption, which have been considered secure.
 
 The primary motivation for this research is to proactively investigate and demonstrate the consequences of such advanced attacks in order to prevent their realisation in real-world scenarios. 
@@ -132,7 +141,7 @@ This improvement not only validates the vulnerabilities highlighted by the \ac{g
 
 The work of Schäfer et al. is particularly relevant to this thesis, as their improved \ac{gma} implementation and accompanying codebase form the basis of the \ac{dea} proposed in this study. 
 While the \ac{gma} is limited to re-identifying individuals present in both encrypted and plaintext datasets, the \ac{dea} seeks to extend the scope of re-identification beyond this intersection. 
-Using neural networks trained on the re-identified individuals from the \ac{gma}, the \ac{dea} aims to predict and decode additional datasets, potentially leading to complete de-anonymisation of encrypted datasets.
+Using \ac{ann}s trained on the re-identified individuals from the \ac{gma}, the \ac{dea} aims to predict and decode additional datasets, potentially leading to complete de-anonymisation of encrypted datasets.
 
 To date, no existing research has proposed an approach comparable to the \ac{dea}. 
 This thesis addresses this gap by developing and evaluating the \ac{dea}, thereby contributing to a broader understanding of \ac{pprl} vulnerabilities and highlighting the urgent need for more secure data linking techniques.
@@ -149,12 +158,12 @@ This inherent limitation highlights the need for more advanced attack strategies
 
 The main focus of this thesis is the implementation and evaluation of the \ac{dea}, which attempts to outperform the capabilities of \ac{gma}s by decrypting a larger fraction of encrypted records. 
 To achieve this, the thesis examines the conceptual foundations, theoretical underpinnings and technical requirements of the \ac{dea}. 
-Building on the initial re-identifications made by the \ac{gma}, the \ac{dea} employs a supervised machine learning approach, specifically using neural networks trained on previously decoded data to predict and re-identify remaining encrypted records. 
+Building on the initial re-identifications made by the \ac{gma}, the \ac{dea} employs a supervised machine learning approach, specifically using \ac{ann}s trained on previously decoded data to predict and re-identify remaining encrypted records. 
 This method significantly extends the scope of de-anonymisation in \ac{pprl} systems and provides a novel approach to current research.
 
 The \ac{dea} is then evaluated against the three main \ac{pprl} encoding schemes. 
 While the specific encoding scheme has minimal impact on the \ac{gma}, which is primarily based on solving a graph isomorphism problem, it plays a role in the \ac{dea}. 
-This is due to the fact that the neural network has to be trained separately for each encoding scheme to account for the unique structural features and nuances of the encoding. 
+This is due to the fact that the \ac{ann} has to be trained separately for each encoding scheme to account for the unique structural features and nuances of the encoding. 
 However, the \ac{dea} is designed with adaptability in mind, ensuring that it can be effectively applied across different encoding schemes, thus increasing its generalisability and practical relevance.
 
 Through this research, the thesis aims to answer critical questions about the robustness of \ac{pprl} systems. 
@@ -168,9 +177,9 @@ This thesis is divided into four main sections: technical background, methodolog
 
 First, an overview of \ac{pprl} systems is given, with particular emphasis on a thorough analysis of the most commonly used encoding techniques.
 Next, the existing \ac{gma} is introduced and explained in order to provide the basis for the study.
-In addition, an overview of neural networks is given to provide the necessary background knowledge.
+In addition, an overview of \ac{ann}s is given to provide the necessary background knowledge.
 
-Next, a detailed description of the attack model for the \ac{dea} is outlined, including how neural networks are used to enhance the attack.
+Next, a detailed description of the attack model for the \ac{dea} is outlined, including how \ac{ann}s are used to enhance the attack.
 This is followed by an explanation of the actual implementation of the \ac{dea}, along with a discussion of the experiments conducted.
 The results of the \ac{dea} on different encryption schemes are then analysed and evaluated.
 Finally, the thesis concludes with a summary of the main contributions, a discussion of the broader implications, and suggestions for future research.
