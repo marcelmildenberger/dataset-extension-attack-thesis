@@ -1,14 +1,32 @@
-% !TeX root = main.tex
-%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% $Date: 2020-02-05 16:17:49 +0100 (Mi, 05 Feb 2020) $
-%% $Author: cmueller $
-%% $Rev: 5 $
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \chapter{Methodology}  \label{sec:method}
+%Goal of this chapter
+%How DEA build upon GMA
+%Main steps and decisions taken
 
-\section{Conceptual framework for Dataset Extension}
+\section{Modifications to the \ac{gma}} \label{sec:modifications}
+%How GMA serves as basis
+%Which parts are reused and which need modification
+%Describe therefore the starting point of the DEA
 
-%%% Neural networks
+\section{Design and Implementation of the \ac{dea}} \label{sec:designandimplementation}
 
-\section{Implementation}
+\subsection{Problem Definition} \label{sec:problemdefinition}
+%Main challenge: extending re-identifications beyond
+%Reconstructing deterministic relationship between used encodings scheme (which are using hash functions) and plaintext
+%Why GMA's fail to do this
+
+\section{Data Representation} \label{sec:representation}
+%Describe structure of encoded records (bf, tmh, tsh) and their representations
+%Explain how re-identified individuals serve as labeled training data
+%Discuss preprocessing steps required for effective neural network training
+
+\subsection{\ac{ann} Architecture for \ac{dea}} \label{sec:architecture}
+%Justify use of neural networks to predict missing information
+%Present architecture for each encoding scheme: Input, Hidden and output layer
+%Explain choice of activation functions, loss functions and optimizer
+%How to handle variable length inputs (padding, truncation) for TMH
+
+\subsection{Training the Model} \label{sec:training}
+%Detail dataset split (training, validation, test)
+%Discuss loss cumputation & performance metrics
+%Explain training process and hyperparameter tuning
