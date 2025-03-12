@@ -259,4 +259,96 @@ The only encoding scheme resistant to \ac{gma}s is \ac{bf}s with diffusion layer
 
 \section{\ac{ann}s} \label{sec:nn}
 
+\ac{ann}s are a class of machine learning models inspired by the structure and function of biological neural systems.
+They consist of interconnected layers of artificial neurons that process input data and extract meaningful patterns through iterative learning.
+\ac{ann}s have been widely applied in various fields, including image recognition, natural language processing, and clssification tasks.
+Their ability to learn hierarchical representations of data makes them particularly effective for complex tasks where manual feature engineering is impractical \cite{dongare2012introduction}.
+
+The structure of an \ac{ann} consists of multiple layers, each serving a distinct role in processing and transforming input data.
+The input layer is the first stage of the network, responsible for receiving raw data and forwarding it to subsequent layers.
+The number of neurons in this layer corresponds directly to the number of input features, ensuring that all relevant information is passed through the network \cite{dongare2012introduction}.
+
+Following the input layer are the hidden layers, which perform feature extraction and transformation.
+Each neuron in these layers applies a weighted sum operation to its inputs, followed by an activation function that introduces non-linearity, allowing the network to learn complex patterns in the data.
+The depth and size of the hidden layers determine the network's capacity to model intricate relationships, making them a crucial component of deep learning architectures \cite{dongare2012introduction}.
+
+Finally, the output layer generates the final predictions based on the processed information.
+The number of neurons in this layer depends on the nature of the task—whether it is a classification problem, where each neuron represents a class, or a regression task, where a single neuron outputs a continuous value \cite{dongare2012introduction}.
+
+Each neuron in a layer applies a weighted sum operation on its inputs, followed by an activation function such as Relinkage unit (Rectified Linear Unit) or Sigmoid, to introduce non-linearity and enable complex pattern learning.
+Other commonly used activation functions include Leaky Relinkage unit, Elinkage unit, and Softmax, each with advantages depending on the specific task \cite{sharma2017activation,russell2016artificial}.
+
+Training an \ac{ann} involves iteratively adjusting its parameters, using a labeled dataset to minimize prediction errors.
+The process begins with forward propagation, where input data flows through the network, passing through multiple layers until it reaches the output layer, generating a prediction.
+This prediction is then compared to the actual target value, and the discrepancy between the two is quantified using a loss function, which measures the model's performance \cite{russell2016artificial}.
+
+To improve accuracy, the network undergoes backward propagation (backpropagation), where the gradient of the loss with respect to each weight is computed using the chain rule of differentiation.
+These gradients indicate how each parameter should be adjusted to reduce the overall error \cite{russell2016artificial}.
+
+An optimizer, such as Stochastic Gradient Descent (SGD) or Adam, updates the weights accordingly by taking small steps in the direction that minimizes the loss.
+The training process is repeated over multiple epochs, where the entire dataset is processed multiple times.
+To enhance efficiency, the data is often divided into batches, allowing the model to update its weights incrementally rather than processing the entire dataset at once.
+Over time, this iterative optimization process enables the network to learn meaningful patterns and improve its predictive performance.
+\ac{ann}s can be applied to different classification tasks, depending on whether a data instance belongs to a single category or multiple categories simultaneously \cite{russell2016artificial}.
+
+In traditional single-label or binary classification problems, each instance is assigned to one and only one category from a predefined set of classes.
+To achieve this, the network's output layer typically uses a Softmax activation function, which converts the raw output scores into a probability distribution over all possible classes.
+The model is trained using Cross-Entropy Loss, which penalizes incorrect classifications by measuring the difference between the predicted probability distribution and the actual class label \cite{russell2016artificial,herrera2016multilabel}.
+
+In contrast, multi-label classification allows an instance to belong to multiple categories at the same time.
+Instead of a single categorical output, the network produces independent predictions for each possible label.
+The output layer employs sigmoid activations for each label, transforming the raw scores into independent probabilities indicating the presence or absence of each class.
+Since each label is treated as a separate binary classification problem, Binary Cross-Entropy (BCE) Loss is commonly used to optimize the model, ensuring accurate predictions across multiple labels \cite{russell2016artificial,herrera2016multilabel}.
+
+Different \ac{ann} architectures have been developed to address various problem domains, each optimized for specific types of data and tasks.
+Feedforward \ac{ann}s (FNNs) represent the simplest architecture, where data flows in one direction from the input layer to the output layer without forming cycles.
+These networks are widely used for basic classification and regression tasks but may struggle with complex patterns that require spatial or sequential dependencies \cite{russell2016artificial,glorot2010understanding}.
+
+For tasks involving image processing, Convolutional \ac{ann}s (CNNs) are commonly used.
+CNNs employ convolutional layers that apply filters to input images, allowing the network to capture complex patterns such as edges, textures, and shapes.
+This makes them highly effective for applications like object recognition and medical imaging \cite{o2015introduction}.
+
+When dealing with sequential data, Recurrent \ac{ann}s (RNNs) and their advanced variant, Long Short-Term Memory (LSTM) Networks, are particularly useful.
+These architectures introduce recurrent connections, enabling them to maintain memory of previous inputs and recognize patterns over time.
+This makes them well-suited for natural language processing, speech recognition, and time series forecasting \cite{medsker2001recurrent}.
+
+\subsection{PyTorch for Training \ac{ann}s} \label{sec:pytorch}
+
+Training \ac{ann}s in PyTorch involves defining and optimizing a model through iterative learning processes while leveraging GPU acceleration for efficient computation.
+PyTorch provides a flexible framework for designing and training neural networks, making it a popular choice for deep learning research and applications \cite{pytorchPyTorch}.
+
+The training process begins with model definition, where the architecture, including layers, activation functions, and parameters, is specified using the `torch.nn.Module` class.
+This allows users to define complex networks with full control over forward propagation.
+Next, a loss function is chosen based on the task at hand \cite{pytorchPyTorch}.
+
+Once the model and loss function are defined, an optimizer is selected to update the model’s weights during training.
+Training proceeds over multiple epochs, where the dataset is processed in several passes to refine the model’s accuracy.
+To further optimize learning, the dataset is divided into mini-batches, allowing for efficient gradient updates without requiring full dataset processing at once \cite{pytorchPyTorch}.
+
+One of PyTorch’s key advantages is its support for GPU acceleration via `torch.cuda`, which significantly reduces training time for large datasets.
+By moving tensors and models to a GPU, computations are performed in parallel, leading to substantial performance gains compared to CPU-based training.
+Additionally, PyTorch's autograd engine enables automatic differentiation, simplifying the backpropagation process and making model optimization more efficient \cite{pytorchPyTorch}.
+
+Despite their success, \ac{ann}s present several challenges that must be carefully managed to ensure robust and efficient learning.
+One of the most common issues is overfitting, where a model becomes too specialized in learning patterns from the training data, capturing noise rather than generalizable features.
+This leads to poor performance on unseen data.
+Techniques such as dropout regularization, L2 weight decay, and early stopping are commonly used to mitigate overfitting and improve generalization \cite{pytorchPyTorch,glorot2010understanding}.
+
+Another fundamental challenge is the vanishing and exploding gradient problem, which occurs in deep networks during backpropagation.
+When gradients become too small (vanishing), weight updates diminish, leading to slow or stalled learning.
+Conversely, when gradients grow too large (exploding), unstable updates cause erratic training behavior.
+Solutions such as batch normalization, gradient clipping, and advanced activation functions like Leaky ReLU help address these issues \cite{pytorchPyTorch,glorot2010understanding}.
+
+The computational complexity of deep learning models is another major concern, as large-scale \ac{ann}s require extensive memory and processing power.
+Training deep networks on large datasets can be prohibitively slow on CPUs, necessitating the use of GPUs or specialized hardware like TPUs to accelerate training.
+Efficient data-loading techniques and mixed-precision training can further optimize computational efficiency \cite{pytorchPyTorch}.
+
+Lastly, hyperparameter tuning plays a critical role in model performance.
+Selecting the right learning rate, batch size, number of layers, and optimization algorithm requires experimentation and fine-tuning.
+Automated methods such as grid search, random search, and Bayesian optimization can assist in finding optimal configurations, but these processes are computationally expensive.
+Addressing these challenges effectively is crucial for developing high-performing \ac{ann}s that generalize well across different datasets and tasks \cite{pytorchPyTorch}.
+
+\ac{ann}s have revolutionized the field of machine learning by providing powerful models capable of solving complex tasks.
+Their flexibility allows them to be applied to various domains, from image recognition to privacy-preserving data analysis.
+With frameworks like PyTorch, researchers and practitioners can leverage GPU acceleration to train large-scale models efficiently \cite{pytorchPyTorch}.
 
