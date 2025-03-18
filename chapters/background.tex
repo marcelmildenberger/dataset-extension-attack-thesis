@@ -155,7 +155,8 @@ MinHash aims to approximate the Jaccard similarity between two sets, \(S\) and \
 The fundamental idea is to represent both sets as sequences of randomly ordered elements and apply multiple rounds of random permutations \(\pi\) to shuffle them.
 After each round, the first elements of both sequences are compared.
 The larger the intersection between \(S\) and \(S'\), the higher the probability that the first elements will match.
-The final Jaccard similarity estimate is computed based on the number of hash collisions achieved during permutation \cite{schaefer2024,broder1997resemblance,vidanage2020graph}.
+An example for this can be seen in figure~\ref{fig:minhashexample} where the sets are permuted twice and the first element is compared for each.
+The final Jaccard similarity estimate is computed based on the number of hash collisions achieved during permutation, in the example is one collision for two permutations \cite{schaefer2024,broder1997resemblance,vidanage2020graph}.
 
 \begin{figure}[h]
   \centering
@@ -176,6 +177,10 @@ During the \textbf{hashing process}, each element in \(S\) is hashed using a one
 This binary value is then split into \(c\) sub-keys, each of length \(k\).
 Each sub-key is used as an index to retrieve a random bit string from the corresponding lookup table, and the retrieved \(c\) bit strings are XORed together to produce a single output bit string.
 In the \textbf{MinHash signature generation} phase, this process is repeated for each of the \(l\) lookup table sets, and the minimum value among all generated bit strings is selected as the MinHash signature \cite{schaefer2024,vidanage2020graph}.
+
+An example for this can be seen in Figure~\ref{fig:tabminhashexample} where the first element of the set is hashed using the first lookup table and the fourth hash function.
+The key is split into \(c = 4\) sub-keys of length \(k = 2\) and used to retrieve the corresponding bit strings from the lookup table.
+The retrieved bit strings are then XORed together to produce the final value for the first element.
 
 \begin{figure}[h]
   \centering
