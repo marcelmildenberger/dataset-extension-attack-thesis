@@ -2,13 +2,13 @@
 
 This chapter provides an overview of the key concepts relevant to this thesis, including \ac{pprl}, various encoding techniques used in secure linkage and attacks.
 \ac{pprl} enables different organizations to link records belonging to the same individual across datasets while preserving privacy, making it a crucial tool.
-However, the security of such methods heavily depends on the encoding techniques employed to transform sensitive data into a more privacy-preserving format \cite{vidanage2020graph}.
+However, the security of such methods can depend on the encoding techniques used to transform sensitive data into a more privacy-preserving format \cite{vidanage2020graph}.
 
 To understand the vulnerabilities of \ac{pprl} systems, we examine three key encoding techniques: \ac{bf}, \ac{tmh}, and \ac{tsh}, each offering different trade-offs between efficiency, privacy, and robustness against attacks.
 While these methods aim to prevent direct access to plaintext identifiers, they remain susceptible to adversarial techniques designed to infer or reconstruct the original data \cite{vidanage2020graph,schaefer2024}.
 
 One such adversarial approach is the \ac{gma}, which leverages structural similarities between encoded and non-encoded datasets to re-identify individuals.
-Although \ac{gma}s are powerful in reconstructing intersections of datasets, they are limited to the intersection of the two datasets.
+Although \ac{gma}s are good in reconstructing intersections of datasets, they are limited to the intersection of the two datasets.
 To extend \ac{gma}s beyond known intersections, we explore \ac{ann}, which can learn complex patterns in encoded data and increase identification rates \cite{schaefer2024,vidanage2020graph}.
 
 By integrating these concepts, this chapter establishes the necessary foundation for understanding the \ac{dea} introduced later in this thesis, demonstrating how machine learning techniques can be employed to bypass existing privacy-preserving mechanisms.
@@ -16,7 +16,7 @@ By integrating these concepts, this chapter establishes the necessary foundation
 \section{Overview of \ac{pprl} }\label{sec:pprl_overview}
 
 \ac{pprl} enables the linkage of records from different databases that refer to the same individual while preserving privacy.
-Traditional record linkage relies on unique identifiers, but these are often unavailable or inconsistent due to variations in formatting, spelling, or missing data across different databases.
+Traditional record linkage relies on unique identifiers, but these are often unavailable or inconsistent due to variations in formatting, spelling or missing data in a distributed environment.
 Linking records directly on plaintext data poses significant privacy risks.
 To mitigate these risks and prevent further threats to data security, regulations such as the European Union's \ac{gdpr} have been established to govern the handling of \ac{pii} \cite{schaefer2024,vidanage2020graph}.
 
@@ -28,14 +28,22 @@ Broadly, \ac{pprl} methods fall into two categories: perturbation based techniqu
 \ac{smc}-based techniques provide strong security guarantees and high accuracy but suffer from computational and communication overheads.
 Conversely, perturbation-based techniques balance linkage quality, scalability, and privacy protection, making them more practical for real-world applications \cite{vidanage2020graph}.
 
-A typical \ac{pprl} system involves three main parties working together to enable the linkage while maintaining privacy.
-The data owners, who are responsible for maintaining their respective databases, \(D\) and \(D'\), encode the quasi-identifiers by agreeing on an encoding scheme with the corresponding parameters before sharing them with the linkage unit.
+As seen in Figure~\ref{fig:pprloverview} a typical \ac{pprl} system involves three main parties working together in four steps to enable the linkage while maintaining privacy.
+First data owners, who are responsible for maintaining their respective databases, \(D\) and \(D'\), encode the quasi-identifiers by agreeing on an encoding scheme with the corresponding parameters before then as a second step sharing their respective data sets with the linkage unit.
 The linkage unit, a trusted entity, performs the actual record linkage using only the encoded representations, without access to the original identifiers.
-Once the linkage is completed, the linkage unit assigns unique pseudonyms to the successfully linked records and returns the pseudonymized dataset to the data owners.
-The data owners then replace the linkage data with these pseudonyms before sending the dataset to the data analysts.
-The analysts can merge the records based on these identifiers and proceed with further research and analysis, all while minimizing the risk of re-identification and protecting individual privacy \cite{schaefer2024}.
+Once the linkage is completed, the linkage unit assigns unique pseudonyms to the successfully linked records and returns the pseudonymized dataset as a third step to the data owners.
+The data owners then replace the linkage data with these pseudonyms before sending the dataset in the fourth and final step to the receipient requesting the data.
+In the case of a research project this could be an data analyst.
+The data analyst can merge the records based on the identifiers and proceed with further research and analysis, all while minimizing the risk of re-identification and protecting individual privacy \cite{schaefer2024}.
 
-Each database record can therefore during the linkage process be represented as $r = (\lambda,  \sigma)$, where $\lambda$ denotes the linkage data which are encoded quasi-identifiers such as names and birthdates and $\sigma$ refers to the remaining microdata like in a health care scenario patient information \cite{schaefer2024}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth, page=1]{img/visualization.pdf}
+  \caption{Overview of the \ac{pprl} process.}
+  \label{fig:pprloverview}
+\end{figure}
+
+Based on this scheme, each database record can therefore during the linkage process be represented as $r = (\lambda,  \sigma)$, where $\lambda$ denotes the linkage data which are encoded quasi-identifiers such as names and birthdates and $\sigma$ refers to the remaining microdata like in a health care scenario patient information \cite{schaefer2024}.
 
 Linkage in \ac{pprl} is performed probabilistically, meaning that two records, \(r\) and \(r'\), are considered linked if their similarity score on \(sim(\lambda_r, \lambda_{r'})\) exceeds a predefined threshold.
 The choice of threshold plays a crucial role in balancing the quality of the linkage.
@@ -44,29 +52,29 @@ Thus, selecting the optimal threshold is a trade-off that requires careful consi
 
 A robust \ac{pprl} scheme must satisfy several important criteria to ensure effective and secure linkage.
 First, a similarity function, \(sim(\lambda_r, \lambda_{r'})\), must exist to determine if two records belong to the same entity based on a predefined threshold.
-Second, an encoding scheme must be applied to \(\lambda\) in such a way that the linkage unit cannot reconstruct the original data.
+Second, an encoding scheme \(enc(\lambda)\)  must be applied to \(\lambda\) in such a way that the linkage unit cannot reconstruct the original data.
 Finally, a function \(sim(enc(\lambda_r), enc(\lambda_{r'}))\) must be available that allows similarity computations on encoded data which preserved similarty properties.
 These requirements ensure both the privacy and the effectiveness of the record linkage process \cite{schaefer2024}.
 
-One common approach for measuring similarity for two quasi identifiers is using n-grams.
+One common approach for measuring similarity for two quasi identifiers and enabling probabilistic matching on quasi identifieres is using n-grams.
 Here, string values are divided into overlapping substrings of length $n$ using a sliding window approach \cite{schaefer2024}.
-For example, for the string ``hello'' with $n=2$, the n-grams are:
-$$ \{\text{he}, \text{el}, \text{ll}, \text{lo} \} $$
+For example, for the string ``encoding'' with $n=2$, the n-grams are:
+$$ \{\text{en}, \text{nc}, \text{co}, \text{od}, \text{di}, \text{in}, \text{ng} \} $$
 
-The similarity of two sets of n-grams can then be computed using metrics such as the Dice Coefficient \cite{schaefer2024}
+The similarity of two sets of n-grams can then be computed using metrics such as the Dice Coefficient where X and Y denotes two sets which are in the case of \ac{pprl} the n-grams for two different pseudo identifiers \cite{schaefer2024}.
   $$ Dice(X, Y) = \frac{2 \times |X \cap Y|}{|X| + |Y|} $$
-or using the Jaccard Similarity \cite{schaefer2024}
+The Jaccard Similarity can be used in a similar way \cite{schaefer2024}.
   $$ Jaccard(X, Y) = \frac{|X \cap Y|}{|X \cup Y|} $$
 
 \ac{pprl} has been successfully applied in various domains, demonstrating its practical importance in securely linking records across institutions while preserving privacy.
-Notable applications include the Social Investment Data Resources (SIDR), the Lumos Initiative, the Swiss National Cohort, and the Gemeinsamer Bundesausschuss (GBA).
+Notable applications include the Social Investment Data Resources, the Lumos Initiative, the Swiss National Cohort, and the Gemeinsamer Bundesausschuss.
 These implementations highlight the versatility of \ac{pprl} in diverse contexts, where privacy protection is essential while enabling effective data linkage for research and analysis \cite{schaefer2024}.
 
 
 
 \section{Key Encoding Techniques} \label{sec:key-encodings}
 
-In the context of \ac{pprl}, three primary encoding techniques have emerged \ac{bf}, \ac{tmh} and \ac{tsh}.
+In the context of \ac{pprl}, three primary encoding techniques have emerged: \ac{bf}, \ac{tmh} and \ac{tsh}.
 These encoding methods are essential for transforming sets of quasi-identifiers into fixed-length representations that preserve similarity information while maintaining privacy \cite{schaefer2024,vidanage2020graph, schnell2009privacy}.
 
 \ac{pprl} typically involves encoding sets of quasi-identifiers before linkage.
@@ -93,21 +101,29 @@ Each element $s \in S$ is hashed with every function $h_i$, and the correspondin
   \forall s \in S, \forall h_i \in H, \quad b[h_i(s)] = 1
 \end{equation}
 
+An Example for this can be seen in Figure~\ref{fig:bfexample} where the set of 2-grams for the word ''encoding'' is encoded using a \ac{bf} with $k = 2$ hash functions. As can be seen, the 2-grams are hashed using the two hash functions and the corresponding bits are set to 1 in the \ac{bf}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth, page=5]{img/visualization.pdf}
+  \caption{Example \ac{bf} for $k = 2$ hash functions on the set of 2-grams for ''encoding''.}
+  \label{fig:bfexample}
+\end{figure}
+
 Since \ac{bf}s are binary vectors, the similarity between two \ac{bf}s, \(b_1\) and \(b_2\), is computed based on the overlapping 1-bits based on their position.
 The Dice Coefficient is commonly used for this purpose \cite{schaefer2024}, providing a measure of similarity by comparing the overlap of 1-bits in the two binary vectors.
-This method allows for efficient computation of similarity between \ac{bf}s, needs to be applied in the context of \ac{pprl}.
+Therefore encodings using \ac{bf} encoding allows for efficient computation of similarity between two sets which is benefical for \ac{pprl} systems.
 \begin{equation}
   \text{Dice}(b_1, b_2) = \frac{2 \cdot |b_1 \cap b_2|}{|b_1| + |b_2|}
 \end{equation}
 
-In \ac{pprl}, the set $S$ consists of n-grams generated from the quasi-identifiers $\lambda$.
-This creates a deterministic relationship between the n-grams present and the set bits in the \ac{bf}.
-However, due to the finite length of \ac{bf}s, collisions occur where different n-grams map to the same bit position.
+Because the sets in a \ac{pprl} systems consists of n-grams, a deterministic relationship between the n-grams present in the quasi-identifier $\lambda$ and the set bits in the \ac{bf} is created.
+However, due to the finite length of \ac{bf}s, collisions occur where different n-grams map to the same bit position (see Figure~\ref{fig:bfexample}).
 While this can cause incorrect linkages, it also enhances privacy by distorting frequency distributions \cite{vidanage2020graph,schaefer2024}.
 
 Three primary approaches exist for applying \ac{bf}s to sensitive data.
 The first approach, Attribute-Level \ac{bf}s, encodes each attribute, such as first name or last name, into a separate \ac{bf}, enabling multiple similarity computations.
-However, Attribute-Level \ac{bf}s are more vulnerable to frequency-based privacy attacks.
+However, Attribute-Level \ac{bf}s are more vulnerable to frequency-based privacy attacks as they lower the collisions which would occur using only one \ac{bf}.
 The second approach, Cryptographic Long-Term Key Encoding, merges multiple attributes into a single \ac{bf}, reducing vulnerability to frequency attacks but remaining susceptible to pattern-mining-based attacks.
 Finally, Record-Level \ac{bf}s employ a weighted bit sampling technique to minimize frequency information, enhancing privacy protection while maintaining high linkage quality.
 Each of these approaches balances privacy concerns with the need for accurate and effective record linkage \cite{vidanage2020graph}.
@@ -115,7 +131,7 @@ Each of these approaches balances privacy concerns with the need for accurate an
 Several privacy-enhancing methods have been proposed to mitigate frequency attacks in \ac{bf}s.
 These techniques introduce a trade-off between privacy and linkage quality.
 One such method is balancing, which ensures an equal number of 1-bits across \ac{bf}s, thereby reducing the likelihood of frequency-based attacks.
-Another approach is salting, which randomizes bit positions to prevent direct inference from the \ac{bf}s.
+Another approach is salting, which randomizes bit positions to prevent direct inference from the encoded quasi-identifiers.
 Additionally, XOR folding is used to reduce the \ac{bf} length while maintaining the bit-wise dependencies necessary for effective linkage.
 These methods aim to strengthen privacy while retaining the accuracy of the linkage process \cite{vidanage2020graph,schaefer2024}.
 
@@ -136,10 +152,17 @@ MinHash itself was first proposed in the context of document resemblance and con
 \ac{tmh} extends MinHash by employing tabulation-based hashing, which enhances its security compared to \ac{bf}s \cite{vidanage2020graph,broder1997resemblance}.
 
 MinHash aims to approximate the Jaccard similarity between two sets, \(S\) and \(S'\).
-The fundamental idea is to represent both sets as sequences of randomly ordered elements and apply multiple rounds of random permutations, \(\pi\) and \(\pi'\), to shuffle them.
+The fundamental idea is to represent both sets as sequences of randomly ordered elements and apply multiple rounds of random permutations \(\pi\) to shuffle them.
 After each round, the first elements of both sequences are compared.
 The larger the intersection between \(S\) and \(S'\), the higher the probability that the first elements will match.
 The final Jaccard similarity estimate is computed based on the number of hash collisions achieved during permutation \cite{schaefer2024,broder1997resemblance,vidanage2020graph}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth, page=6]{img/visualization.pdf}
+  \caption{Example computing approximate Jaccard similarity using MinHash with \(\pi = 2\) permutations.}
+  \label{fig:minhashexample}
+\end{figure}
 
 Instead of explicitly computing these permutations, MinHash simulates them by applying a suitable hash function to the elements of a set and selecting the smallest hash value as the representative signature.
 This is equivalent to sorting set elements by their hash values and returning the first element \cite{schaefer2024}.
@@ -153,6 +176,14 @@ During the \textbf{hashing process}, each element in \(S\) is hashed using a one
 This binary value is then split into \(c\) sub-keys, each of length \(k\).
 Each sub-key is used as an index to retrieve a random bit string from the corresponding lookup table, and the retrieved \(c\) bit strings are XORed together to produce a single output bit string.
 In the \textbf{MinHash signature generation} phase, this process is repeated for each of the \(l\) lookup table sets, and the minimum value among all generated bit strings is selected as the MinHash signature \cite{schaefer2024,vidanage2020graph}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth, page=7]{img/visualization.pdf}
+  \caption{Simplified \ac{tmh} hasing step for the first lookup table, fourth hash function on the first set element.}
+  \label{fig:tabminhashexample}
+\end{figure}
+
 
 To further enhance privacy, \ac{tmh} employs a 1-bit hashing mechanism, where only the least significant bit of each MinHash signature is retained.
 These $l$ bits are then concatenated to form the final bit array used as an encoded representation \cite{schaefer2024}.
@@ -348,7 +379,7 @@ Selecting the right learning rate, batch size, number of layers, and optimizatio
 Automated methods such as grid search, random search, and Bayesian optimization can assist in finding optimal configurations, but these processes are computationally expensive.
 Addressing these challenges effectively is crucial for developing high-performing \ac{ann}s that generalize well across different datasets and tasks \cite{pytorchPyTorch}.
 
-\ac{ann}s have revolutionized the field of machine learning by providing powerful models capable of solving complex tasks.
+\ac{ann}s have revolutionized the field of machine learning by providing better models capable of solving complex tasks.
 Their flexibility allows them to be applied to various domains, from image recognition to privacy-preserving data analysis.
 With frameworks like PyTorch, researchers and practitioners can leverage GPU acceleration to train large-scale models efficiently \cite{pytorchPyTorch}.
 
