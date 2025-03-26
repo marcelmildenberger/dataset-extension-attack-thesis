@@ -36,9 +36,9 @@ The data owners then replace the linkage data with these pseudonyms before sendi
 In the case of a research project this could be an data analyst.
 The data analyst can merge the records based on the identifiers and proceed with further research and analysis, all while minimizing the risk of re-identification and protecting individual privacy \cite{schaefer2024}.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth, page=1]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=1]{img/visualization.pdf}
   \caption{Overview of the \ac{pprl} process.}
   \label{fig:pprloverview}
 \end{figure}
@@ -103,9 +103,9 @@ Each element $s \in S$ is hashed with every function $h_i$, and the correspondin
 
 An Example for this can be seen in Figure~\ref{fig:bfexample} where the set of 2-grams for the word ''encoding'' is encoded using a \ac{bf} with $k = 2$ hash functions. As can be seen, the 2-grams are hashed using the two hash functions and the corresponding bits are set to 1 in the \ac{bf}.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth, page=5]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=5]{img/visualization.pdf}
   \caption{Example \ac{bf} for $k = 2$ hash functions on the set of 2-grams for ''encoding''.}
   \label{fig:bfexample}
 \end{figure}
@@ -158,9 +158,9 @@ The larger the intersection between \(S\) and \(S'\), the higher the probability
 An example for this can be seen in figure~\ref{fig:minhashexample} where the sets are permuted twice and the first element is compared for each.
 The final Jaccard similarity estimate is computed based on the number of hash collisions achieved during permutation, in the example is one collision for two permutations \cite{schaefer2024,broder1997resemblance,vidanage2020graph}.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth, page=6]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=6]{img/visualization.pdf}
   \caption{Example computing approximate Jaccard similarity using MinHash with \(\pi = 2\) permutations.}
   \label{fig:minhashexample}
 \end{figure}
@@ -182,9 +182,9 @@ An example for this can be seen in Figure~\ref{fig:tabminhashexample} where the 
 The key is split into \(c = 4\) sub-keys of length \(k = 2\) and used to retrieve the corresponding bit strings from the lookup table.
 The retrieved bit strings are then XORed together to produce the final value for the first element.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth, page=7]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=7]{img/visualization.pdf}
   \caption{Simplified \ac{tmh} hasing step for the first lookup table, fourth hash function on the first set element.}
   \label{fig:tabminhashexample}
 \end{figure}
@@ -234,6 +234,18 @@ The final integer representation for each column $i$ for $1 \leq i \leq l$. is c
 The output of the second hashing step is a set of integers, allowing similarity computations using the Dice coefficient rather than directly computing bitwise similarity.
 Since the encoded data consists of sets, Jaccard similarity can also be computed similarly to MinHash-based encodings \cite{schaefer2024}.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth, page=8]{img/visualization.pdf}
+  \caption{Simplified \ac{tsh} for $k = 4$ hash functions on the set of 2-grams for ''encoding'' with a \ac{bf} length of $l = 4$.}
+  \label{fig:tshexample}
+\end{figure}
+
+An example for this can be seen in Figure~\ref{fig:tshexample} where the set of 2-grams for the word ''encoding'' is encoded using \ac{tsh} with $k = 4$ hash functions and a \ac{bf} length of $l = 4$.
+The first hashing step generates a $4 \times 4$ bit matrix, where each row corresponds to a \ac{bf} created using a unique hash function.
+In the second hashing step, the bit matrix columns are converted into integer representations using a hash function that incorporates a salt value and the column index.
+
+
 To improve efficiency, \ac{tsh} can be implemented using a \ac{prng} instead of cryptographic hash functions.
 The \ac{prng} is seeded with the value to be hashed before generating random numbers, ensuring that the sequence of generated values depends deterministically on the input \cite{schaefer2024}.
 
@@ -252,9 +264,9 @@ In contrast, interactive PPRL methods involve multiple rounds of communication b
 
 In \ac{pprl}, encoded records are linked based on similarity computations.
 Since these similarities serve as identifiers, an attacker with access to both encoded and plaintext data can leverage them to re-identify individuals.
-The latest version of the \ac{gma} developed by Schaefer et al. overcomes the limitations of the original attack by Vidanage et al. and enhances success rate and robustness, even under limited knowledge scenarios \cite{schaefer2024}.
+The latest version of the \ac{gma} developed by Schaefer et al. \cite{schaefer2024} overcomes the limitations of the original attack by Vidanage et al. \cite{vidanage2020graph} and enhances success rate and robustness, even under limited knowledge scenarios \cite{schaefer2024}.
 
-In the context of a \ac{pprl} system, the attacker is modeled as the linkage unit and is assumed to have minimal prior knowledge.
+In the context of a \ac{gma} on a \ac{pprl} system, the attacker is modeled as the linkage unit and is assumed to have minimal prior knowledge.
 The attacker does not know any encoding secrets, seeds, or salts used in the system to protect the data.
 The only information available to the attacker is that which is inevitably known to the linkage unit during the linkage process.
 This assumption ensures that the attacker can only exploit data accessible through normal system operations, adhering to Kerckhoffs's principle \cite{schaefer2024}.
@@ -288,7 +300,30 @@ The final step involves constructing a bipartite graph, where nodes from the pla
 To determine the optimal mapping, the Jonker-Volgenant algorithm is applied, ensuring that each node in the smaller dataset is uniquely matched to a corresponding node in the larger dataset.
 This algorithm maximizes the total similarity across all matched pairs, effectively revealing the identities of individuals within the encoded dataset \cite{schaefer2024}.
 
-The novel \ac{gma} approach by Schaefer et al. achieves near-perfect re-identification rates when dataset overlap is 100\%.
+An example for this is given in Figure~\ref{fig:gmaexampleone} and Figure~\ref{fig:gmaexampletwo} where the high-level overview of the \ac{gma} attack process is shown.
+First, the two data owners agree on an encoding scheme and encode their respective datasets, for this example it is \ac{bf} encoding.
+Then they send their respective encoded dataset to the linkage unit.
+The attack begins at this point by with linkage unit leveraging information it inevitably knows.
+The linakge unit is able to construct similarity graphs for both the encoded datasets and a plaintext datasets.
+After embedding the similarity gaphs, the embeddings are aligned and the attacker can identify re-identifications by comparing embeddings and constructing a bipartite graph to match entries from one of the encoded datasets with the plaintext dataset \cite{schaefer2024}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth, page=9]{img/visualization.pdf}
+  \caption{High-level overview of the \ac{gma} attack process.
+  Two data owners encode their datasets and send them to the linkage unit.}
+  \label{fig:gmaexampleone}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth, page=9]{img/visualization.pdf}
+  \caption{High-level overview of the \ac{gma} attack process.
+  The linkage unit mimics the \ac{bf} encoding for the public dataset and creates for both datasets similartie graphs, embeddings and aligns them to perform bipartite matching.}
+  \label{fig:gmaexampletwo}
+\end{figure}
+
+The novel \ac{gma} approach by Schaefer et al. \cite{schaefer2024} achieves near-perfect re-identification rates when dataset overlap is 100\%.
 Even for low-overlap scenarios (e.g., 5\%), success rates reach 99.9\% for \ac{tsh} \cite{schaefer2024}.
 The only encoding scheme resistant to \ac{gma}s is \ac{bf}s with diffusion layers, which disrupts similarity preservation for sufficiently high diffusion values \cite{schaefer2024}.
 
@@ -297,22 +332,45 @@ The only encoding scheme resistant to \ac{gma}s is \ac{bf}s with diffusion layer
 
 \ac{ann}s are a class of machine learning models inspired by the structure and function of biological neural systems.
 They consist of interconnected layers of artificial neurons that process input data and extract meaningful patterns through iterative learning.
-\ac{ann}s have been widely applied in various fields, including image recognition, natural language processing, and clssification tasks.
-Their ability to learn hierarchical representations of data makes them particularly effective for complex tasks where manual feature engineering is impractical \cite{dongare2012introduction}.
+\ac{ann}s have been widely applied in various fields, including image recognition, natural language processing, and classification tasks.
+Neural networks are particularly effective for complex tasks because they automatically identify and refine patterns in data through multiple layers of processing, removing the need for manual feature engineering, which can be difficult and time-consuming \cite{dongare2012introduction}.
 
-The structure of an \ac{ann} consists of multiple layers, each serving a distinct role in processing and transforming input data.
+The structure of an \ac{ann} consists of multiple layers as can be seen in Figure~\ref{fig:annexample}, each serving a distinct role in processing and transforming input data.
 The input layer is the first stage of the network, responsible for receiving raw data and forwarding it to subsequent layers.
 The number of neurons in this layer corresponds directly to the number of input features, ensuring that all relevant information is passed through the network \cite{dongare2012introduction}.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth, page=14]{img/visualization.pdf}
+  \caption{\ac{ann} consisting of multiple input neurons (input layer), hidden layers and output neurons (output layer) \cite{annimage}.}
+  \label{fig:annexample}
+\end{figure}
+
+
 Following the input layer are the hidden layers, which perform feature extraction and transformation.
-Each neuron in these layers applies a weighted sum operation to its inputs, followed by an activation function that introduces non-linearity, allowing the network to learn complex patterns in the data.
+Each neuron in a layer applies a weighted sum operation to its inputs, followed by an activation function that introduces non-linearity, enabling the network to learn complex patterns in the data. Common activation functions include the Rectified Linear Unit (ReLU), Sigmoid, Leaky ReLU, and Exponential Linear Unit (ELU), each offering advantages depending on the specific task \cite{sharma2017activation,russell2016artificial}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth, page=15]{img/visualization.pdf}
+  \caption{Sketch of an single artifical neuron in an \ac{ann} \cite{neuronimage}.}
+  \label{fig:neuronexample}
+\end{figure}
+
+An example of this process is illustrated in Figure~\ref{fig:neuronexample}, which depicts a single neuron in an \ac{ann}.
+The neuron takes multiple inputs, multiplies them by corresponding weights, sums the weighted inputs along with a bias term, and applies an activation function to compute the final output.
+Mathematically, this operation is represented as
+
+\begin{equation}
+  a = \sigma(z) = \sigma\left(\sum_{i=1}^{n} w_i x_i + b\right)
+\end{equation}
+
+where \(a\) is the neuron’s output, \(\sigma\) is the activation function, \(z\) is the weighted sum, \(w_i\) are the weights, \(x_i\) are the inputs, and \(b\) is the bias term \cite{neuronimage}.
+
 The depth and size of the hidden layers determine the network's capacity to model intricate relationships, making them a crucial component of deep learning architectures \cite{dongare2012introduction}.
 
 Finally, the output layer generates the final predictions based on the processed information.
 The number of neurons in this layer depends on the nature of the task—whether it is a classification problem, where each neuron represents a class, or a regression task, where a single neuron outputs a continuous value \cite{dongare2012introduction}.
-
-Each neuron in a layer applies a weighted sum operation on its inputs, followed by an activation function such as Relinkage unit (Rectified Linear Unit) or Sigmoid, to introduce non-linearity and enable complex pattern learning.
-Other commonly used activation functions include Leaky Relinkage unit, Elinkage unit, and Softmax, each with advantages depending on the specific task \cite{sharma2017activation,russell2016artificial}.
 
 Training an \ac{ann} involves iteratively adjusting its parameters, using a labeled dataset to minimize prediction errors.
 The process begins with forward propagation, where input data flows through the network, passing through multiple layers until it reaches the output layer, generating a prediction.
@@ -329,11 +387,11 @@ Over time, this iterative optimization process enables the network to learn mean
 
 In traditional single-label or binary classification problems, each instance is assigned to one and only one category from a predefined set of classes.
 To achieve this, the network's output layer typically uses a Softmax activation function, which converts the raw output scores into a probability distribution over all possible classes.
-The model is trained using Cross-Entropy Loss, which penalizes incorrect classifications by measuring the difference between the predicted probability distribution and the actual class label \cite{russell2016artificial,herrera2016multilabel}.
+The model can be trained using the Cross-Entropy Loss function, which penalizes incorrect classifications by measuring the difference between the predicted probability distribution and the actual class label \cite{russell2016artificial,herrera2016multilabel}.
 
 In contrast, multi-label classification allows an instance to belong to multiple categories at the same time.
 Instead of a single categorical output, the network produces independent predictions for each possible label.
-The output layer employs sigmoid activations for each label, transforming the raw scores into independent probabilities indicating the presence or absence of each class.
+The output layer can then as an example apply sigmoid activations for each label, transforming the raw scores into independent probabilities indicating the presence or absence of each class.
 Since each label is treated as a separate binary classification problem, Binary Cross-Entropy (BCE) Loss is commonly used to optimize the model, ensuring accurate predictions across multiple labels \cite{russell2016artificial,herrera2016multilabel}.
 
 Different \ac{ann} architectures have been developed to address various problem domains, each optimized for specific types of data and tasks.
@@ -358,7 +416,7 @@ This allows users to define complex networks with full control over forward prop
 Next, a loss function is chosen based on the task at hand \cite{pytorchPyTorch}.
 
 Once the model and loss function are defined, an optimizer is selected to update the model’s weights during training.
-Training proceeds over multiple epochs, where the dataset is processed in several passes to refine the model’s accuracy.
+Training proceeds over multiple epochs, where the dataset is processed in several passes to refine the model’s performance.
 To further optimize learning, the dataset is divided into mini-batches, allowing for efficient gradient updates without requiring full dataset processing at once \cite{pytorchPyTorch}.
 
 One of PyTorch’s key advantages is its support for GPU acceleration via `torch.cuda`, which significantly reduces training time for large datasets.
@@ -366,18 +424,32 @@ By moving tensors and models to a GPU, computations are performed in parallel, l
 Additionally, PyTorch's autograd engine enables automatic differentiation, simplifying the backpropagation process and making model optimization more efficient \cite{pytorchPyTorch}.
 
 Despite their success, \ac{ann}s present several challenges that must be carefully managed to ensure robust and efficient learning.
-One of the most common issues is overfitting, where a model becomes too specialized in learning patterns from the training data, capturing noise rather than generalizable features.
+One of the most common issues is overfitting, where a model becomes too specialized in learning patterns from the training data, capturing possible noise rather than generalizable features.
 This leads to poor performance on unseen data.
 Techniques such as dropout regularization, L2 weight decay, and early stopping are commonly used to mitigate overfitting and improve generalization \cite{pytorchPyTorch,glorot2010understanding}.
 
+Dropout regularization is a technique used to prevent overfitting by randomly setting a fraction of neurons to zero during training.
+This forces the network to learn more robust features by preventing it to rely too heavily on a single neuron to perform well.
+L2 weight decay is another regularization method that penalizes large weights by adding a regularization term to the loss function.
+It tries to prevent the network from applying too much importance to a single feature, encouraging it to learn more generalizable patterns.
+Early stopping is a simple yet effective technique that stops training when the model's performance on a validation set starts to degrade below a certain threshhold, preventing overfitting \cite{pytorchPyTorch,glorot2010understanding}.
+
 Another fundamental challenge is the vanishing and exploding gradient problem, which occurs in deep networks during backpropagation.
 When gradients become too small (vanishing), weight updates diminish, leading to slow or stalled learning.
+This can happen because gradients are the product of multiple derivatives, whichh can cause them to shrink exponentially as they propagate through the network.
+This can happen especially using activiation functions that saturate for extreme values.
 Conversely, when gradients grow too large (exploding), unstable updates cause erratic training behavior.
 Solutions such as batch normalization, gradient clipping, and advanced activation functions like Leaky ReLU help address these issues \cite{pytorchPyTorch,glorot2010understanding}.
 
+Batch normalization normalizes the input for each layer ensuring that values are staying in a stable range.
+Gradient clipping is a technique used to prevent exploding gradients by setting a threshold for the gradient to prevent them from destabilizing the training process.
+Leaky ReLU is an activation function that prevents the vanishing gradient problem by allowing a small gradient for negative values, ensuring that the network can continue learning even for extreme inputs \cite{pytorchPyTorch,glorot2010understanding}.
+
 The computational complexity of deep learning models is another major concern, as large-scale \ac{ann}s require extensive memory and processing power.
-Training deep networks on large datasets can be prohibitively slow on CPUs, necessitating the use of GPUs or specialized hardware like TPUs to accelerate training.
-Efficient data-loading techniques and mixed-precision training can further optimize computational efficiency \cite{pytorchPyTorch}.
+Training deep networks on large datasets can be prohibitively slow on CPUs, necessitating the use of GPUs or specialized hardware like TPUs (Tensor Processing Units) to accelerate training.
+Efficient data-loading techniques and mixed-precision training can further optimize computational efficiency.
+PyTorch leverages this by utilizing its DataLoader class to efficiently load and preprocess data by using multiple workers.
+Mixed-precision training is a technique that partly uses lower-precision floating-point numbers to reduce memory usage and speed up computations, while still maintaining model accuracy \cite{pytorchPyTorch}.
 
 Lastly, hyperparameter tuning plays a critical role in model performance.
 Selecting the right learning rate, batch size, number of layers, and optimization algorithm requires experimentation and fine-tuning.
@@ -385,6 +457,6 @@ Automated methods such as grid search, random search, and Bayesian optimization 
 Addressing these challenges effectively is crucial for developing high-performing \ac{ann}s that generalize well across different datasets and tasks \cite{pytorchPyTorch}.
 
 \ac{ann}s have revolutionized the field of machine learning by providing better models capable of solving complex tasks.
-Their flexibility allows them to be applied to various domains, from image recognition to privacy-preserving data analysis.
+Their flexibility allows them to be applied to various domains, from image recognition to attacking privacy-preserving record linkage systems.
 With frameworks like PyTorch, researchers and practitioners can leverage GPU acceleration to train large-scale models efficiently \cite{pytorchPyTorch}.
 
