@@ -15,12 +15,12 @@ By integrating these concepts, this chapter establishes the necessary foundation
 
 \section{Overview of \ac{pprl} }\label{sec:pprl_overview}
 
-\ac{pprl} enables the linkage of records from different databases that refer to the same individual while preserving privacy.
+\ac{pprl} enables the linkage of records from different databases that refer to the same individual while tying to preserve privacy.
 Traditional record linkage relies on unique identifiers, but these are often unavailable or inconsistent due to variations in formatting, spelling or missing data in a distributed environment.
 Linking records directly on plaintext data poses significant privacy risks.
 To mitigate these risks and prevent further threats to data security, regulations such as the European Union's \ac{gdpr} have been established to govern the handling of \ac{pii} \cite{schaefer2024,vidanage2020graph}.
 
-To enable record linkage using \ac{pii} while preserving privacy, \ac{pprl} employs similarity-preserving encoding on quasi-identifiers, allowing linkage to be performed on encoded representations rather than raw data.
+To enable record linkage using \ac{pii} while trying to preserve privacy, \ac{pprl} employs similarity-preserving encoding on quasi-identifiers, allowing linkage to be performed on encoded representations rather than raw data.
 This approach protects identities while still facilitating record matching based on encoded similarities and probabilistic approaches \cite{schaefer2024,vidanage2020graph}.
 
 The security of \ac{pprl} schemes depends on the encoding techniques used.
@@ -66,7 +66,7 @@ The similarity of two sets of n-grams can then be computed using metrics such as
 The Jaccard Similarity can be used in a similar way \cite{schaefer2024}.
   $$ Jaccard(X, Y) = \frac{|X \cap Y|}{|X \cup Y|} $$
 
-\ac{pprl} has been successfully applied in various domains, demonstrating its practical importance in securely linking records across institutions while preserving privacy.
+\ac{pprl} has been successfully applied in various domains, demonstrating its practical importance in securely linking records across institutions while assumingly preserving privacy.
 Notable applications include the Social Investment Data Resources, the Lumos Initiative, the Swiss National Cohort, and the Gemeinsamer Bundesausschuss.
 These implementations highlight the versatility of \ac{pprl} in diverse contexts, where privacy protection is essential while enabling effective data linkage for research and analysis \cite{schaefer2024}.
 
@@ -75,11 +75,11 @@ These implementations highlight the versatility of \ac{pprl} in diverse contexts
 \section{Key Encoding Techniques} \label{sec:key-encodings}
 
 In the context of \ac{pprl}, three primary encoding techniques have emerged: \ac{bf}, \ac{tmh} and \ac{tsh}.
-These encoding methods are essential for transforming sets of quasi-identifiers into fixed-length representations that preserve similarity information while maintaining privacy \cite{schaefer2024,vidanage2020graph, schnell2009privacy}.
+These encoding methods are essential for transforming sets of quasi-identifiers into representations that preserve similarity information while supposingly maintaining privacy \cite{schaefer2024,vidanage2020graph, schnell2009privacy}.
 
 \ac{pprl} typically involves encoding sets of quasi-identifiers before linkage.
 A set in this context is generally a collection of n-grams, which are substrings of length $n$ extracted from one or multiple attributes using a sliding window approach.
-Since input data varies in length, all encoding techniques in \ac{pprl} must take arbitrarily long inputs (sets of n-grams) and produce fixed-length encoded outputs.
+Since input data varies in length, all encoding techniques in \ac{pprl} must take arbitrarily long inputs (sets of n-grams) and produce encoded outputs.
 This ensures that similarity computations can be efficiently performed on encoded data by the linkage unit without accessing the raw identifiers \cite{vidanage2020graph,schaefer2024}.
 
 Before linkage, data owners must agree on the encoding scheme and share necessary cryptographic secrets to facilitate secure comparison.
@@ -317,7 +317,7 @@ After embedding the similarity gaphs, the embeddings are aligned and the attacke
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=9]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=10]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
   The linkage unit mimics the \ac{bf} encoding for the public dataset and creates for both datasets similartie graphs, embeddings and aligns them to perform bipartite matching.}
   \label{fig:gmaexampletwo}
@@ -341,7 +341,7 @@ The number of neurons in this layer corresponds directly to the number of input 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=14]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=15]{img/visualization.pdf}
   \caption{\ac{ann} consisting of multiple input neurons (input layer), hidden layers and output neurons (output layer) \cite{annimage}.}
   \label{fig:annexample}
 \end{figure}
@@ -352,7 +352,7 @@ Each neuron in a layer applies a weighted sum operation to its inputs, followed 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=15]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=16]{img/visualization.pdf}
   \caption{Sketch of an single artifical neuron in an \ac{ann} \cite{neuronimage}.}
   \label{fig:neuronexample}
 \end{figure}

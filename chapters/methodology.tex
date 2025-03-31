@@ -6,11 +6,18 @@ The \ac{dea} builds upon the \ac{gma} by utilizing its re-identification results
 Since the \ac{gma} only re-identifies matches between records that exist in both the attacker’s dataset and the encoded target dataset, it can leave a significant portion of records encoded.
 The goal of the \ac{dea} is to extend this re-identification process by leveraging a machine learning based approach to infer missing \ac{pii} by training an \ac{ann}.
 
-To achieve this, the \ac{dea} follows a structured pipeline consisting of several key steps.
+To achieve this, the \ac{dea} follows a structured pipeline consisting of several key steps as can be seen in Figure~\ref{fig:deaoverview}.
 First, the results of the \ac{gma} are extracted in a predefined format to serve as training data for the \ac{ann}.
 These results include re-identified individuals, their corresponding encoded representations, and the plaintext information that were successfully mapped.
 Additionally the results include the not re-identified individuals with just the encoded \ac{pii}.
 Ensuring a structured and consistent format is crucial, as it allows for seamless integration into the subsequent processing stages.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth, page=14]{img/visualization.pdf}
+    \caption{Overview of the \ac{dea} attack pipeline.}
+    \label{fig:deaoverview}
+  \end{figure}
 
 Once the data is extracted, it is transformed into a format suitable for \ac{ann} training.
 This involves setting up specialized datasets that convert encoded representations and their corresponding labels, which are plaintext n-grams, into tensor-based formats that can be efficiently processed by deep learning models.
