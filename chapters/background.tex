@@ -85,7 +85,7 @@ This ensures that similarity computations can be efficiently performed on encode
 Before linkage, data owners must agree on the encoding scheme and share necessary cryptographic secrets to facilitate secure comparison.
 Among the available techniques, \ac{bf}s are the most widely used approach for record linkage \cite{schaefer2024}.
 
-\subsection{\ac{bf}s} \label{sec:bf}
+\subsection{\ac{bf}} \label{sec:bf}
 
 \ac{bf}s were originally developed for efficient membership testing in set structures without requiring direct access to the sets themselves \cite{bloom1970space}.
 Due to their ability to efficiently compute set similarities in a privacy-preserving manner, they have been widely adopted in \ac{pprl} applications \cite{schaefer2024,vidanage2020graph,schnell2009privacy}.
@@ -155,7 +155,7 @@ MinHash aims to approximate the Jaccard similarity between two sets, \(S\) and \
 The fundamental idea is to represent both sets as sequences of randomly ordered elements and apply multiple rounds of random permutations \(\pi\) to shuffle them.
 After each round, the first elements of both sequences are compared.
 The larger the intersection between \(S\) and \(S'\), the higher the probability that the first elements will match.
-An example for this can be seen in figure~\ref{fig:minhashexample} where the sets are permuted twice and the first element is compared for each.
+An example for this can be seen in figure~\ref{fig:minhashexample} where the sets are permutated twice and the first element is compared for each new set.
 The final Jaccard similarity estimate is computed based on the number of hash collisions achieved during permutation, in the example is one collision for two permutations \cite{schaefer2024,broder1997resemblance,vidanage2020graph}.
 
 \begin{figure}[H]
@@ -209,35 +209,35 @@ Overall, \ac{tmh} provides a more secure encoding alternative to \ac{bf}s in \ac
 
 \subsection{\ac{tsh}} \label{sec:tsh}
 
-\ac{tsh} is the most recent encoding scheme proposed for \ac{pprl} , introduced in 2020 \cite{vidanage2020graph}.
+\ac{tsh} is the most recent encoding scheme proposed for \ac{pprl} , introduced in 2020 \cite{ranbaduge2020secure}.
 \ac{tsh} was designed to address both the privacy vulnerabilities of \ac{bf}s and the computational complexity of \ac{tmh} while maintaining accuracy in similarity calculations.
-Similar to other encoding techniques, \ac{tsh} requires the input to be split into a set of n-grams $S$ prior to encoding \cite{schaefer2024}.
+Similar to other encoding techniques, \ac{tsh} requires the input to be split into a set of n-grams $S$ prior to encoding \cite{ranbaduge2020secure}.
 
 As a result of \ac{tsh} encoding, each record from a sensitive database is represented by a set of integers, which can be directly used to compute Jaccard similarity.
 \ac{tsh} employs two distinct hashing steps.
 In the first hashing step, the input set is converted into a bit matrix representation.
 In the second hashing step, the bit matrix columns are mapped into integers, enabling efficient comparison.
 This two-step process allows \ac{tsh} to represent sensitive data in a way that facilitates effective similarity computation while preserving privacy \cite{schaefer2024}.
-These steps provide accurate Jaccard similarity calculations while improving privacy protection compared to traditional \ac{bf}-based encodings \cite{vidanage2020graph}.
+These steps provide accurate Jaccard similarity calculations while improving privacy protection compared to traditional \ac{bf}-based encodings \cite{ranbaduge2020secure}.
 
 In the first step of the \ac{tsh} process, elements of the n-gram set \(S\) are hashed into \(k\) independent \ac{bf}s \(b_i\) of length \(l\), meaning each hash function results in a corresponding bit vector.
 This generates a \(k \times l\) matrix, where each row corresponds to a \ac{bf} created using a unique hash function, and each column represents the bitwise state across all \ac{bf}s for a given position.
 In the second step, after constructing the bit matrix, \ac{tsh} computes column-wise hashes to convert the bit vectors into integer representations .
 Each column vector is treated as an input for a hash function, and all-zero columns are skipped to prevent distortion in similarity calculations since they do not encode any n-grams.
-To enhance security and avoid hash collisions between columns with identical bit patterns, a salt value and the column index are concatenated before hashing \cite{schaefer2024, vidanage2020graph}.
+To enhance security and avoid hash collisions between columns with identical bit patterns, a salt value and the column index are concatenated before hashing \cite{ranbaduge2020secure}.
 
-The final integer representation for each column $i$ for $1 \leq i \leq l$. is computed as \cite{schaefer2024}:
+The final integer representation for each column $i$ for $1 \leq i \leq l$. is computed as \cite{schaefer2024, ranbaduge2020secure}:
 \begin{equation}
     H(salt, i, b_{1i}, b_{2i}, ..., b_{ki})
 \end{equation}
 
 The output of the second hashing step is a set of integers, allowing similarity computations using the Dice coefficient rather than directly computing bitwise similarity.
-Since the encoded data consists of sets, Jaccard similarity can also be computed similarly to MinHash-based encodings \cite{schaefer2024}.
+Since the encoded data consists of sets, Jaccard similarity can also be computed similarly to MinHash-based encodings \cite{ranbaduge2020secure}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.7\textwidth, page=8]{img/visualization.pdf}
-  \caption{Simplified \ac{tsh} for $k = 4$ hash functions on the set of 2-grams for ''encoding'' with a \ac{bf} length of $l = 4$.}
+  \caption{\ac{tsh} example for for two input values ''peter'' and ''pete'' \cite{ranbaduge2020secure}.}
   \label{fig:tshexample}
 \end{figure}
 
@@ -247,11 +247,11 @@ In the second hashing step, the bit matrix columns are converted into integer re
 
 
 To improve efficiency, \ac{tsh} can be implemented using a \ac{prng} instead of cryptographic hash functions.
-The \ac{prng} is seeded with the value to be hashed before generating random numbers, ensuring that the sequence of generated values depends deterministically on the input \cite{schaefer2024}.
+The \ac{prng} is seeded with the value to be hashed before generating random numbers, ensuring that the sequence of generated values depends deterministically on the input \cite{ranbaduge2020secure}.
 
-By combining efficient bit vector representations with integer-based similarity computations, \ac{tsh} offers a balance between privacy, security, and computational efficiency, making it a promising alternative to existing \ac{pprl} encoding schemes \cite{vidanage2020graph, schaefer2024}.
+By combining efficient bit vector representations with integer-based similarity computations, \ac{tsh} offers a balance between privacy, security, and computational efficiency, making it a promising alternative to existing \ac{pprl} encoding schemes \cite{vidanage2020graph, ranbaduge2020secure}.
 
-\section{\ac{gma}s} \label{sec:gma}
+\section{\ac{gma}} \label{sec:gma}
 
 \ac{gma}s  were introduced by Vidanage et al. \cite{vidanage2020graph} and represent the most significant threat to \ac{pprl} due to their universal applicability.
 Unlike traditional cryptanalytic attacks, \ac{gma}s exploit the fundamental properties of non-interactive \ac{pprl} to compromise the security of all schemes relying on similarity-preserving encoding \cite{schaefer2024}.
@@ -309,7 +309,7 @@ After embedding the similarity gaphs, the embeddings are aligned and the attacke
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=9]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=10]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
   Two data owners encode their datasets and send them to the linkage unit.}
   \label{fig:gmaexampleone}
@@ -317,7 +317,7 @@ After embedding the similarity gaphs, the embeddings are aligned and the attacke
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=10]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=11]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
   The linkage unit mimics the \ac{bf} encoding for the public dataset and creates for both datasets similartie graphs, embeddings and aligns them to perform bipartite matching.}
   \label{fig:gmaexampletwo}
@@ -328,7 +328,7 @@ Even for low-overlap scenarios (e.g., 5\%), success rates reach 99.9\% for \ac{t
 The only encoding scheme resistant to \ac{gma}s is \ac{bf}s with diffusion layers, which disrupts similarity preservation for sufficiently high diffusion values \cite{schaefer2024}.
 
 
-\section{\ac{ann}s} \label{sec:nn}
+\section{\ac{ann}} \label{sec:nn}
 
 \ac{ann}s are a class of machine learning models inspired by the structure and function of biological neural systems.
 They consist of interconnected layers of artificial neurons that process input data and extract meaningful patterns through iterative learning.
@@ -341,7 +341,7 @@ The number of neurons in this layer corresponds directly to the number of input 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=15]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=16]{img/visualization.pdf}
   \caption{\ac{ann} consisting of multiple input neurons (input layer), hidden layers and output neurons (output layer) \cite{annimage}.}
   \label{fig:annexample}
 \end{figure}
@@ -352,7 +352,7 @@ Each neuron in a layer applies a weighted sum operation to its inputs, followed 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=16]{img/visualization.pdf}
+  \includegraphics[width=0.7\textwidth, page=17]{img/visualization.pdf}
   \caption{Sketch of an single artifical neuron in an \ac{ann} \cite{neuronimage}.}
   \label{fig:neuronexample}
 \end{figure}
@@ -406,7 +406,7 @@ When dealing with sequential data, Recurrent \ac{ann}s (RNNs) and their advanced
 These architectures introduce recurrent connections, enabling them to maintain memory of previous inputs and recognize patterns over time.
 This makes them well-suited for natural language processing, speech recognition, and time series forecasting \cite{medsker2001recurrent}.
 
-\subsection{PyTorch for Training \ac{ann}s} \label{sec:pytorch}
+\subsection{PyTorch for Training \ac{ann}} \label{sec:pytorch}
 
 Training \ac{ann}s in PyTorch involves defining and optimizing a model through iterative learning processes while leveraging GPU acceleration for efficient computation.
 PyTorch provides a flexible framework for designing and training neural networks, making it a popular choice for deep learning research and applications \cite{pytorchPyTorch}.
