@@ -1,4 +1,5 @@
 \chapter{Methodology}  \label{sec:method}
+
 The \ac{dea} is a novel attack method that extends the capabilities of \ac{gma}s by moving beyond the intersection of datasets to re-identify individuals who were previously unmapped.
 This chapter outlines the methodology behind the \ac{dea}, including modifications to the \ac{gma}, the design and implementation of the \ac{dea} itself, and the use of \ac{ann}s to enable probabilistic reconstruction of \ac{pii} from encoded data.
 
@@ -44,13 +45,73 @@ This methodological approach represents a significant advancement in attacking \
 By leveraging deep learning techniques, the \ac{dea} enables an attacker to infer sensitive personal information beyond the scope of traditional \ac{gma} approaches.
 The following sections provide a detailed discussion of each component, including the design choices, implementation details, and challenges encountered during development.
 
-\section{Modifications to the \ac{gma}} \label{sec:modifications}
+\section{Problem Definition} \label{sec:problemdefinition}
 
-The \ac{gma} serves as the foundation for the \ac{dea} by providing an initial set of re-identified individuals, including their corresponding encodings, as well as the remaining non-re-identified individuals.
+The primary challenge that the \ac{dea} seeks to address is the limited scope of re-identifications achieved by the \ac{gma}.
+While the \ac{gma} effectively links records by exploiting structural relationships within encoded datasets, its success is inherently restricted to individuals who are present in both the plaintext and the encoded datasets and can be matched based on graph similarity.
+However, in real-world scenarios, there may exist additional re-identification potential beyond these direct matches.
 
-The effectiveness of the \ac{dea} is directly influenced by the performance of the \ac{gma}.
-A higher re-identification rate in the \ac{gma} yields a larger training dataset for the \ac{dea}, thereby enhancing its ability to infer n-grams and re-identify individuals in the non-re-identified dataset.
-Conversely, a low re-identification rate limits the availability of labeled training data, reducing the overall effectiveness of the \ac{dea}.
+One possible way to extend re-identifications is to rerun the \ac{gma} iteratively, incorporating additional publicly available data to gradually refine the matching process.
+However, this approach is inherently dependent on the availability and quality of external data sources, which may not always be feasible.
+Instead, the \ac{dea} introduces a novel strategy that aims to reconstruct deterministic relationships between encoded representations and their corresponding plaintext information.
+This is based on the observation that all encoding schemes used in \ac{pprl} rely on hash functions or other deterministic mappings.
+
+Hash functions, for example, produce fixed-length outputs from inputs of arbitrary length and, crucially, are deterministic — meaning the same input will always yield the same output.
+The \ac{dea} leverages this property by training \ac{ann}s to learn statistical relationships between encoded values and the original n-grams of \ac{pii}.
+The objective is to recover the most probable plaintext representation given an encoded input, effectively framing the attack as a probabilistic, frequency-based inference problem.
+However, several challenges complicate this task.
+
+The first major challenge is the lack of knowledge about the specific number and type of hash functions used during encoding.
+As a result, the model must learn patterns in the data without any explicit understanding of the underlying hashing mechanisms.
+Fortunately, this limitation is partially mitigated by the fact that the \ac{dea} does not rely on a one-to-one mapping between hash outputs and plaintext n-grams, but instead depends on statistical inference across large numbers of training samples.
+
+A more fundamental challenge arises from the collision property of hash functions.
+Because hash functions map an infinite input space to a finite output space, different inputs may produce identical hash values, making it inherently difficult to perfectly recover the original plaintext.
+These collisions introduce uncertainty into the re-identification process, preventing the \ac{dea} from achieving perfect reconstruction accuracy.
+Consequently, the predictions made by the \ac{dea} are probabilistic rather than deterministic — it can estimate the likelihood of a specific n-gram being present in the original \ac{pii}, but cannot guarantee absolute correctness.
+
+The primary reason the \ac{gma} alone is unable to achieve such probabilistic reconstruction is that it relies solely on structural similarities within the dataset, without attempting to infer direct relationships between encoded values and their plaintext equivalents.
+In contrast, the \ac{dea} enhances the capabilities of the \ac{gma} by enabling the reconstruction of individual plaintext components directly from encoded representations, thereby increasing the overall re-identification potential.
+This novel approach significantly improves the effectiveness of the attack, allowing for the re-identification of individuals who were previously unmatchable using traditional graph-based techniques.
+
+
+\section{Attacker Model}
+
+%TODO
+
+\section{Modular Design of the \ac{dea}} \label{sec:designandimplementation}
+
+The \ac{dea} aims to reconstruct plaintext \ac{pii} from encoded records using machine learning techniques.
+A central challenge in implementing the \ac{dea} lies in the diversity of encoding schemes used to protect sensitive data.
+As each encoding method transforms plaintext into distinct numerical representations, the \ac{dea} must adapt both the dataset structure and the \ac{ann} architecture accordingly.
+
+To address this, the \ac{dea} adopts a modular design: while the overall attack methodology remains consistent, specific implementations are tailored to each encoding scheme.
+Although the input representation and network architecture vary depending on the encoding, the output format is kept uniform across all models.
+The attack is framed as a multi-label classification task, where the \ac{ann} predicts the likelihood of individual n-grams appearing in the original \ac{pii}.
+For each encoding scheme, a dedicated dataset structure transforms encoded records into a format suitable for \ac{ann} training.
+Moreover, a custom \ac{ann} architecture is employed for each encoding scheme to ensure the model effectively learns the mapping from encoded data to plaintext n-grams.
+
+\section{Step 1: \ac{gma}} \label{sec:deagma}
+
+\subsection{Running the \ac{gma}} \label{sec:runninggma}
+
+The \ac{gma} constitutes the first step in our \ac{dea} pipeline, establishing a critical foundation by identifying overlapping individuals between the encoded (target) dataset and the auxiliary (attacker) dataset.
+It exploits structural similarities between records to perform graph-based matching and re-identification of individuals.
+
+In this phase, we apply the adjusted \ac{gma} implementation by Schaefer et al.~\cite{schaefer2024}, which builds upon and extends the original approach introduced by Vidanage et al.~\cite{vidanage2020graph}.
+This attack yields a partial mapping between records in the encoded dataset and plaintext identities from the auxiliary dataset.
+The successfully re-identified individuals represent the known intersection between both datasets and serve as labeled training data for the inference component of the \ac{dea}.
+
+The output of this step comprises two distinct sets of records:
+(1) re-identified individuals, with known plaintext identities and their corresponding encoded representations, and
+(2) non-re-identified individuals, whose encoded representations remain unmapped.
+These unmapped encodings form the target set for the neural network-based reconstruction in the subsequent inference phase.
+
+The effectiveness of the \ac{dea} is directly influenced by the quality of the \ac{gma} output.
+A higher re-identification rate in the \ac{gma} provides a larger training set for the \ac{ann}, improving its ability to infer plaintext n-grams and reconstruct sensitive information for non-re-identified individuals.
+Conversely, a low re-identification rate limits the availability of labeled data and diminishes the overall reconstruction capability of the \ac{dea}.
+
+\subsection{Modifications to the \ac{gma}} \label{sec:modificationstogma}
 
 To integrate the \ac{gma} as a preprocessing step for the \ac{dea}, modifications were made to the original implementation by Schaefer et al.~\cite{schaefer2024}.
 While the core algorithm remains unchanged, adjustments were introduced to ensure that the \ac{gma} outputs its results in a structured format suitable for training the \ac{ann} used in the \ac{dea}.
@@ -86,50 +147,7 @@ The attack begins with two structured datasets:
 By leveraging this structured output, the \ac{dea} can train a machine learning model to probabilistically reconstruct missing n-grams from the encoded records of non-re-identified individuals.
 The following sections detail the implementation of this approach, including dataset preparation, model architecture, and evaluation strategies.
 
-\section{Design and Implementation of the \ac{dea}} \label{sec:designandimplementation}
-
-The \ac{dea} aims to reconstruct plaintext \ac{pii} from encoded records using machine learning techniques.
-This section outlines the problem definition, data representation, \ac{ann} architecture, and training methodology.
-A central challenge in implementing the \ac{dea} lies in the diversity of encoding schemes used to protect sensitive data.
-As each encoding method transforms plaintext into distinct numerical representations, the \ac{dea} must adapt both the dataset structure and the \ac{ann} architecture accordingly.
-
-To address this, the \ac{dea} adopts a modular design: while the overall attack methodology remains consistent, specific implementations are tailored to each encoding scheme.
-Although the input representation and network architecture vary depending on the encoding, the output format is kept uniform across all models.
-The attack is framed as a multi-label classification task, where the \ac{ann} predicts the likelihood of individual n-grams appearing in the original \ac{pii}.
-For each encoding scheme, a dedicated dataset structure transforms encoded records into a format suitable for \ac{ann} training.
-Moreover, a custom \ac{ann} architecture is employed for each encoding scheme to ensure the model effectively learns the mapping from encoded data to plaintext n-grams.
-
-
-\subsection{Problem Definition} \label{sec:problemdefinition}
-
-The primary challenge that the \ac{dea} seeks to address is the limited scope of re-identifications achieved by the \ac{gma}.
-While the \ac{gma} effectively links records by exploiting structural relationships within encoded datasets, its success is inherently restricted to individuals who are present in both the plaintext and the encoded datasets and can be matched based on graph similarity.
-However, in real-world scenarios, there may exist additional re-identification potential beyond these direct matches.
-
-One possible way to extend re-identifications is to rerun the \ac{gma} iteratively, incorporating additional publicly available data to gradually refine the matching process.
-However, this approach is inherently dependent on the availability and quality of external data sources, which may not always be feasible.
-Instead, the \ac{dea} introduces a novel strategy that aims to reconstruct deterministic relationships between encoded representations and their corresponding plaintext information.
-This is based on the observation that all encoding schemes used in \ac{pprl} rely on hash functions or other deterministic mappings.
-
-Hash functions, for example, produce fixed-length outputs from inputs of arbitrary length and, crucially, are deterministic — meaning the same input will always yield the same output.
-The \ac{dea} leverages this property by training \ac{ann}s to learn statistical relationships between encoded values and the original n-grams of \ac{pii}.
-The objective is to recover the most probable plaintext representation given an encoded input, effectively framing the attack as a probabilistic, frequency-based inference problem.
-However, several challenges complicate this task.
-
-The first major challenge is the lack of knowledge about the specific number and type of hash functions used during encoding.
-As a result, the model must learn patterns in the data without any explicit understanding of the underlying hashing mechanisms.
-Fortunately, this limitation is partially mitigated by the fact that the \ac{dea} does not rely on a one-to-one mapping between hash outputs and plaintext n-grams, but instead depends on statistical inference across large numbers of training samples.
-
-A more fundamental challenge arises from the collision property of hash functions.
-Because hash functions map an infinite input space to a finite output space, different inputs may produce identical hash values, making it inherently difficult to perfectly recover the original plaintext.
-These collisions introduce uncertainty into the re-identification process, preventing the \ac{dea} from achieving perfect reconstruction accuracy.
-Consequently, the predictions made by the \ac{dea} are probabilistic rather than deterministic — it can estimate the likelihood of a specific n-gram being present in the original \ac{pii}, but cannot guarantee absolute correctness.
-
-The primary reason the \ac{gma} alone is unable to achieve such probabilistic reconstruction is that it relies solely on structural similarities within the dataset, without attempting to infer direct relationships between encoded values and their plaintext equivalents.
-In contrast, the \ac{dea} enhances the capabilities of the \ac{gma} by enabling the reconstruction of individual plaintext components directly from encoded representations, thereby increasing the overall re-identification potential.
-This novel approach significantly improves the effectiveness of the attack, allowing for the re-identification of individuals who were previously unmatchable using traditional graph-based techniques.
-
-\subsection{Data Representation} \label{sec:representation}
+\section{Step 2: Data Representation} \label{sec:representation}
 
 For an \ac{ann} to operate effectively, the input data must be preprocessed into a format compatible with deep learning models.
 This preprocessing step applies to both the input — encoded representations of \ac{pii} — and the output, which consists of labels representing the predicted n-grams.
@@ -144,7 +162,7 @@ The data representation pipeline is modular and accommodates various encoding sc
 Depending on the encoding method — such as \ac{bf}, \ac{tsh}, or \ac{tmh} — different strategies are employed to convert the encoded input into tensors while preserving as much discriminative information as possible.
 This ensures that the input is well-suited to the architecture of the corresponding \ac{ann} and that the model can effectively learn the mapping between encoded data and plaintext n-grams.
 
-\subsubsection{\ac{bf} Encoding}
+\subsection{\ac{bf} Encoding}
 
 \ac{bf}'s are fixed-length binary strings, with their length determined by Alice’s chosen encoding parameters.
 The transformation of a \ac{bf} into a PyTorch tensor is straightforward: each bit in the binary string is directly mapped to a corresponding position in the tensor.
@@ -152,14 +170,14 @@ This conversion preserves the positions of set bits (i.e., ones), thereby mainta
 The resulting tensor has the same dimensionality as the \ac{bf}, with ones indicating the activated hash positions and zeros elsewhere.
 This binary representation serves as the input to the \ac{ann}, allowing the model to learn patterns based on the bitwise structure of the encoded \ac{pii}.
 
-\subsubsection{\ac{tmh} Encoding}
+\subsection{\ac{tmh} Encoding}
 
 \ac{tmh}, like \acp{bf}, produces fixed-length binary bitstrings, with the specific length determined by the encoding parameters selected by Alice.
 The transformation into a PyTorch tensor mirrors that of the \ac{bf}: each bit in the \ac{tmh} string is mapped directly to a corresponding tensor position, preserving the locations of set bits.
 This direct conversion results in a binary tensor representation that retains the structure of the original \ac{tmh} encoding.
 By preserving the positional information of the activated bits, the \ac{ann} can effectively learn from the encoded patterns embedded in the \ac{tmh} representations.
 
-\subsubsection{\ac{tsh} Encoding}
+\subsection{\ac{tsh} Encoding}
 
 The preprocessing of \ac{tsh} encodings is more complex due to its variable-length representation.
 Unlike \ac{bf} and \ac{tmh}, which produce fixed-length binary bitstrings, \ac{tsh} generates a set of integers of arbitrary size.
@@ -196,53 +214,7 @@ For example, if index \texttt{1} corresponds to the 2-gram \enquote{ab}, and the
 
 By structuring the data in this way, the \ac{ann} is trained to learn a mapping from encoded inputs to their corresponding n-gram distributions, enabling the \ac{dea} to probabilistically reconstruct plaintext \ac{pii} from encoded data.
 
-
-\subsection{\ac{ann} Architecture for \ac{dea}} \label{sec:architecture}
-
-Attempting to reconstruct plaintext information from encoded representations based on hash functions presents a significant challenge due to the nature of cryptographic hashing.
-Since hash functions are designed as one-way functions, reversing the transformation to recover the original input is theoretically infeasible.
-However, while exact reconstruction is not possible, a probabilistic approach can still be employed to infer likely plaintext components based on statistical patterns within the encoded data.
-
-\ac{ann}s provide a powerful framework for learning complex mappings between input encodings and output predictions, making them well-suited for this task.
-The function of the \ac{ann} in the context of the \ac{dea} is to predict n-grams by learning from re-identified individuals — those whose plaintext information is known alongside their corresponding encodings.
-Through this supervised learning process, the model captures frequency patterns that emerge due to the deterministic nature of the encoding process.
-In essence, the \ac{ann} learns which n-grams are statistically associated with specific positions or patterns in the encoded representations and leverages these associations to estimate their likelihood in unseen encoded inputs.
-
-Although hash functions introduce collisions, where different inputs may produce the same hash output, the \ac{ann} can still extract meaningful probabilistic insights by generalizing over these mappings across many samples.
-This enables the \ac{dea} to output a ranked list of likely n-grams per record, thereby forming the basis for the reconstruction of \ac{pii} from encoded data in a probabilistic, frequency-informed manner.
-
-
-\subsubsection{General \ac{ann} Architecture}
-
-To support the task of reconstructing n-grams from encoded data, a flexible \ac{ann} architecture is employed across all models.
-This architecture is designed to adapt to the different input formats arising from various privacy-preserving encoding schemes.
-Although the input representation differs depending on the encoding used, the output layer remains the same across all trained models.
-The output is a probability distribution over a fixed dictionary of n-grams, where each output neuron corresponds to the likelihood of a specific n-gram being part of the original plaintext string.
-
-The architecture follows a feedforward design and consists of three main components: an input layer, a configurable sequence of hidden layers, and a final output layer.
-The size of the input layer is determined by the dimensionality of the encoded record.
-For instance, in the case of the \ac{bf} and \ac{tmh} model, the input layer corresponds to the length of the bitstring, which in turn is defined by Alice’s chosen parameters.
-The \ac{tsh} models define their input layers based on the number of unique integers used across both datasets.
-
-This modular architecture enables experimentation across different encoding schemes while maintaining a unified framework for training and evaluation.
-
-The hidden layers are structured dynamically, depending on a set of tunable hyperparameters.
-These include the number of hidden layers, the number of neurons in each layer (hidden layer size), the activation function (e.g., ReLU, Tanh), and the dropout rate used for regularization.
-Each hidden layer is followed by a non-linear activation function, enabling the model to capture complex and non-linear relationships in the data.
-To mitigate overfitting, dropout is applied after each activation layer, randomly deactivating a fraction of neurons during training.
-This regularization technique improves the model's ability to generalize to unseen inputs and prevents the memorization of training data.
-
-The output layer remains consistent across all encoding schemes and has a dimensionality equal to the size of the predefined n-gram dictionary.
-Each output neuron represents the model's predicted probability that a specific n-gram appears in the original plaintext record.
-Given that multiple n-grams may be present in a single encoded record, the task is framed as a multi-label classification problem.
-Therefore, the output layer uses a sigmoid activation function, allowing the network to assign independent probability estimates to each n-gram.
-
-This modular architecture is implemented using PyTorch's \texttt{nn.Sequential} API, which enables a clean, maintainable, and extensible model definition.
-Furthermore, this design supports efficient hyperparameter optimization, as critical components—such as the number of layers, hidden layer size, activation function, and dropout rate—can be systematically varied across experimental runs.
-By exploring this hyperparameter space, the model can be tailored to maximize reconstruction performance for each specific encoding scheme.
-
-
-\subsubsection{Hyperparameter Optimization}
+\section{Step 3: Hyperparameter Optimization}
 
 Hyperparameter tuning plays a crucial role in achieving optimal model performance.
 Unlike model parameters that are learned during training (e.g., weights and biases), hyperparameters are defined prior to training and control the structure of the model as well as aspects of the learning algorithm.
@@ -310,6 +282,51 @@ Performance is evaluated on the validation set, and the best configuration is se
 This automated, systematic tuning process ensures that the neural network architecture is well-adapted to the complexity and characteristics of the input encoding.
 It enables fair comparison across models (\ac{bf}, \ac{tmh}, or \ac{tsh}) and improves both the predictive performance and generalization capability of the reconstruction task.
 
+
+
+\section{Step 4: Model Training and \ac{ann} Architecture}
+
+To support the task of reconstructing n-grams from encoded data, a flexible \ac{ann} architecture is employed across all models.
+This architecture is designed to adapt to the different input formats arising from various privacy-preserving encoding schemes.
+Although the input representation differs depending on the encoding used, the output layer remains the same across all trained models.
+The output is a probability distribution over a fixed dictionary of n-grams, where each output neuron corresponds to the likelihood of a specific n-gram being part of the original plaintext string.
+
+The architecture follows a feedforward design and consists of three main components: an input layer, a configurable sequence of hidden layers, and a final output layer.
+The size of the input layer is determined by the dimensionality of the encoded record.
+For instance, in the case of the \ac{bf} and \ac{tmh} model, the input layer corresponds to the length of the bitstring, which in turn is defined by Alice’s chosen parameters.
+The \ac{tsh} models define their input layers based on the number of unique integers used across both datasets.
+
+This modular architecture enables experimentation across different encoding schemes while maintaining a unified framework for training and evaluation.
+
+The hidden layers are structured dynamically, depending on a set of tunable hyperparameters.
+These include the number of hidden layers, the number of neurons in each layer (hidden layer size), the activation function (e.g., ReLU, Tanh), and the dropout rate used for regularization.
+Each hidden layer is followed by a non-linear activation function, enabling the model to capture complex and non-linear relationships in the data.
+To mitigate overfitting, dropout is applied after each activation layer, randomly deactivating a fraction of neurons during training.
+This regularization technique improves the model's ability to generalize to unseen inputs and prevents the memorization of training data.
+
+The output layer remains consistent across all encoding schemes and has a dimensionality equal to the size of the predefined n-gram dictionary.
+Each output neuron represents the model's predicted probability that a specific n-gram appears in the original plaintext record.
+Given that multiple n-grams may be present in a single encoded record, the task is framed as a multi-label classification problem.
+Therefore, the output layer uses a sigmoid activation function, allowing the network to assign independent probability estimates to each n-gram.
+
+This modular architecture is implemented using PyTorch's \texttt{nn.Sequential} API, which enables a clean, maintainable, and extensible model definition.
+Furthermore, this design supports efficient hyperparameter optimization, as critical components—such as the number of layers, hidden layer size, activation function, and dropout rate—can be systematically varied across experimental runs.
+By exploring this hyperparameter space, the model can be tailored to maximize reconstruction performance for each specific encoding scheme.
+
+\subsection{\ac{ann} Architecture for \ac{dea}} \label{sec:architecture}
+
+Attempting to reconstruct plaintext information from encoded representations based on hash functions presents a significant challenge due to the nature of cryptographic hashing.
+Since hash functions are designed as one-way functions, reversing the transformation to recover the original input is theoretically infeasible.
+However, while exact reconstruction is not possible, a probabilistic approach can still be employed to infer likely plaintext components based on statistical patterns within the encoded data.
+
+\ac{ann}s provide a powerful framework for learning complex mappings between input encodings and output predictions, making them well-suited for this task.
+The function of the \ac{ann} in the context of the \ac{dea} is to predict n-grams by learning from re-identified individuals — those whose plaintext information is known alongside their corresponding encodings.
+Through this supervised learning process, the model captures frequency patterns that emerge due to the deterministic nature of the encoding process.
+In essence, the \ac{ann} learns which n-grams are statistically associated with specific positions or patterns in the encoded representations and leverages these associations to estimate their likelihood in unseen encoded inputs.
+
+Although hash functions introduce collisions, where different inputs may produce the same hash output, the \ac{ann} can still extract meaningful probabilistic insights by generalizing over these mappings across many samples.
+This enables the \ac{dea} to output a ranked list of likely n-grams per record, thereby forming the basis for the reconstruction of \ac{pii} from encoded data in a probabilistic, frequency-informed manner.
+
 \subsection{Training the Model} \label{sec:training}
 
 To effectively train and evaluate the \ac{ann} model with the best hyperparameters, the dataset is divided into three distinct subsets: a training set, a validation set, and a test set.
@@ -329,7 +346,7 @@ This allows the training loop to monitor potential overfitting and adjust traini
 Throughout this process, the model's weights that achieve the best validation score according to the predefined objective (e.g., dice coefficient) are stored and later used for evaluation on the test set.
 
 
-\subsubsection{Loss Computation and Performance Metrics}
+\subsection{Loss Computation}
 
 The performance of the \ac{ann} models is assessed using multiple evaluation criteria.
 The primary metrics include training loss, validation loss, precision, recall, F1-score, and the Dice similarity coefficient.
@@ -338,6 +355,15 @@ During training, the loss is computed for each mini-batch, and the cumulative lo
 Similarly, the validation loss is computed over the validation set at the end of each epoch to monitor the model's generalization capability.
 Both training and validation loss curves can be analyzed post hoc to gain further insights into convergence behavior and potential overfitting.
 The validation loss is also used to determine early stopping, halting training if no improvement is observed for a predefined number of epochs and a specified minimum delta threshold.
+
+\section{Step 5: Application to Encoded Data} \label{sec:application}
+
+Once the \ac{ann} is trained and validated, it can be applied to the non-re-identified individuals, whose encoded representations were not matched during the \ac{gma} step.
+
+\subsection{Performance Evaluation}
+
+The performance of the \ac{dea} is evaluated using the test set, which consists of the non-re-identified individuals.
+Several metrics are computed to assess the effectiveness of the attack, including precision, recall, F1-score, and the Dice similarity coefficient.
 
 \textbf{Precision} quantifies the proportion of correctly predicted 2-grams among all predicted 2-grams.
 It reflects the model's ability to avoid false positives during the reconstruction of plaintext features from different encoding schemes.
@@ -358,7 +384,11 @@ It is especially well-suited for evaluating partial reconstructions, where perfe
 
 Furthermore, a re-identification rate is determined ... % TODO
 
+\subsection{Results}
 
-%Where to put attacker model
-%Where to put which metric is more desired
-%Where to put n-grams => \ac{pii} construction
+% TODO
+
+
+\section{Step 6: Refinement and Reconstruction} \label{sec:refinementandreconstruction}
+
+% TODO
