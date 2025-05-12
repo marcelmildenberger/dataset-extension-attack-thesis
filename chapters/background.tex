@@ -241,10 +241,13 @@ Since the encoded data consists of sets, Jaccard similarity can also be computed
   \label{fig:tshexample}
 \end{figure}
 
-An example for this can be seen in Figure~\ref{fig:tshexample} where the set of 2-grams for the word ''encoding'' is encoded using \ac{tsh} with $k = 4$ hash functions and a \ac{bf} length of $l = 4$.
-The first hashing step generates a $4 \times 4$ bit matrix, where each row corresponds to a \ac{bf} created using a unique hash function.
-In the second hashing step, the bit matrix columns are converted into integer representations using a hash function that incorporates a salt value and the column index.
+An illustrative example is provided in Figure~\ref{fig:tshexample}, where the set of 2-grams for the words ``\textit{peter}'' and ``\textit{pete}'' is encoded using \ac{tsh} with $k = 4$ hash functions and a Bloom filter length of $l = 8$.
+In the first hashing step, each 2-gram is processed using the $k$ hash functions, resulting in a $4 \times 8$ bit matrix.
+Each row of this matrix corresponds to a Bloom filter generated with a distinct hash function, encoding the presence of 2-grams across the $l$ bit positions.
 
+In the second hashing step, the columns of the bit matrix are transformed into integer values.
+This is achieved by applying an additional hash function that incorporates both a salt value and the column index, effectively compressing the binary representation into a fixed-length integer vector.
+The final output is a set of integers representing the encoded word, which can subsequently be used to compute similarity scores between different words~\cite{ranbaduge2020secure}.
 
 To improve efficiency, \ac{tsh} can be implemented using a \ac{prng} instead of cryptographic hash functions.
 The \ac{prng} is seeded with the value to be hashed before generating random numbers, ensuring that the sequence of generated values depends deterministically on the input \cite{ranbaduge2020secure}.
@@ -300,10 +303,10 @@ The final step involves constructing a bipartite graph, where nodes from the pla
 To determine the optimal mapping, the Jonker-Volgenant algorithm is applied, ensuring that each node in the smaller dataset is uniquely matched to a corresponding node in the larger dataset.
 This algorithm maximizes the total similarity across all matched pairs, effectively revealing the identities of individuals within the encoded dataset \cite{schaefer2024}.
 
-An example for this is given in Figure~\ref{fig:gmaexampleone} and Figure~\ref{fig:gmaexampletwo} where the high-level overview of the \ac{gma} attack process is shown.
+An example for this is given in Figure~\ref{fig:gmaexampleone} and Figure~\ref{fig:gmaexampletwo} where the high-level overview of the \ac{gma} attack process is shown for the example of a \ac{pprl} approach using \ac{bf}.
 First, the two data owners agree on an encoding scheme and encode their respective datasets, for this example it is \ac{bf} encoding.
 Then they send their respective encoded dataset to the linkage unit.
-The attack begins at this point by with linkage unit leveraging information it inevitably knows.
+The attack begins at this point by with the linkage unit leveraging information it inevitably knows.
 The linakge unit is able to construct similarity graphs for both the encoded datasets and a plaintext datasets.
 After embedding the similarity gaphs, the embeddings are aligned and the attacker can identify re-identifications by comparing embeddings and constructing a bipartite graph to match entries from one of the encoded datasets with the plaintext dataset \cite{schaefer2024}.
 

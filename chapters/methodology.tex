@@ -6,29 +6,32 @@ The \ac{dea} builds upon the \ac{gma} by using its re-identification results as 
 While the \ac{gma} re-identifies only those records that exist in both the attacker’s dataset and the encoded target dataset, it often leaves a substantial portion of records unmapped.
 The goal of the \ac{dea} is to extend this re-identification process by applying a machine learning–based approach to infer the missing \ac{pii} of the remaining records using a trained \ac{ann}.
 
-To achieve this, the \ac{dea} follows a structured pipeline comprising several key steps, as illustrated in Figure~\ref{fig:deaoverview}.
-First, the results of the \ac{gma} are extracted in a predefined format to serve as training data for the \ac{ann}.
-These results include the re-identified individuals, their corresponding encoded representations, and the plaintext information that was successfully mapped.
-In addition, the \ac{gma} results contain the non-re-identified individuals, represented only by their encoded \ac{pii} and plaintext information.
-Maintaining a consistent and structured format is essential to ensure seamless integration into subsequent processing stages.
+To achieve this, the \ac{dea} follows a structured pipeline comprising six key steps, as illustrated in Figure~\ref{fig:deaoverview}.
+The first step involves executing the \ac{gma} and extracting its results in a predefined format to serve as training data.
+This dataset includes the re-identified individuals, their corresponding encoded representations, and the plaintext information that was successfully linked.
+In addition, the \ac{gma} results contain the non-re-identified individuals, who are represented solely by their encoded \ac{pii} and associated plaintext values.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth, page=15]{img/visualization.pdf}
     \caption{Overview of the \ac{dea} attack pipeline.}
     \label{fig:deaoverview}
-  \end{figure}
+\end{figure}
 
-Once the data is extracted, it is transformed into a format suitable for \ac{ann} training.
-This involves constructing specialized datasets that convert encoded representations and their corresponding labels—plaintext n-grams—into tensor-based formats that can be efficiently processed by deep learning models.
-The datasets are then split into training, validation, and test sets, and corresponding data loaders are created to enable efficient batch processing during training.
+Once the data is extracted, it undergoes a transformation process to prepare it for \ac{ann} training.
+This data preparation step involves constructing specialized datasets that convert the encoded representations and their corresponding labels—plaintext $n$-grams—into tensor-based formats suitable for processing by deep learning models.
+The resulting datasets are subsequently split into training, validation, and test subsets, and corresponding data loaders are created to facilitate efficient mini-batch processing during model training.
 
-With the data pipeline in place, an \ac{ann} is designed to perform multi-label classification, predicting the likelihood of individual n-grams occurring in an encoded record.
-The architecture comprises an input layer that receives the encoded representation, a series of hidden layers that learn complex patterns in the data, and an output layer that generates probability scores for all possible n-grams.
+With the data pipeline in place, a hyperparameter optimization is conducted to identify the best-performing model configuration.
+This process systematically evaluates various combinations of hyperparameters, including the number of hidden layers, layer widths, activation functions, optimizers, and learning rate schedulers.
+The optimal hyperparameters are then used to define the \ac{ann} architecture, which is trained to learn the mapping between encoded representations and their corresponding plaintext $n$-grams.
 
-To optimize performance, an appropriate loss function, optimizer, and learning rate scheduler must be selected to ensure stable convergence and high predictive accuracy.
-To this end, a hyperparameter optimization is performed, in which various configurations are systematically evaluated to identify the best-performing model.
-The final model, with the optimal configuration, is then trained on the training set, while performance is monitored on the validation set to prevent overfitting.
+The architecture of the \ac{ann} is tailored to the specific characteristics of the encoding schemes used in the \ac{pprl} scheme.
+The input layer size is determined by the dimensionality of the encoded representation, while the output layer size corresponds to the size of the predefined $n$-gram dictionary.
+
+Once the best hyperparameter configuration is identified, the \ac{ann} is trained using the re-identified individuals as labeled data.
+Training proceeds over multiple epochs, during which the model iteratively processes the training dataset, computes the loss, and updates its parameters via backpropagation.
+Performance is continuously monitored on the validation set to track generalization and prevent overfitting.
 
 Once the \ac{ann} is trained, it can be applied to the set of non-re-identified individuals, i.e., records that remained unmapped after the \ac{gma}.
 This dataset serves as the test set during the experimentation phase to evaluate the performance of the attack.
