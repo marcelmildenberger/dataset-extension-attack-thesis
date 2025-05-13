@@ -78,7 +78,7 @@ This novel approach significantly improves the effectiveness of the attack, allo
 \section{Attacker Model}
 
 The attacker in the \ac{dea} scenario is modeled as the linkage unit within a \ac{pprl} protocol.
-This aligns with standard threat models in the literature, where the linkage unit is typically assumed to be semi-honest or honest-but-curious—faithfully executing the prescribed protocol while remaining interested in extracting sensitive information from the encoded data it processes \cite{schnell2009privacy, vatsalan2017privacy}.
+This aligns with standard threat models in the literature, where the linkage unit is typically assumed to be semi-honest or honest-but-curious—faithfully executing the prescribed protocol while remaining interested in extracting sensitive information from the encoded data it processes \cite{schaefer2024}.
 
 Following Kerckhoffs’s principle, the attacker is assumed to possess full knowledge of the \ac{pprl} system design, including encoding algorithms (e.g., Bloom filter construction), parameter settings (e.g., filter length, n-gram size, number of hash functions), and record linkage procedures.
 However, any dataset-specific secrets — such as cryptographic keys, random seeds, or salt values — are assumed to be unknown to the attacker.
@@ -89,16 +89,10 @@ The attacker is assumed to operate in an offline setting without time constraint
 Given that linkage units are often embedded in national statistical agencies, health departments, or research consortia, it is realistic to assume access to powerful computational resources, including parallel processing and GPU acceleration.
 
 The primary goal of the attacker is to maximize the overall re-identification rate, demonstrating that individuals not re-identified through traditional graph matching can still be decoded using more advanced techniques.
-To evaluate the effectiveness of the \ac{dea}, its performance is compared to baseline strategies such as:
+To evaluate the effectiveness of the \ac{dea}, its performance is compared to baseline strategies such as \textbf{Random guessing}, in which candidate plaintext values are assigned randomly to encodings.
 
-\begin{itemize}
-    \item \textbf{Random guessing}, in which candidate plaintext values are assigned randomly to encodings.
-    \item \textbf{Frequency-based decoding}, where common n-grams or token sets are mapped to frequent encoding patterns \cite{herzog2007data}.
-\end{itemize}
-
-These baselines represent naïve yet plausible strategies in the absence of supervised learning.
-A successful \ac{dea} must significantly outperform these baselines to substantiate its threat to real-world \ac{pprl} deployments.
-
+This baseline represents a naïve yet plausible strategies in the absence of supervised learning.
+A successful \ac{dea} must significantly outperform this baseline to substantiate its threat to real-world \ac{pprl} deployments.
 
 \section{Modular Design of the \ac{dea}} \label{sec:designandimplementation}
 
@@ -454,8 +448,16 @@ This reflects the attacker’s goal of performing broadly effective and consiste
 
 \subsection{Results}
 
-% TODO
+The result of the \ac{ann} inference is a set of predicted n-grams for each encoded record in the test set.
+These predictions are generated based on the learned patterns from the training data, where the model has been exposed to both the encoded representations and their corresponding plaintext n-grams.
+As a porbabilitiy for each n-gram is output, a threshold is applied to convert the predicted probabilities into binary predictions.
+This thresholding process determines whether a specific n-gram is considered present in the original plaintext or not.
+The choice of threshold is critical, as it directly influences the precision and recall of the model's predictions.
+A higher threshold may yield more conservative predictions, resulting in higher precision but lower recall, while a lower threshold may increase recall at the cost of precision.
+The threshold is typically set based on the desired balance between precision and recall, depending on the attacker's objectives.
 
+The result is therefore a set of predicted n-grams for each encoded record, which can be further processed or analyzed to extract meaningful information.
+The predicted n-grams can be used to reconstruct the original plaintext \ac{pii} by combining the predicted tokens into coherent strings.
 
 \section{Step 6: Refinement and Reconstruction} \label{sec:refinementandreconstruction}
 
