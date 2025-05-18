@@ -128,22 +128,22 @@ The knowledge gained from this study will help to enable the development of more
 
 \section{Related Work}  \label{sec:rel-work}
 
-The study by Vidanage et al.\cite{vidanage2020graph} represents a significant advancement in the field of \ac{pprl} through the introduction of a new attack method known as \ac{gma}.
+The study by Vidanage et al. \cite{vidanage2020graph} represents a significant advancement in the field of \ac{pprl} through the introduction of a new attack method known as \ac{gma}.
 Their work begins with a comprehensive overview of \ac{pprl} systems and the similarity preserving encoding techniques commonly used, such as \ac{bf}s.
 The \ac{gma} exploits weaknesses in these encoding schemes by exploiting their ability to preserve partial similarity information even after encoding.
 By constructing similarity graphs from both encoded and plaintext datasets, the \ac{gma} solves a graph isomorphism problem to align nodes and successfully re-identify individuals in the encoded dataset using publicly available sources such as telephone directories.
 This method demonstrates the universal applicability of \ac{gma}s across different \ac{pprl} schemes, and highlights a critical weakness in systems previously thought to be more robust \cite{vidanage2020graph}.
 
-Building on this foundation, Schäfer et al.\cite{schaefer2024} revisited and extended the work of Vidanage et al.
+Building on this foundation, Schäfer et al. \cite{schaefer2024} revisited and extended the work of Vidanage et al.
 Their contribution lies in a meticulous reproduction and replication of the original \ac{gma}, during which they identified a critical flaw: an undocumented pre-processing step in the provided codebase that inadvertently increased the effectiveness of the attack.
 While this step was originally intended to improve computational performance, it introduced errors into the proposed \ac{gma}.
-Schäfer et al. corrected this problem and further optimised the \ac{gma}, resulting in improved robustness and efficiency.
+Schäfer et al. \cite{schaefer2024} corrected this problem and further optimised the \ac{gma}, resulting in improved robustness and efficiency.
 Their improved implementation achieved higher re-identification rates compared to the original approach.
-This improvement not only validates the vulnerabilities highlighted by the \ac{gma}, but also highlights the potential for refining attack methodologies to expose even greater weaknesses in \ac{pprl} systems.
+These improvements not only validate the vulnerabilities highlighted by the \ac{gma}, but also highlight the potential for refining attack methodologies to expose even greater weaknesses in \ac{pprl} systems.
 
 The work of Schäfer et al. \cite{schaefer2024} is particularly relevant to this thesis, as their improved \ac{gma} implementation and accompanying codebase form the basis of the \ac{dea} proposed in this study.
 While the \ac{gma} is limited to re-identifying individuals present in both encoded and plaintext datasets, the \ac{dea} seeks to extend the scope of re-identification beyond this intersection.
-Using \ac{ann}s trained on the re-identified individuals from the \ac{gma}, the \ac{dea} aims to predict and decode additional datasets, potentially leading to complete de-anonymisation of encoded datasets.
+Using \ac{ann}s trained on the re-identified individuals from the \ac{gma}, the \ac{dea} aims to predict and decode additional records, potentially leading to complete de-anonymisation of encoded datasets.
 
 To date, no existing research has proposed an approach comparable to the \ac{dea}.
 This thesis addresses this gap by developing and evaluating the \ac{dea}, thereby contributing to a broader understanding of \ac{pprl} vulnerabilities and highlighting the urgent need for more secure data linking techniques.
@@ -152,14 +152,14 @@ This thesis addresses this gap by developing and evaluating the \ac{dea}, thereb
 
 The contribution of this thesis is divided into three main parts.
 First, a comprehensive analysis of \ac{pprl} systems is carried out, with particular emphasis on the three main encoding schemes: \ac{bf} encoding, \ac{tsh} encoding and \ac{tmh} encoding.
-This analysis aims to highlight the basic principles, strengths and weaknesses of each encoding scheme, setting the stage for the subsequent investigation of their susceptibility to \ac{dea}.
+This analysis aims to highlight the basic principles, strengths and weaknesses of each encoding scheme, setting the stage for the subsequent investigation of their susceptibility to the \ac{dea}.
 
 Next, the current state of the art \ac{gma} is analysed and its limitations are discussed in detail.
 Although \ac{gma}s have proven effective in re-identifying individuals within overlapping datasets, their applicability is limited to the intersection of plaintext and encoded records.
 This inherent limitation highlights the need for more advanced attack strategies that can go beyond this.
 
-The main focus of this thesis is the implementation and evaluation of the \ac{dea}, which attempts to outperform the capabilities of \ac{gma}s by decrypting a larger fraction of encoded records.
-To achieve this, the thesis examines the conceptual foundations, theoretical underpinnings and technical requirements of the \ac{dea}.
+The main focus of this thesis is the implementation and evaluation of the \ac{dea}, which attempts to outperform the capabilities of \ac{gma}s by decoding a larger fraction of encoded records.
+To achieve this, this thesis examines the conceptual foundations, theoretical underpinnings and technical requirements of the \ac{dea}.
 Building on the initial re-identifications made by the \ac{gma}, the \ac{dea} employs a supervised machine learning approach, specifically using \ac{ann}s trained on previously decoded data to predict and re-identify remaining encoded records.
 This method significantly extends the scope of de-anonymisation in \ac{pprl} systems and provides a novel approach to current research.
 
@@ -168,10 +168,10 @@ While the specific encoding scheme has minimal impact on the \ac{gma}, which is 
 This is due to the fact that the \ac{ann} has to be trained separately for each encoding scheme to account for the unique structural features and nuances of the encoding.
 However, the \ac{dea} is designed with adaptability in mind, ensuring that it can be effectively applied across different encoding schemes, thus increasing its generalisability and practical relevance.
 
-Through this research, the thesis aims to answer critical questions about the robustness of \ac{pprl} systems.
+Through this research, this thesis aims to answer critical questions about the robustness of \ac{pprl} systems.
 It investigates how effective supervised machine learning-based \ac{dea}s are at re-identifying the remaining entries that \ac{gma}s cannot decode.
 It also examines how different encoding schemes affect the performance and accuracy of the \ac{dea}, providing insight into which schemes are more susceptible to such attacks and why.
-By addressing these issues, the thesis contributes to a deeper understanding of the vulnerabilities inherent in \ac{pprl} systems and lays the groundwork for the development of more secure privacy preserving techniques.
+By addressing these issues, this thesis contributes to a deeper understanding of the vulnerabilities inherent in \ac{pprl} systems and lays the groundwork for the development of more secure privacy preserving techniques.
 
 \section{Organization of this Thesis}  \label{sec:orga}
 
@@ -184,4 +184,4 @@ In addition, an overview of \ac{ann}s is given to provide the necessary backgrou
 Next, a detailed description of the attack model for the \ac{dea} is outlined, including how \ac{ann}s are used to enhance the attack.
 This is followed by an explanation of the actual implementation of the \ac{dea}, along with a discussion of the experiments conducted.
 The results of the \ac{dea} on different encoding schemes are then analysed and evaluated.
-Finally, the thesis concludes with a summary of the main contributions, a discussion of the broader implications, and suggestions for future research.
+Finally, this thesis concludes with a summary of the main contributions, a discussion of the broader implications, and suggestions for future research.

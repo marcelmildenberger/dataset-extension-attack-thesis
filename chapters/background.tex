@@ -1,6 +1,6 @@
 \chapter{Background}  \label{sec:background}
 
-This chapter provides an overview of the key concepts relevant to this thesis, including \ac{pprl}, various encoding techniques used in secure linkage and attacks.
+This chapter provides an overview of the key concepts relevant to this thesis, including \ac{pprl}, various encoding techniques used in secure linkage and existing attacks on encodings and \ac{pprl} schemes.
 \ac{pprl} enables different organizations to link records belonging to the same individual across datasets while preserving privacy, making it a crucial tool.
 However, the security of such methods can depend on the encoding techniques used to transform sensitive data into a more privacy-preserving format \cite{vidanage2020graph}.
 
@@ -9,21 +9,22 @@ While these methods aim to prevent direct access to plaintext identifiers, they 
 
 One such adversarial approach is the \ac{gma}, which leverages structural similarities between encoded and non-encoded datasets to re-identify individuals.
 Although \ac{gma}s are good in reconstructing intersections of datasets, they are limited to the intersection of the two datasets.
-To extend \ac{gma}s beyond known intersections, we explore \ac{ann}, which can learn complex patterns in encoded data and increase identification rates \cite{schaefer2024,vidanage2020graph}.
+To extend \ac{gma}s beyond known intersections, we explore \ac{ann}s, which can learn complex patterns in encoded data and increase identification rates \cite{schaefer2024,vidanage2020graph}.
 
 By integrating these concepts, this chapter establishes the necessary foundation for understanding the \ac{dea} introduced later in this thesis, demonstrating how machine learning techniques can be employed to bypass existing privacy-preserving mechanisms.
 
 \section{Overview of \ac{pprl} }\label{sec:pprl_overview}
 
-\ac{pprl} enables the linkage of records from different databases that refer to the same individual while tying to preserve privacy.
+\ac{pprl} enables the linkage of records from different databases that refer to the same individual while trying to preserve privacy.
 Traditional record linkage relies on unique identifiers, but these are often unavailable or inconsistent due to variations in formatting, spelling or missing data in a distributed environment.
 Linking records directly on plaintext data poses significant privacy risks.
-To mitigate these risks and prevent further threats to data security, regulations such as the European Union's \ac{gdpr} have been established to govern the handling of \ac{pii} \cite{schaefer2024,vidanage2020graph}.
+To mitigate these risks and prevent further threats to individuals, regulations such as the European Union's \ac{gdpr} have been established to govern the handling of \ac{pii} \cite{schaefer2024,vidanage2020graph}.
 
 To enable record linkage using \ac{pii} while trying to preserve privacy, \ac{pprl} employs similarity-preserving encoding on quasi-identifiers, allowing linkage to be performed on encoded representations rather than raw data.
-This approach protects identities while still facilitating record matching based on encoded similarities and probabilistic approaches \cite{schaefer2024,vidanage2020graph}.
+This approach protects identities while still facilitating record matching based on encoded similarities and probabilistic approaches.
+But this also causes the security of \ac{pprl} schemes to be dependent on the encoding techniques used \cite{schaefer2024,vidanage2020graph}.
 
-The security of \ac{pprl} schemes depends on the encoding techniques used.
+
 Broadly, \ac{pprl} methods fall into two categories: perturbation based techniques and \ac{smc} based techniques.
 \ac{smc}-based techniques provide strong security guarantees and high accuracy but suffer from computational and communication overheads.
 Conversely, perturbation-based techniques balance linkage quality, scalability, and privacy protection, making them more practical for real-world applications \cite{vidanage2020graph}.
@@ -38,7 +39,7 @@ The data analyst can merge the records based on the identifiers and proceed with
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=1]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=1]{img/visualization.pdf}
   \caption{Overview of the \ac{pprl} process.}
   \label{fig:pprloverview}
 \end{figure}
@@ -66,7 +67,7 @@ The similarity of two sets of n-grams can then be computed using metrics such as
 The Jaccard Similarity can be used in a similar way \cite{schaefer2024}.
   $$ Jaccard(X, Y) = \frac{|X \cap Y|}{|X \cup Y|} $$
 
-\ac{pprl} has been successfully applied in various domains, demonstrating its practical importance in securely linking records across institutions while assumingly preserving privacy.
+\ac{pprl} has been successfully applied in various domains, demonstrating its practical importance in securely linking records across institutions while trying to preserve privacy.
 Notable applications include the Social Investment Data Resources, the Lumos Initiative, the Swiss National Cohort, and the Gemeinsamer Bundesausschuss.
 These implementations highlight the versatility of \ac{pprl} in diverse contexts, where privacy protection is essential while enabling effective data linkage for research and analysis \cite{schaefer2024}.
 
@@ -75,7 +76,7 @@ These implementations highlight the versatility of \ac{pprl} in diverse contexts
 \section{Key Encoding Techniques} \label{sec:key-encodings}
 
 In the context of \ac{pprl}, three primary encoding techniques have emerged: \ac{bf}, \ac{tmh} and \ac{tsh}.
-These encoding methods are essential for transforming sets of quasi-identifiers into representations that preserve similarity information while supposingly maintaining privacy \cite{schaefer2024,vidanage2020graph, schnell2009privacy}.
+These encoding methods are essential for transforming sets of quasi-identifiers into representations that preserve similarity information while trying to maintain privacy \cite{schaefer2024,vidanage2020graph, schnell2009privacy}.
 
 \ac{pprl} typically involves encoding sets of quasi-identifiers before linkage.
 A set in this context is generally a collection of n-grams, which are substrings of length $n$ extracted from one or multiple attributes using a sliding window approach.
@@ -105,7 +106,7 @@ An Example for this can be seen in Figure~\ref{fig:bfexample} where the set of 2
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=5]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=5]{img/visualization.pdf}
   \caption{Example \ac{bf} for $k = 2$ hash functions on the set of 2-grams for ''encoding''.}
   \label{fig:bfexample}
 \end{figure}
@@ -155,12 +156,12 @@ MinHash aims to approximate the Jaccard similarity between two sets, \(S\) and \
 The fundamental idea is to represent both sets as sequences of randomly ordered elements and apply multiple rounds of random permutations \(\pi\) to shuffle them.
 After each round, the first elements of both sequences are compared.
 The larger the intersection between \(S\) and \(S'\), the higher the probability that the first elements will match.
-An example for this can be seen in figure~\ref{fig:minhashexample} where the sets are permutated twice and the first element is compared for each new set.
-The final Jaccard similarity estimate is computed based on the number of hash collisions achieved during permutation, in the example is one collision for two permutations \cite{schaefer2024,broder1997resemblance,vidanage2020graph}.
+An example for this can be seen in Figure~\ref{fig:minhashexample} where the sets are permutated twice and the first element is compared for each new set.
+The final Jaccard similarity estimate is computed based on the number of collisions achieved during permutation, in the example is one collision for two permutations \cite{schaefer2024,broder1997resemblance,vidanage2020graph}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=6]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=6]{img/visualization.pdf}
   \caption{Example computing approximate Jaccard similarity using MinHash with \(\pi = 2\) permutations.}
   \label{fig:minhashexample}
 \end{figure}
@@ -184,7 +185,7 @@ The retrieved bit strings are then XORed together to produce the final value for
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=7]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=7]{img/visualization.pdf}
   \caption{Simplified \ac{tmh} hasing step for the first lookup table, fourth hash function on the first set element.}
   \label{fig:tabminhashexample}
 \end{figure}
@@ -209,7 +210,7 @@ Overall, \ac{tmh} provides a more secure encoding alternative to \ac{bf}s in \ac
 
 \subsection{\ac{tsh}} \label{sec:tsh}
 
-\ac{tsh} is the most recent encoding scheme proposed for \ac{pprl} , introduced in 2020 \cite{ranbaduge2020secure}.
+\ac{tsh} is the most recent encoding scheme proposed for \ac{pprl}, introduced in 2020 \cite{ranbaduge2020secure}.
 \ac{tsh} was designed to address both the privacy vulnerabilities of \ac{bf}s and the computational complexity of \ac{tmh} while maintaining accuracy in similarity calculations.
 Similar to other encoding techniques, \ac{tsh} requires the input to be split into a set of n-grams $S$ prior to encoding \cite{ranbaduge2020secure}.
 
@@ -236,7 +237,7 @@ Since the encoded data consists of sets, Jaccard similarity can also be computed
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=8]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=8]{img/visualization.pdf}
   \caption{\ac{tsh} example for for two input values ''peter'' and ''pete'' \cite{ranbaduge2020secure}.}
   \label{fig:tshexample}
 \end{figure}
@@ -303,16 +304,17 @@ The final step involves constructing a bipartite graph, where nodes from the pla
 To determine the optimal mapping, the Jonker-Volgenant algorithm is applied, ensuring that each node in the smaller dataset is uniquely matched to a corresponding node in the larger dataset.
 This algorithm maximizes the total similarity across all matched pairs, effectively revealing the identities of individuals within the encoded dataset \cite{schaefer2024}.
 
-An example for this is given in Figure~\ref{fig:gmaexampleone} and Figure~\ref{fig:gmaexampletwo} where the high-level overview of the \ac{gma} attack process is shown for the example of a \ac{pprl} approach using \ac{bf}.
-First, the two data owners agree on an encoding scheme and encode their respective datasets, for this example it is \ac{bf} encoding.
-Then they send their respective encoded dataset to the linkage unit.
-The attack begins at this point by with the linkage unit leveraging information it inevitably knows.
-The linakge unit is able to construct similarity graphs for both the encoded datasets and a plaintext datasets.
-After embedding the similarity gaphs, the embeddings are aligned and the attacker can identify re-identifications by comparing embeddings and constructing a bipartite graph to match entries from one of the encoded datasets with the plaintext dataset \cite{schaefer2024}.
+An example of this process is illustrated in Figures~\ref{fig:gmaexampleone} and \ref{fig:gmaexampletwo}, which provide a high-level overview of the \ac{gma} attack applied to a \ac{pprl} approach using \ac{bf} encoding.
+Initially, the two data owners agree on an encoding scheme and encode their respective datasets, for this example using Bloom filters.
+These encoded datasets are then send to the linkage unit.
+The attack begins at this point, leveraging information inherently available to the linkage unit.
+Specifically, the linkage unit constructs similarity graphs for both the encoded datasets and an auxiliary plaintext dataset.
+By embedding these similarity graphs into a vector space and aligning the embeddings, the attacker can identify re-identifications by comparing embeddings and constructing a bipartite graph that matches entries from the encoded dataset to those in the plaintext auxiliary dataset \cite{schaefer2024}.
+
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=10]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=10]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
   Two data owners encode their datasets and send them to the linkage unit.}
   \label{fig:gmaexampleone}
@@ -320,7 +322,7 @@ After embedding the similarity gaphs, the embeddings are aligned and the attacke
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=11]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=11]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
   The linkage unit mimics the \ac{bf} encoding for the public dataset and creates for both datasets similartie graphs, embeddings and aligns them to perform bipartite matching.}
   \label{fig:gmaexampletwo}
@@ -344,7 +346,7 @@ The number of neurons in this layer corresponds directly to the number of input 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=16]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=16]{img/visualization.pdf}
   \caption{\ac{ann} consisting of multiple input neurons (input layer), hidden layers and output neurons (output layer) \cite{annimage}.}
   \label{fig:annexample}
 \end{figure}
@@ -355,7 +357,7 @@ Each neuron in a layer applies a weighted sum operation to its inputs, followed 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth, page=17]{img/visualization.pdf}
+  \includegraphics[width=0.66\textwidth, page=17]{img/visualization.pdf}
   \caption{Sketch of an single artifical neuron in an \ac{ann} \cite{neuronimage}.}
   \label{fig:neuronexample}
 \end{figure}
@@ -411,16 +413,17 @@ This makes them well-suited for natural language processing, speech recognition,
 
 \subsection{PyTorch for Training \ac{ann}} \label{sec:pytorch}
 
-Training \ac{ann}s in PyTorch involves defining and optimizing a model through iterative learning processes while leveraging GPU acceleration for efficient computation.
-PyTorch provides a flexible framework for designing and training neural networks, making it a popular choice for deep learning research and applications \cite{pytorchPyTorch}.
+Training \ac{ann}s in PyTorch involves defining and optimizing a model through iterative learning, leveraging GPU acceleration for efficient computation.
+PyTorch offers a flexible and modular framework for designing and training neural networks, making it a widely adopted tool in deep learning research and applications \cite{pytorchPyTorch}.
 
-The training process begins with model definition, where the architecture, including layers, activation functions, and parameters, is specified using the `torch.nn.Module` class.
-This allows users to define complex networks with full control over forward propagation.
-Next, a loss function is chosen based on the task at hand \cite{pytorchPyTorch}.
+The process begins with defining the model architecture using the `torch.nn.Module` class, where users specify layers, activation functions, and parameters.
+This approach provides full control over the forward propagation process.
+Additionally, a task appropriate loss function is selected \cite{pytorchPyTorch}.
 
-Once the model and loss function are defined, an optimizer is selected to update the model’s weights during training.
-Training proceeds over multiple epochs, where the dataset is processed in several passes to refine the model’s performance.
-To further optimize learning, the dataset is divided into mini-batches, allowing for efficient gradient updates without requiring full dataset processing at once \cite{pytorchPyTorch}.
+After defining the model and loss function, an optimizer is chosen to adjust the model's weights during training.
+Training is conducted over multiple epochs, during which the dataset is processed in successive iterations to improve model accuracy.
+To enhance computational efficiency and stabilize gradient updates, the dataset is divided into mini-batches, enabling partial processing instead of loading the full dataset into memory \cite{pytorchPyTorch}.
+
 
 One of PyTorch’s key advantages is its support for GPU acceleration via `torch.cuda`, which significantly reduces training time for large datasets.
 By moving tensors and models to a GPU, computations are performed in parallel, leading to substantial performance gains compared to CPU-based training.
@@ -439,27 +442,23 @@ Early stopping is a simple yet effective technique that stops training when the 
 
 Another fundamental challenge is the vanishing and exploding gradient problem, which occurs in deep networks during backpropagation.
 When gradients become too small (vanishing), weight updates diminish, leading to slow or stalled learning.
-This can happen because gradients are the product of multiple derivatives, whichh can cause them to shrink exponentially as they propagate through the network.
+This can happen because gradients are the product of multiple derivatives, which can cause them to shrink exponentially as they propagate through the network.
 This can happen especially using activiation functions that saturate for extreme values.
 Conversely, when gradients grow too large (exploding), unstable updates cause erratic training behavior.
 Solutions such as batch normalization, gradient clipping, and advanced activation functions like Leaky ReLU help address these issues \cite{pytorchPyTorch,glorot2010understanding}.
 
-Batch normalization normalizes the input for each layer ensuring that values are staying in a stable range.
-Gradient clipping is a technique used to prevent exploding gradients by setting a threshold for the gradient to prevent them from destabilizing the training process.
-Leaky ReLU is an activation function that prevents the vanishing gradient problem by allowing a small gradient for negative values, ensuring that the network can continue learning even for extreme inputs \cite{pytorchPyTorch,glorot2010understanding}.
+Batch normalization stabilizes training by normalizing the inputs to each layer, ensuring that activation values remain within a consistent range.
+Gradient clipping addresses the problem of exploding gradients by imposing a threshold on gradient values, thereby maintaining training stability.
+Leaky ReLU, an activation function, mitigates the vanishing gradient problem by allowing a small, non-zero gradient for negative inputs, enabling continued learning even with extreme input values \cite{pytorchPyTorch,glorot2010understanding}.
 
 The computational complexity of deep learning models is another major concern, as large-scale \ac{ann}s require extensive memory and processing power.
 Training deep networks on large datasets can be prohibitively slow on CPUs, necessitating the use of GPUs or specialized hardware like TPUs (Tensor Processing Units) to accelerate training.
 Efficient data-loading techniques and mixed-precision training can further optimize computational efficiency.
-PyTorch leverages this by utilizing its DataLoader class to efficiently load and preprocess data by using multiple workers.
+PyTorch leverages this by utilizing its `torch.utils.data.DataLoader` class to efficiently load and preprocess data by using multiple workers.
 Mixed-precision training is a technique that partly uses lower-precision floating-point numbers to reduce memory usage and speed up computations, while still maintaining model accuracy \cite{pytorchPyTorch}.
 
 Lastly, hyperparameter tuning plays a critical role in model performance.
 Selecting the right learning rate, batch size, number of layers, and optimization algorithm requires experimentation and fine-tuning.
 Automated methods such as grid search, random search, and Bayesian optimization can assist in finding optimal configurations, but these processes are computationally expensive.
 Addressing these challenges effectively is crucial for developing high-performing \ac{ann}s that generalize well across different datasets and tasks \cite{pytorchPyTorch}.
-
-\ac{ann}s have revolutionized the field of machine learning by providing better models capable of solving complex tasks.
-Their flexibility allows them to be applied to various domains, from image recognition to attacking privacy-preserving record linkage systems.
-With frameworks like PyTorch, researchers and practitioners can leverage GPU acceleration to train large-scale models efficiently \cite{pytorchPyTorch}.
 
