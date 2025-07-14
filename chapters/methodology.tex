@@ -225,7 +225,7 @@ For example, if index \texttt{1} corresponds to the n-gram \enquote{ab}, and the
 
 By structuring the data in this way, the \ac{ann} is trained to learn a mapping from encoded inputs to their corresponding n-gram distributions, enabling the \ac{dea} to probabilistically reconstruct plaintext \ac{pii} from encoded data.
 
-\section{Step 3: Hyperparameter Optimization}
+\section{Step 3: Hyperparameter Optimization} \label{sec:hmo}
 
 Hyperparameter tuning plays a crucial role in achieving optimal model performance.
 Unlike model parameters that are learned during training (e.g., weights and biases), hyperparameters are defined prior to training and control the structure of the model as well as aspects of the learning algorithm.
@@ -471,21 +471,19 @@ The predicted n-grams can be used to reconstruct the original plaintext \ac{pii}
 
 \section{Step 6: Refinement and Reconstruction} \label{sec:refinementandreconstruction}
 
-After identifying the subset of records likely corresponding to real-world individuals through the \ac{gma}, the next step involves reconstructing interpretable plaintext attributes—such as first name, surname, and date of birth—from the sets of overlapping n-grams predicted by the \ac{ann} after applying a threshold-based filtering step.
-This reconstruction phase is critical for empirically demonstrating how encoded identifiers can be reversed into human-readable information, thereby highlighting the severity of privacy risks in \ac{pprl} systems.
+The subsequent step focuses on reconstructing interpretable plaintext attributes, such as first name, surname, and date of birth, from the sets of overlapping n-grams predicted by the \ac{ann} following a threshold-based filtering process.
+This reconstruction is essential for empirically demonstrating the extent to which encoded identifiers can be reversed into human-readable information, thereby highlighting the severity of privacy vulnerabilities in \ac{pprl} systems.
 
 To tackle this task, three distinct reconstruction strategies are explored, each offering different trade-offs in terms of computational complexity, accuracy, and interpretability.
-These strategies are designed to simulate varying levels of attacker sophistication, from basic structural heuristics to dictionary-guided and machine learning-assisted inference, thereby providing a comprehensive perspective on the practical threat posed by \ac{dea}.
+These strategies are designed to simulate varying levels of attacker sophistication, from basic structural heuristics to dictionary guided and machine learning assisted inference, thereby providing a comprehensive perspective on the practical threat posed by \ac{dea}.
 
 The first method serves as a structural baseline and operates in a fully deterministic manner.
-It aims to reconstruct candidate tokens by greedily concatenating overlapping n-grams based on character continuity.
-Specifically, the algorithm iterates over all unused n-grams and checks whether the last character of a given n-gram matches the first character of another unused n-gram.
-If such an overlap is found, the two are concatenated, and the process continues recursively until no further extensions are possible.
-The outcome is a set of candidate substrings that may correspond to segments of names or other personal attributes.
+It constructs a directed graph where each node represents a character, and each edge corresponds to a predicted n-gram that connects the character it starts with to the character it ends with.
+The reconstruction task is framed as finding the longest paths in this graph, under the assumption that sequences incorporating the maximum number of predicted n-grams yield the most complete and meaningful reconstructions.
+The resulting paths are interpreted as candidate substrings that may correspond to personal attributes such as names.
 
-While this method is computationally efficient and does not rely on any external resources, it lacks the ability to resolve ambiguities when multiple valid extension paths exist.
-Moreover, it provides no semantic validation or feedback mechanism to assess whether the reconstructed substrings correspond to plausible or known real-world values, thereby limiting its practical effectiveness in realistic attack scenarios.
-
+This approach is computationally efficient and independent of external resources, but it does not resolve ambiguities when multiple equally long or plausible paths exist.
+Moreover, it lacks semantic validation mechanisms to verify whether the reconstructed substrings resemble real-world values, which limits its practical effectiveness in realistic attack scenarios.
 
 The second approach incorporates prior knowledge through a dictionary-based fuzzy matching technique.
 A curated reference list of known names, comprising frequently occurring first names and surnames, is preprocessed into corresponding sets of n-grams.
@@ -501,10 +499,152 @@ In this approach, the unordered collection of n-grams is embedded into a natural
 Leveraging its ability to synthesize coherent text and recognize semantic relationships, the language model can resolve ambiguities, infer structural patterns, and even compensate for missing or noisy n-grams.
 
 While this method offers the greatest expressive power and adaptability, it also introduces notable limitations in terms of reproducibility, transparency, and fidelity.
-The model may produce outputs that are fluent but factually incorrect (i.e., hallucinations), and there is no guarantee that all input n-grams are faithfully represented in the reconstructed response.
+The model may produce outputs that are fluent but factually incorrect (i.e., hallucinations), and there is no guarantee that all input n-grams are represented in the reconstructed response.
 As such, this approach is best employed as a heuristic aid to guide human interpretation, rather than as a deterministic component of the reconstruction pipeline.
 
 Together, these three reconstruction strategies offer complementary perspectives: the first illustrates the structural feasibility of assembling plausible tokens from n-gram fragments, the second emphasizes semantic validation through prior knowledge, and the third showcases the generative capabilities of modern language models.
 A comparative evaluation of their outputs enables a nuanced assessment of the threats posed by \ac{dea}s, illustrating how attackers with varying levels of knowledge, computational resources, and methodological assumptions could effectively compromise encoded personal data.
+
+\subsection{Directed Graph Based Reconstruction} \label{sec:graphrecon}
+
+The first reconstruction strategy is based on modeling the set of predicted n-grams as a directed graph to recover plaintext attributes.
+In this representation, each character becomes a node, and each n-gram is modeled as a directed edge from its first character to its last.
+The resulting graph is typically simple, though it can be either acyclic or cyclic depending on the structure and overlap of the predicted n-grams.
+Reconstruction is then formulated as a longest path problem within this graph.
+The central assumption is that the longest possible path, in terms of included n-grams, is most likely to represent the most complete and coherent reconstruction of the original plaintext string.
+
+In the case of a Directed Acyclic Graph, the longest path can be computed efficiently using well established graph traversal algorithms.
+Specifically, this implementation leverages NetworkX’s built-in \texttt{dag\_longest\_path} function, which operates in linear time with respect to the number of nodes and edges (\( \mathcal{O}(V + E) \)), making it suitable for small to moderately sized graphs typical in this setting.
+
+
+When the graph contains cycles, however, the problem becomes more complex, as naive traversal may result in infinite loops.
+To handle this, a custom recursive Depth-First Search strategy is employed.
+The algorithm explores all reachable paths from each starting point while maintaining a set of visited edges to avoid revisiting the same n-gram multiple times within a single path.
+At each step, the current reconstruction string is extended with the next character, and the longest sequence encountered during traversal is stored.
+
+An illustrative example is shown in Figure~\ref{fig:graphreconstruction}, based on the set of 2-grams \texttt{["jo", "oh", "hn", "do", "oe", "be", "ha", "af", "st"]}, which forms a directed graph with eleven nodes.
+Since the graph is cyclic, the algorithm performs a recursive depth-first search, tracking visited edges to prevent infinite loops.
+It initiates the search from each node, extending candidate paths by appending the next character at each step.
+The longest path found in this process corresponds to the string \enquote{johndoe}, as all alternative paths result in shorter sequences.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth, page=18]{img/visualization.pdf}
+\caption{Example reconstruction using the Directed Graph based approach.}
+\label{fig:graphreconstruction}
+\end{figure}
+
+This method is fully deterministic and does not rely on any external data sources, making it flexible and interpretable.
+However, it still faces challenges in resolving ambiguities when multiple equally long paths exist and lacks any semantic validation to ensure that the output resembles real-world names or values.
+Nonetheless, it provides a strong structural baseline that emphasizes maximal use of the predicted n-gram set.
+
+From a computational perspective, this approach is efficient for small graphs, as typically encountered in n-gram-based reconstructions of individual fields such as names.
+For DAGs, the runtime remains linear, and even in the presence of cycles, the DFS-based implementation remains tractable due to the limited number of characters and n-grams per input record.
+In practice, most graphs contain fewer than 30 edges, and recursion depth is shallow.
+The approach scales well to batch processing across many records and offers a favorable trade-off between accuracy and runtime, making it a practical first stage reconstruction strategy.
+
+\subsection{Dictionary Based Reconstruction} \label{sec:dictrecon}
+
+The dictionary based reconstruction strategy leverages curated datasets of common attributes like first names, surnames, and birthdates to infer plaintext attributes from predicted n-grams.
+For each predicted record, the method computes a similarity score between the predicted set of n-grams and the n-gram representations of each dictionary entry.
+This is performed separately for each attribute, e.g. first name, surname, and birthdate, by comparing the predicted n-grams to those extracted from the corresponding dictionaries.
+The top scoring candidates are selected as reconstruction hypotheses, prioritizing entries with the greatest n-gram overlap as measured by a similarity metric, such as the Dice coefficient.
+
+This approach increases interpretability by grounding predictions in semantically valid and human readable values.
+It is especially robust against noise or partial n-gram sets, as it can still return plausible results even when only a subset of the correct n-grams is present.
+Moreover, by using separate dictionaries for each attribute, the method is capable of multi-field reconstruction, making it more versatile and scalable than methods that only target a single attribute.
+
+Reconstruction is conducted sequentially across multiple fields.
+First, the predicted n-grams are matched e.g. against a list of known first names.
+Once the most likely match is found, its n-grams are removed from the candidate set to avoid double counting when reconstructing the next attribute.
+This is particularly useful in cases where certain attributes like names can appear both as first and last names (e.g., "James").
+A similar strategy is then applied to the remaining attributes.
+
+The quality of this reconstruction method is highly dependent on the coverage and granularity of the dictionaries used.
+Larger and more representative dictionaries improve the likelihood of accurate matches, while rare or culturally diverse names may remain underrepresented.
+Additionally, the similarity scoring mechanism plays a key role.
+The Dice coefficient is used due to its effectiveness in measuring set overlap between short strings, such as n-gram sets.
+
+The runtime complexity of the dictionary-based reconstruction strategy is primarily determined by the number of predicted entries and the size of the reference dictionaries.
+
+For each of the \( n \) predicted entries, the algorithm performs similarity comparisons against all candidates in three separate dictionaries: given names, surnames, and birthdates. Let \( D_{\text{given}} \), \( D_{\text{surname}} \), and \( D_{\text{birthday}} \) denote the number of entries in each respective dictionary. The total number of comparisons per entry is then
+
+\[
+D = D_{\text{given}} + D_{\text{surname}} + D_{\text{birthday}}.
+\]
+
+The similarity metric used for comparison is the Dice coefficient over n-grams, which can be computed in linear time with respect to the number of n-grams in the compared tokens. Assuming an average of \( g \) n-grams per token, the runtime complexity of computing a single Dice similarity is \( \mathcal{O}(g) = \mathcal{O}(|A| + |B|) \) where \( |A| \) and \( |B| \) are the number of n-grams in the two sets being compared.
+
+
+Therefore, the overall runtime complexity of the dictionary-based reconstruction attack is
+
+\[
+\mathcal{O}(n \cdot D \cdot g)
+\].
+
+
+In practice, the values of $g$ are relatively small, as the average number of 2-grams per name is limited (typically between 4 and 10). Therefore, the reconstruction remains efficient even for large $n$. Furthermore, this approach is trivially parallelizable across entries, making it well suited for batch processing in realistic attack scenarios.
+
+
+Overall, this strategy provides a realistic and reproducible method for attackers to reconstruct personal information, particularly in scenarios where the attacker has access to auxiliary data such as population wide name lists or public birthdate datasets.
+By exploiting structural patterns and common token distributions, this method demonstrates how dictionary guided attacks can significantly enhance the re-identification capabilities.
+
+\subsubsection{Generative Language Model Based Reconstruction}
+\label{sec:generative-llm-reconstruction}
+
+The final and most flexible reconstruction strategy explored in this thesis involves leveraging \ac{llm}s to infer original identifiers from predicted n-grams.
+Unlike based approaches, which operate within constrained matching logic, \ac{llm}s can reason over partial, noisy, or ambiguous input and generate semantically coherent completions based on prior knowledge.
+In this context, the model is prompted with a batch of predicted n-gram sets and asked to reconstruct corresponding attribute values such as given names, surnames, or birthdates.
+
+This approach proves particularly robust in cases where the n-gram predictions are incomplete or include noise.
+Owing to their generative and contextual capabilities, \ac{llm}s can infer plausible attribute values even when important information is missing.
+Additionally, the model can implicitly correct for common errors or insert culturally plausible completions, making it especially attractive for reconstructing personal identifiers under uncertainty.
+This flexibility, however, comes at the cost of reproducibility and transparency. Since \ac{llm}s are non-deterministic, their responses may vary across repeated executions, even with identical input.
+Furthermore, hallucinations, plausible but incorrect outputs, can occur when the model overgeneralizes or encounters ambiguous prompts.
+
+Another practical limitation concerns model availability and cost.
+If the attacker does not have access to a self-hosted \ac{llm}, they must rely on external APIs (e.g., OpenAI or similar providers), which introduces cost and latency.
+Moreover, results can vary substantially depending on the specific model used (e.g., GPT-3.5, GPT-4, open-source variants) and on the design of the prompt.
+To address the efficiency of batch processing, this thesis adopts a strategy in which 15 n-gram sets are reconstructed in parallel per prompt call, a trade-off found to balance cost, latency, and response quality effectively.
+
+The prompt used for this reconstruction task is designed to guide the model toward structured attribute extraction while accommodating the free-form nature of language generation.
+The prompt template can be found below and should be considered an integral part of the reconstruction method:
+
+\begin{tcolorbox}[title=Prompt Template for \ac{llm} Based Reconstruction,colback=gray!5,colframe=black!50!black]
+    You are an attacker attempting to reconstruct the \textbf{given name}, \textbf{surname}, and \textbf{date of birth} of multiple individuals based on predicted 2-grams obtained through a dataset extension attack.
+
+    Each individual is represented by a \texttt{uid} and a list of 2-grams. For each entry, infer:
+    \begin{itemize}
+        \item \texttt{<GIVEN\_NAME>}
+        \item \texttt{<SURNAME>}
+        \item \texttt{<BIRTHDATE>} (in \texttt{M/D/YYYY} format, without leading zeros)
+    \end{itemize}
+
+    Only return \textbf{valid JSON} in the following format:
+    \begin{verbatim}
+    [
+      {
+        "uid": "29995",
+        "<GIVEN_NAME>": "Leslie",
+        "<SURNAME>": "Smith",
+        "<BIRTHDATE>": "12/22/1974"
+      },
+      ...
+    ]
+    \end{verbatim}
+
+    Here is the input:
+    \begin{verbatim}
+    {
+      "29995": ["Le", "es", "sl", "li", "ie", ...],
+      ...
+    }
+    \end{verbatim}
+    \end{tcolorbox}
+
+
+After submitting the prompt, the model typically responds within several seconds, depending on the provider and load conditions.
+The output is then post-processed to extract the structured attribute values and evaluated using standard string similarity metrics.
+While this approach is not used in the final evaluation due to its lack of reproducibility and its dependency on external infrastructure, it represents a powerful direction for future attack strategies, especially in human-in-the-loop or investigative contexts where creative reconstruction is desirable.
 
 

@@ -1,12 +1,201 @@
-% !TeX root = main.tex
-%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% $Date: 2020-02-05 16:17:49 +0100 (Mi, 05 Feb 2020) $
-%% $Author: cmueller $
-%% $Rev: 5 $
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \chapter{Conclusion}  \label{sec:conclusion}
 
-\section{Summary}  \label{sec:summary}
+\section{Summary}   \label{sec:summary}
+
+This thesis investigated the vulnerabilities in \ac{pprl} systems with a particular focus on the feasibility and effectiveness of \ac{dea}s.
+As the integration of sensitive data across institutional boundaries becomes increasingly important, particularly in sectors such as healthcare, finance, and public security, the need for secure \ac{pprl} methods continues to grow.
+However, as this thesis has shown, widely used encoding techniques such as \ac{bf}, \ac{tmh}, and \ac{tsh} remain vulnerable to \ac{gma}s and inference based re-identification methods like the \ac{dea}.
+
+The primary research question guiding this work was whether it is possible to extend the capabilities of the \ac{gma} to re-identify not only overlapping individuals between plaintext and encoded datasets, but also individuals outside the intersection set.
+To this end, the \ac{dea} was proposed as a novel, learning-based extension of the \ac{gma}, capable of reconstructing plaintext information from encoded representations using \ac{ann}s trained on partially re-identified records.
+
+The key contributions of this thesis are threefold.
+First, a modular and extensible \ac{dea} pipeline was developed, capable of adapting to different encoding schemes.
+Second, a tailored training and inference setup was implemented, leveraging PyTorch and GPU acceleration to efficiently train \ac{ann}s on n-gram prediction tasks.
+Third, a comprehensive experimental framework was established to benchmark the attack against multiple datasets, overlap levels, and encoding strategies, providing a foundation for comparative evaluation.
+
+By building upon a refined \ac{gma} implementation, and extending it into a supervised inference-based attack, this work provides a concrete demonstration of how existing privacy preserving techniques may be circumvented under realistic assumptions.
+%The results of ongoing experiments are expected to quantify this threat more precisely; however, the pipeline and methodology have already illustrated the feasibility and potential impact of such an attack.
+%TODO: Write about Findings?
+
+The \ac{dea} introduced in this thesis follows a modular and systematic six-step pipeline designed to generalize across encoding schemes.
+Beginning with a \ac{gma} to establish a baseline set of re-identified individuals, the \ac{dea} leverages these mappings as supervised training data for a neural model tasked with predicting n-gram structures in encoded representations.
+
+To enable flexible experimentation, the attack pipeline was designed to accommodate three different encoding schemes: \ac{bf}, \ac{tmh}, and \ac{tsh}.
+While the \ac{gma} itself is agnostic to the specific encoding %Check if true
+, the \ac{dea} requires encoding-specific preprocessing routines, \ac{ann} architectures, and dataset representations.
+For instance, \ac{bf} and \ac{tmh} produce fixed-length bit vectors, which are converted directly into tensors, whereas \ac{tsh} produces variable length integer sets that require normalization via one-hot encoding over a global dictionary of observed values.
+
+A standardized data preparation process transforms the \ac{gma} output into structured datasets consisting of encoded inputs and corresponding multi-label n-gram labels.
+These datasets are then split into training, validation, and test subsets, with hyperparameter optimization performed via Ray Tune and Optuna using the Dice coefficient as the optimization target.
+This metric was chosen for its ability to balance precision and recall in multi-label classification tasks, and for its interpretability in the context of reconstructing partial identifiers.
+
+Each experimental run varies the attacker’s knowledge by changing the dataset overlap between the plaintext and encoded databases, simulating realistic levels of auxiliary data availability.
+For every setting, a dedicated neural network is trained using the re-identified individuals as labeled data, and inference is performed on the remaining unmapped encodings.
+To assess model performance, both baseline frequency-based guessing and two deterministic reconstruction strategies, graph-based and dictionary-based, are used for comparative evaluation.
+
+The core of the \ac{dea}’s inference capability is a supervised \ac{ann} trained to predict the presence of character n-grams in encoded representations.
+This reframes the attack as a multi-label classification problem, where each output neuron corresponds to a possible n-gram, and the model predicts the probability of its inclusion in the plaintext.
+Despite the theoretical irreversibility of the underlying hash functions, the deterministic encoding structure allows the network to learn statistical associations across large training sets, thereby enabling probabilistic inference of plaintext components.
+
+Nonetheless, the \ac{dea} cannot achieve perfect reconstruction due to the inherent limitations of similarity-preserving encoding schemes, most notably hash collisions and the lossy nature of \ac{bf}.
+Instead, it operates under a probabilistic threat model, where the goal is to maximize partial reconstruction and re-identification success under practical constraints.
+The attacker is assumed to possess no cryptographic secrets or salts but may exploit knowledge of system design parameters and publicly available data, consistent with Kerckhoffs’s principle and prior work on \ac{gma} based attacks.
+
+To translate predicted n-grams into human interpretable identifiers, three reconstruction strategies were developed.
+The first method builds a directed graph from the predicted n-grams and attempts to find the longest coherent path through the character transitions.
+The second leverages auxiliary dictionaries of common first names, surnames, and birthdates to identify plausible matches via similarity scoring.
+The third strategy, based on large language models, uses a prompt based generative approach to reconstruct full identifiers from the predicted tokens.
+While powerful, the latter was excluded from the main evaluation due to its high variability, external dependencies, and limited reproducibility.
+
+Each reconstruction strategy represents a different level of attacker sophistication, from deterministic heuristics to semantic matching.
+Together, they illustrate the extent to which encoded identifiers can be reversed into intelligible personal data using only structural and statistical clues, even when access to exact encoding parameters is restricted.
+
+The findings and design of this thesis underscore a critical insight: even without access to cryptographic secrets or exact encoding parameters, an attacker can exploit structural patterns and statistical regularities within \ac{pprl} encoded data to perform effective re-identification.
+The \ac{dea} demonstrates how partial re-identifications obtained via a \ac{gma} can serve as a springboard for broader inference, ultimately undermining the core privacy guarantees of non-interactive, similarity-preserving linkage protocols.
+
+This threat is particularly acute in real-world deployments where auxiliary data sources are abundant and overlap with target datasets is likely.
+As demonstrated in the \ac{dea} setup, even modest overlap rates can yield a meaningful training base for the neural model.
+Combined with efficient reconstruction strategies, this enables the attacker to recover a significant portion of the original dataset content, thereby transforming a partial breach into a systemic compromise.
+
+%While the experiments are still ongoing, the architectural and methodological contributions of this thesis already provide a strong indication of the feasibility and scalability of such attacks.
+%TODO: Write about results
+The modularity of the \ac{dea} pipeline allows it to be extended to new encoding schemes, auxiliary data sources, or target attributes with minimal adjustments.
+Moreover, the use of accessible deep learning frameworks and off-the-shelf hardware illustrates that the technical barrier for executing a \ac{dea} is relatively low, further emphasizing the urgency for more robust \ac{pprl} mechanisms.
+
+
+% ✅ Start with a brief reminder of the overall research question:
+% "This thesis investigated the vulnerability of Privacy-Preserving Record Linkage (\ac{pprl}) systems to Dataset Extension Attacks (\ac{dea})..."
+
+% ✅ Mention the motivation:
+% - Importance of protecting linked data.
+% - Existing attacks like Graph Matching Attack (\ac{gma}) are limited to intersecting datasets.
+
+% ✅ Summarize your contribution:
+% - Extended \ac{gma}-based re-identification by training a neural network to predict n-grams.
+% - Introduced a multi-phase \ac{dea} pipeline combining \ac{gma} output with n-gram inference and plaintext reconstruction.
+
+% ✅ Outline the methodology:
+% - Evaluated across multiple encoding schemes (Bloom Filters, TabMinHash, etc.)
+% - Used both synthetic datasets (e.g., fakename) and real-looking simulated datasets (euro_person).
+% - Baseline guessing method introduced for comparison.
+
+% ✅ State key findings:
+% - \ac{dea} improves re-identification coverage beyond \ac{gma}.
+% - Neural network models can reconstruct n-grams with high precision.
+% - Greedy graph-based reconstruction and dictionary-based strategies are both viable.
+% - \ac{dea} performance correlates with \ac{gma} success rate but retains value even when \ac{gma} is weak.
+% - \ac{dea} significantly outperforms baseline guessing (provide reference to metric/figure).
+
+% ✅ Close with a brief summary sentence:
+% "These results demonstrate that even limited leaks from \ac{gma} attacks can be extended into broader privacy breaches using machine learning."
 
 \section{Future Work}  \label{sec:future-work}
+
+While the \ac{dea} presented in this thesis establishes a practical and effective pipeline for the reconstruction of identifiers from encoded representations, several avenues remain open for future exploration.
+One promising direction involves expanding the design space of the underlying neural inference model.
+The current architecture, based on simple feedforward networks, could be complemented or replaced by more advanced sequence aware models such as recurrent neural networks, Long Short-Term Memory networks, or transformer-based architectures.
+These models are particularly well suited to capturing sequential dependencies and positional information within the encoding, which may be beneficial for inferring n-gram structure more precisely, especially for encodings that embed locality information.
+
+Furthermore, the supervised nature of the \ac{dea} model hinges on the availability of labeled data produced via the \ac{gma}.
+In low-overlap settings, this label set becomes sparse, limiting the effectiveness of training.
+To mitigate this, future work could explore unsupervised or semi-supervised learning strategies.
+For instance, autoencoders or contrastive learning frameworks might be employed to learn latent representations of encoded records without explicit labels.
+Alternatively, weak supervision using noisy heuristics or synthetic data could help bootstrap model training in the absence of a strong \ac{gma} baseline.
+These strategies could make the attack more robust in practical scenarios where overlap between auxiliary and target datasets is minimal.
+
+Another intriguing line of research involves reversing the modeling direction altogether.
+Instead of predicting plaintext n-grams from encoded representations, one could design a model that learns to predict the corresponding encoded form from a given set of n-grams.
+This would effectively invert the learning task, enabling a greedy reconstruction attack wherein an attacker iteratively constructs candidate plaintexts by adding one n-gram at a time.
+At each step, the model would generate a candidate encoding from the current n-gram set, and the attacker would retain the combination that maximizes similarity to the target encoded record.
+By fixing one n-gram and expanding the set greedily, the attacker could approximate the original encoding through iterative refinement, even in the absence of a direct mapping from encoding to n-grams.
+
+In parallel, a reversed variant of the \ac{dea} could be explored, where the attacker begins with a list of plausible candidate names or identifiers generated using an \ac{llm} or curated dictionaries.
+These candidates would then be re-encoded using the assumed encoding function, and the resulting encodings compared to the target record using similarity metrics.
+This brute force or guided search process, essentially a model-informed dictionary attack, could be further refined using probabilistic heuristics or learned scoring functions.
+If the attacker has partial knowledge of the input distribution or domain-specific priors (e.g., regional name frequencies), this reversed approach may be surprisingly effective, especially when encoding schemes preserve partial locality or structure.
+
+Finally, future work could explore a more principled connection between the encoding schemes and the architecture of the neural model itself.
+Since encoding processes such as \ac{bf} or \ac{tmh} can be described algebraically as matrix operations over hashed n-gram inputs, it may be possible to formalize the inverse mapping task as a linear or non-linear transformation.
+This formulation could inform the design of specialized neural architectures or allow for analytical derivation of network parameters, potentially reducing the reliance on extensive hyperparameter optimization.
+A deeper understanding of the encoding process as a differentiable or compositional function may also open the door to incorporating domain-specific inductive biases into the network, thereby improving learning efficiency and interpretability.
+
+Beyond architectural enhancements, future work could also focus on algorithmic improvements to the \ac{dea} pipeline itself.
+One promising direction is to establish a tighter integration between the \ac{gma} and the \ac{dea}, transforming the overall process into an iterative framework.
+In such a setup, the \ac{dea} could be applied not as a one-shot inference step, but as a looped refinement mechanism that feeds its most confident predictions back into the \ac{gma} module.
+These new pseudo-labels could then expand the training set for the next \ac{dea} iteration, gradually enlarging the set of re-identified individuals through a bootstrapping process.
+This would blend graph-based and learning-based re-identification strategies into a single adaptive attack.
+
+Another valuable addition would be the incorporation of prediction confidence scores throughout the \ac{dea} pipeline.
+By applying calibrated thresholds to the model’s output probabilities, the attacker could focus only on high-confidence reconstructions, thereby reducing false positives and increasing interpretability.
+These thresholds could also enable more sophisticated ensemble techniques, where predictions are aggregated from multiple models or reconstruction strategies, with consensus used as a proxy for reliability.
+In practical attack scenarios, such as investigative data linking or adversarial auditing, this confidence mechanism could further support human-in-the-loop systems, allowing analysts to validate or extend automated inferences with expert input.
+
+Another important research direction is to systematically evaluate the robustness of the \ac{dea} in the presence of privacy-enhancing defenses.
+While this thesis focused on attacking standard encoding schemes without countermeasures, many real-world systems incorporate protective mechanisms such as n-gram dropout, salting, or the injection of synthetic noise to reduce re-identification risk.
+More advanced approaches, such as applying differential privacy during encoding, or using diffusion-based variants of \ac{bf}, aim to further obfuscate the relationship between plaintext and encoded representations.
+Even though prior research has demonstrated that such defenses significantly degrade the performance of \ac{gma}s, thereby limiting the availability of high-quality training data for the \ac{dea}, it remains an open question whether a learning-based model can still extract useful patterns from the noisy re-identifications that remain.
+
+Future experiments should therefore test the resilience of the \ac{dea} across a range of defensive configurations.
+By introducing varying degrees and types of encodings, one could assess how each defense impacts the \ac{dea}’s ability to generalize and reconstruct identifiers.
+Special attention should be given to diffusion enhanced \ac{bf}, where the \ac{gma} has already been shown to struggle.
+This setting presents a particularly interesting case: even in the presence of degraded \ac{gma} output, the \ac{dea} may still benefit from the statistical regularities of partially re-identified records.
+Additionally, testing the \ac{dea} on a broader variety of encoding schemes, including recent alternatives beyond \ac{bf}, \ac{tmh}, and \ac{tsh} would further clarify the generalizability and practical threat posed by learning-based inference attacks.
+
+%Schwieriger absatz
+A critical direction for future work involves evaluating the robustness of the \ac{dea} under the presence of defensive mechanisms.
+While this thesis primarily targets unprotected or weakly protected encodings, many real-world deployments increasingly incorporate privacy-enhancing techniques to resist inference attacks.
+These include n-gram dropout, \ac{bf} salting, differential privacy mechanisms, and cryptographic variants such as secure multiparty computation.
+In particular, \ac{bf}s with diffusion or randomization layers, designed to mitigate frequency-based leakage, offer a relevant defense to assess.
+Although existing research shows that \ac{gma}s fail under such conditions, the \ac{dea} may still operate effectively given access to noisy or partially correct training labels.
+Investigating whether the \ac{dea} can exploit residual structure even in the presence of such defenses would provide deeper insight into the practical limitations of current countermeasures.
+
+Complementary to algorithmic defenses, future work should also examine the generalization ability of the \ac{dea} across a broader range of datasets.
+Current evaluations rely on synthetically generated or cleaned datasets with relatively homogenous, Western-centric name distributions.
+Expanding this scope to include real-world datasets with naturally occurring noise, misspellings, and inconsistencies would better simulate deployment conditions and test model robustness.
+Additionally, integrating multilingual datasets or culturally diverse naming conventions would challenge the assumptions baked into current tokenization and reconstruction strategies.
+For example, compound names, non-Latin scripts, or cultural variations in name structure may significantly impact n-gram frequency distributions and encoding patterns, potentially altering the effectiveness of both inference and reconstruction stages.
+
+Another promising yet currently unexplored direction involves the integration of \ac{llm}s into the \ac{dea} framework.
+Although excluded from the core evaluation due to reproducibility concerns and computational cost, \ac{llm}s offer a powerful foundation for semantic reconstruction strategies.
+Future work could investigate cost-effective approaches to \ac{llm} integration, such as prompt tuning, knowledge distillation into smaller models, or constrained decoding methods tailored to the structure of \ac{pprl} encoded data.
+These techniques may offer a balance between the expressive power of generative models and the practical constraints of attack scalability.
+
+Finally, future research should also consider the broader impact and ethical implications of \ac{dea} style attacks.
+While the primary aim of this thesis is to demonstrate the feasibility of inference-based attacks against \ac{pprl} systems, these methods could also be repurposed as auditing tools for evaluating the real-world resilience of deployed linkage systems.
+In particular, regulatory bodies, data custodians, or third-party evaluators could apply controlled versions of the \ac{dea} pipeline to assess whether deployed encodings are vulnerable to realistic adversarial inference under plausible auxiliary knowledge assumptions.
+
+This naturally motivates a call for stronger privacy-preserving mechanisms and more standardized frameworks for risk evaluation in \ac{pprl} deployments.
+Current encoding schemes often lack formal guarantees against inference attacks, especially when the encoded data must remain linkable and non-interactive.
+Future research could explore ways to strengthen existing \ac{pprl} protocols through techniques such as probabilistic obfuscation, hybrid interactive schemes, or encoding structures designed to minimize semantic leakage.
+Ultimately, by highlighting concrete vulnerabilities and proposing paths toward mitigation, this line of work aims not only to critique existing systems, but also to contribute to the development of more robust and transparent \ac{pprl} technologies.
+
+
+% ✅ Suggest deeper investigation of model design:
+% - Try other model architectures: transformers, LSTM, attention-based models.
+% - Explore unsupervised or semi-supervised learning (especially when \ac{gma} labels are sparse).
+% - Investigate reversed approach: Input for model would be the 2-grams of the entry and the output would be the predicted correspondng encoding. Then an greedy approach could be employed, where trying out with different 2-grams and 2-grams combination the attacker could try to best reconstruct the given encoding she has. So First one 2-gram would be fixed, and the resulting encoding with the highest similarty to the given encoding would be stored. Then a second 2-gram would be fixed, which increases the similarity further. Therefore greedy approach
+% - The architecture of the neural nets could be tried to be estimated mathematically based on the structure of the encoding scheme, as the process of putting an encoding and producing 2-grams can be seen as matrice multiplication problem. This could make the hyperparaemteroptimization obsolete.
+
+% ✅ Propose algorithmic improvements:
+% - Integrate \ac{dea} and \ac{gma} more tightly (e.g., iterative improvement).
+% - Use confidence thresholds to support human-in-the-loop attacks or ensemble methods.
+
+% ✅ Suggest evaluating the \ac{dea} against defenses:
+% - Add noise, n-gram dropout, Bloom filter salting, or differential privacy, especially focusing on Bloomfilter with diffusion, even though the results of the gma are already proven to be bad so there is training data for the dea available
+% - Test robustness of the \ac{dea} under different defensive conditions.
+% - Try different encoding schemes
+
+% ✅ Dataset-related suggestions:
+% - Use real-world datasets with natural noise and typos.
+% - Include multilingual datasets or names from different cultures, current focus is strongly on western names.
+
+% ✅ Cost-effectiveness and LLM-based strategies:
+% - Investigate low-cost use of LLMs (prompt tuning, distillation, or constrained decoding).
+% - Explore reversed \ac{dea}: generate and re-encode candidate names to find matches.
+
+% ✅ Broader impact and ethical implications:
+% - Discuss use of \ac{dea} for auditing existing \ac{pprl} systems.
+% - Call for stronger privacy-preserving mechanisms or standardized risk evaluations.
+% - Try to improve existing pprl schemes to be more robust agains inference based attacks
+
