@@ -43,7 +43,7 @@ The model outputs a probability distribution over all possible n-grams in the di
 To refine these predictions, a thresholding mechanism is applied to filter out low-confidence outputs and retain only the most probable n-grams.
 These predicted n-grams are then aggregated and reconstructed into potential \ac{pii}, constituting the final step of the \ac{dea} process.
 
-This methodological approach represents a significant advancement in attacking \ac{pprl} systems.
+This methodological approach represents an advancement in attacking \ac{pprl} systems.
 By leveraging deep learning techniques, the \ac{dea} enables an attacker to infer sensitive personal information beyond the scope of traditional \ac{gma} approaches.
 The following sections provide a detailed discussion of each component, including the design choices, implementation details, and challenges encountered during development.
 
@@ -54,11 +54,11 @@ While the \ac{gma} effectively links records by exploiting structural relationsh
 However, in real-world scenarios, there may exist additional re-identification potential beyond these direct matches.
 
 One possible way to extend re-identifications is to rerun the \ac{gma} iteratively, incorporating additional publicly available data to gradually refine the matching process.
-However, this approach is inherently dependent on the availability and quality of external data sources, which may not always be feasible.
+However, this approach is  dependent on the availability and quality of external data sources, which may not always be feasible.
 Instead, the \ac{dea} introduces a novel strategy that aims to reconstruct deterministic relationships between encoded representations and their corresponding plaintext information.
 This is based on the observation that all encoding schemes used in \ac{pprl} rely on hash functions or other deterministic mappings.
 
-Hash functions, for example, produce fixed-length outputs from inputs of arbitrary length and, crucially, are deterministic — meaning the same input will always yield the same output.
+Hash functions, for example, produce fixed-length outputs from inputs of arbitrary length and are deterministic, meaning the same input will always yield the same output.
 The \ac{dea} leverages this property by training \ac{ann}s to learn statistical relationships between encoded values and the original n-grams of \ac{pii}.
 The objective is to recover the most probable plaintext representation given an encoded input, effectively framing the attack as a probabilistic, frequency-based inference problem.
 However, several challenges complicate this task.
@@ -70,11 +70,11 @@ Fortunately, this limitation is partially mitigated by the fact that the \ac{dea
 A more fundamental challenge arises from the collision property of hash functions.
 Because hash functions map an infinite input space to a finite output space, different inputs may produce identical hash values, making it inherently difficult to perfectly recover the original plaintext.
 These collisions introduce uncertainty into the re-identification process, preventing the \ac{dea} from achieving perfect reconstruction accuracy.
-Consequently, the predictions made by the \ac{dea} are probabilistic rather than deterministic — it can estimate the likelihood of a specific n-gram being present in the original \ac{pii}, but cannot guarantee absolute correctness.
+Consequently, the predictions made by the \ac{dea} are probabilistic rather than deterministic. Therefore it can estimate the likelihood of a specific n-gram being present in the original \ac{pii}, but cannot guarantee absolute correctness.
 
 The primary reason the \ac{gma} alone is unable to achieve perfect reconstruction is that it relies solely on structural similarities within the dataset, without attempting to infer direct relationships between encoded values and their plaintext equivalents.
 In contrast, the \ac{dea} enhances the capabilities of the \ac{gma} by enabling the reconstruction of individual plaintext components directly from encoded representations, thereby increasing the overall re-identification potential.
-This novel approach significantly improves the effectiveness of the attack, allowing for the re-identification of individuals who were previously unmatchable using traditional graph-based techniques.
+This novel approach ly improves the effectiveness of the attack, allowing for the re-identification of individuals who were previously unmatchable using graph-based techniques.
 
 
 \section{Attacker Model}
@@ -85,16 +85,16 @@ This aligns with standard threat models in the literature, where the linkage uni
 Following Kerckhoffs’s principle, the attacker is assumed to possess full knowledge of the \ac{pprl} system design, including encoding algorithms (e.g., \ac{bf} construction), parameter settings (e.g., filter length, n-gram size, number of hash functions), and record linkage procedures.
 However, any encdoing specific secrets, such as secrets, random seeds, or salt values, are assumed to be unknown to the attacker.
 
-In this setting, the attacker is presented with two encoded datasets — originating from, for example, two organizations engaging in \ac{pprl} — and aims to re-identify individuals across them.
+In this setting, the attacker is presented with two encoded datasets originating from, for example, two organizations engaging in \ac{pprl}, and aims to re-identify individuals across them.
 
 The attacker is assumed to operate in an offline setting without time constraints, allowing the use of exhaustive search, large-scale training, and iterative optimization.
-Given that linkage units are often embedded in national statistical agencies, health departments, or research consortia, it is realistic to assume access to powerful computational resources, including parallel processing and GPU acceleration.
+Given that linkage units are often embedded in national statistical agencies, health departments, or research consortia, it is realistic to assume access to computational resources, including parallel processing and GPU acceleration.
 
 The primary goal of the attacker is to maximize the overall re-identification rate, demonstrating that individuals not re-identified through traditional \ac{gma}s can still be decoded using more advanced techniques.
-To evaluate the effectiveness of the \ac{dea}, its performance is compared to baseline strategies such as random guessing, in which candidate plaintext values are assigned randomly to encodings.
+To evaluate the effectiveness of the \ac{dea}, its performance is compared to a baseline strategies where to most likely k n-grams are selected based on their frequency in the training data and are predicted for each record.
 
-This baseline represents a naïve yet plausible strategy in the absence of supervised learning.
-A successful \ac{dea} must significantly outperform this baseline to substantiate its threat to real-world \ac{pprl} deployments.
+This baseline represents a naïve yet plausible strategy.
+A successful \ac{dea} must ly outperform this baseline to substantiate its threat to real-world \ac{pprl} deployments.
 
 \section{Modular Design of the \ac{dea}} \label{sec:designandimplementation}
 
@@ -112,7 +112,7 @@ Moreover, a custom \ac{ann} architecture is employed for each encoding scheme to
 
 \subsection{Running the \ac{gma}} \label{sec:runninggma}
 
-The \ac{gma} constitutes the first step in our \ac{dea} pipeline, establishing a critical foundation by identifying overlapping individuals between the encoded (target) dataset and the auxiliary (attacker) dataset.
+The \ac{gma} constitutes the first step in our \ac{dea} pipeline, establishing a foundation by identifying overlapping individuals between the encoded (target) dataset and the auxiliary (attacker) dataset.
 It exploits structural similarities between records to perform graph-based matching and re-identification of individuals.
 
 In this phase, we apply the adjusted \ac{gma} implementation by Schaefer et al.~\cite{schaefer2024}, which builds upon and extends the original approach introduced by Vidanage et al.~\cite{vidanage2020graph}.
@@ -149,7 +149,7 @@ They are entirely excluded from all \ac{dea} training and inference steps, ensur
 
 In addition to formatting adjustments, certain components of the \ac{gma} were removed to streamline the process and reduce unnecessary complexity.
 Specifically, encoding schemes other than \ac{tsh}, \ac{tmh}, and \ac{bf} were excluded, as the \ac{dea} focuses exclusively on these techniques.
-Other components deemed non-essential — such as graph visualizations and benchmark tests related solely to the \ac{gma} — were also removed.
+Other components deemed non-essential, such as graph visualizations and benchmark tests related solely to the \ac{gma},  were also removed.
 This decision was made because the \ac{gma} is not the primary focus of this study; its validity and performance have already been established by prior research.
 These optimizations resulted in a leaner and more efficient attack pipeline, reducing computational overhead while preserving essential functionality.
 
@@ -161,8 +161,8 @@ The following sections detail the implementation of this approach, including dat
 \section{Step 2: Data Representation} \label{sec:representation}
 
 For an \ac{ann} to operate effectively, the input data must be preprocessed into a format compatible with deep learning models.
-This preprocessing step applies to both the input — encoded representations of \ac{pii} — and the output, which consists of labels representing the predicted n-grams.
-Since \ac{ann}s in PyTorch operate on tensor-based representations, the transformation of encoded records into tensors is a fundamental requirement.
+This preprocessing step applies to both the input, encoded representations of \ac{pii}, and the output, which consists of labels representing the predicted n-grams.
+Since \ac{ann}s in PyTorch operate on tensor-based representations, the transformation of encoded records into tensors is a requirement.
 This ensures that both re-identified and not-reidentified individuals are structured in a way that enables efficient training and inference.
 
 To facilitate this transformation, custom PyTorch datasets are implemented.
@@ -170,7 +170,7 @@ These datasets convert encoded representations into input tensors and encode the
 This approach enables the model to predict the presence of multiple n-grams per encoded record.
 
 The data representation pipeline is modular and accommodates various encoding schemes, each of which necessitates a tailored preprocessing technique.
-Depending on the encoding method — such as \ac{bf}, \ac{tsh}, or \ac{tmh} — different strategies are employed to convert the encoded input into tensors while preserving as much information as possible.
+Depending on the encoding method, such as \ac{bf}, \ac{tsh}, or \ac{tmh}, different strategies are employed to convert the encoded input into tensors while preserving as much information as possible.
 This ensures that the input is well-suited to the architecture of the corresponding \ac{ann} and that the model can effectively learn the mapping between encoded data and plaintext n-grams.
 
 \subsection{\ac{bf} Encoding}
@@ -210,7 +210,7 @@ Thus, the output layer of the \ac{ann} performs multi-label classification, pred
 \subsection{Re-Identified Individuals as Labeled Training Data}
 
 To enable supervised learning, re-identified individuals are used as labeled training and validation data.
-Since their \ac{pii} is known along with their corresponding encoded representation, it is possible to construct datasets where the input consists of transformed encodings (\ac{bf}, \ac{tmh}, or \ac{tsh}, respectively) and the output labels consist of the correct n-grams derived from the original \ac{pii}.
+Since their \ac{pii} is known along with their corresponding encoded representation, it is possible to construct datasets where the input consists of transformed encodings (\ac{bf}, \ac{tmh}, or \ac{tsh}, respectively) into tensors and the output labels consist of the correct n-grams derived from the original \ac{pii}.
 
 To facilitate this process, a predefined dictionary of all possible n-grams is created. This dictionary includes:
 \begin{itemize}
@@ -227,7 +227,7 @@ By structuring the data in this way, the \ac{ann} is trained to learn a mapping 
 
 \section{Step 3: Hyperparameter Optimization} \label{sec:hmo}
 
-Hyperparameter tuning plays a crucial role in achieving optimal model performance.
+Hyperparameter tuning plays a  role in achieving optimal model performance.
 Unlike model parameters that are learned during training (e.g., weights and biases), hyperparameters are defined prior to training and control the structure of the model as well as aspects of the learning algorithm.
 These include architectural choices such as the number of layers as well as training configurations like the learning rate, optimizer, and regularization techniques.
 Careful selection of these values is especially important in complex tasks such as reconstructing plaintext n-grams from encoded representations, where both underfitting and overfitting can lead to substantial performance degradation.
@@ -265,7 +265,7 @@ The search space for learning rate scheduling strategies includes:
 \end{itemize}
 An additional option to disable learning rate scheduling is also included to assess whether constant learning rates perform better for certain models.
 
-Furthermore, the \textbf{loss function} is a critical hyperparameter, as it directly influences the optimization objective.
+Furthermore, the \textbf{loss function} is a hyperparameter, as it directly influences the optimization objective.
 Several loss functions suitable for multi-label classification are explored:
 \begin{itemize}
     \item \texttt{BCEWithLogitsLoss}: a standard binary cross-entropy loss combined with a sigmoid activation, commonly used for multi-label tasks.
@@ -277,7 +277,7 @@ This comprehensive optimization configuration enables systematic exploration of 
 
 \textbf{Additional parameters} are included in the hyperparameter search to fine-tune the model's output behavior and ensure consistent evaluation.
 A tunable \textbf{threshold} parameter, ranging from 0.3 to 0.8, is introduced to convert the model’s probabilistic outputs into binary predictions for the presence of specific n-grams.
-This threshold plays a crucial role in multi-label classification, as it directly affects the balance between precision and recall.
+This threshold plays a  role in multi-label classification, as it directly affects the balance between precision and recall.
 Furthermore, the \textbf{batch size} used by the data loaders is treated as a tunable parameter, with candidate values of 8, 16, 32, and 64. Varying the batch size allows for a trade-off between computational efficiency and training stability, potentially influencing convergence dynamics and generalization performance.
 
 
@@ -296,7 +296,7 @@ It enables fair comparison across models (\ac{bf}, \ac{tmh}, or \ac{tsh}) and im
 The architecture follows a feedforward design and consists of three main components: an input layer, a configurable sequence of hidden layers, and a final output layer.
 The size of the input layer is determined by the dimensionality of the encoded record.
 For instance, in the case of the \ac{bf} and \ac{tmh} model, the input layer corresponds to the length of the bitstring, which in turn is defined by Alice’s chosen parameters.
-The \ac{tsh} models define their input layers based on the number of unique integers used across both datasets.
+The \ac{tsh} models define their input layers based on the number of unique integers used across both datasets, the re-identified and non-re-identified individuals.
 
 This modular architecture enables experimentation across different encoding schemes while maintaining a unified framework for training and evaluation.
 
@@ -312,22 +312,24 @@ Given that multiple n-grams may be present in a single encoded record, the task 
 Therefore, the output layer uses a sigmoid activation function, allowing the network to assign independent probability estimates to each n-gram.
 
 This modular architecture is implemented using PyTorch's \texttt{nn.Sequential} API, which enables a clean, maintainable, and extensible model definition.
-Furthermore, this design supports efficient hyperparameter optimization, as critical components, such as the number of layers, hidden layer size, activation function, and dropout rate, can be systematically varied across experimental runs.
+Furthermore, this design supports efficient hyperparameter optimization, as components, such as the number of layers, hidden layer size, activation function, and dropout rate, can be systematically varied across experimental runs.
 By exploring this hyperparameter space, the model can be tailored to maximize reconstruction performance for each specific encoding scheme.
 
 \subsection{Foundations of Neural Network Success in \ac{dea}}
 
-Attempting to reconstruct plaintext information from encoded representations based on hash functions presents a significant challenge due to the nature of cryptographic hashing.
+Attempting to reconstruct plaintext information from encoded representations based on hash functions presents a challenge due to the nature of cryptographic hashing.
 Since hash functions are designed as one-way functions, reversing the transformation to recover the original input is theoretically infeasible.
 However, while exact reconstruction is not possible, a probabilistic approach can still be employed to infer likely plaintext components based on statistical patterns within the encoded data.
 
-\ac{ann}s provide a powerful framework for learning complex mappings between input encodings and output predictions, making them well-suited for this task.
-The function of the \ac{ann} in the context of the \ac{dea} is to predict n-grams by learning from re-identified individuals — those whose plaintext information is known alongside their corresponding encodings.
+\ac{ann}s provide a framework for learning complex mappings between input encodings and output predictions, making them well-suited for this task.
+The function of the \ac{ann} in the context of the \ac{dea} is to predict n-grams by learning from re-identified individuals, those whose plaintext information is known alongside their corresponding encodings.
 Through this supervised learning process, the model captures frequency patterns that emerge due to the deterministic nature of the encoding process.
 In essence, the \ac{ann} learns which n-grams are statistically associated with specific positions or patterns in the encoded representations and leverages these associations to estimate their likelihood in unseen encoded inputs.
 
 Although hash functions introduce collisions, where different inputs may produce the same hash output, the \ac{ann} can still extract meaningful probabilistic insights by generalizing over these mappings across many samples.
 This enables the \ac{dea} to output a ranked list of likely n-grams per record, thereby forming the basis for the reconstruction of \ac{pii} from encoded data in a probabilistic, frequency-informed manner.
+
+This is possible due to the fact that for names certain n-grams are more likely to occur than others. For example, n-grams like "an", "el", or "ar" are common in many names, while others like "xz" or "qv" are rare. By learning these statistical patterns, the \ac{ann} can prioritize more probable n-grams during reconstruction, improving the overall accuracy of the attack.
 
 \subsection{Training the Model} \label{sec:training}
 
@@ -347,20 +349,6 @@ After processing all training batches in an epoch, the model’s performance is 
 This allows the training loop to monitor potential overfitting and adjust training accordingly, for instance by applying early stopping or learning rate decay.
 Throughout this process, the model learns the optimal weights and biases that minimize the loss on the training set, guiding it toward better generalization and performance.
 
-
-\subsection{Loss Computation}
-
-The performance of the \ac{ann} models is assessed using multiple evaluation criteria.
-The primary metrics include training loss, validation loss, precision, recall, F1-score, and the Dice similarity coefficient.
-
-During training, the loss is computed for each mini-batch, and the cumulative loss across the entire training dataset is used to track the optimization progress.
-The loss function is selected based on the hyperparameter configuration.
-
-Similarly, the validation loss is computed over the validation set at the end of each epoch to monitor the model's generalization capability.
-Both training and validation loss curves can be analyzed post hoc to gain further insights into convergence behavior and potential overfitting.
-The validation loss is also used to determine early stopping, halting training if no improvement is observed for a predefined number of epochs and a specified minimum delta threshold.
-If \texttt{ReduceLROnPlateau} is used as the learning rate scheduler, the learning rate is reduced if the validation loss does not improve for a specified number of epochs.
-
 \section{Step 5: Application to Encoded Data} \label{sec:application}
 
 \subsection{Performance Evaluation}
@@ -372,7 +360,7 @@ Several metrics are computed to assess the effectiveness of the attack, includin
 \textbf{Precision} quantifies the proportion of correctly predicted n-grams among all n-grams predicted by the model.
 It reflects the model’s ability to avoid false positives during the reconstruction of plaintext features from encoded representations.
 A high precision value indicates that most of the predicted n-grams are indeed part of the original identity, suggesting a low rate of over-generation.
-This is particularly relevant in the context of \ac{dea}s, where the specificity of reconstructed values is critical to minimize erroneous inferences.
+This is particularly relevant in the context of \ac{dea}s, where the specificity of reconstructed values is to minimize erroneous inferences.
 Formally, for a given record, let $T$ be the set of true n-grams and $P$ the set of predicted n-grams.
 The precision is defined as:
 
@@ -384,7 +372,7 @@ where TP denotes the number of true positives and FP the number of false positiv
 
 \textbf{Recall} measures the proportion of true n-grams that were successfully predicted by the model.
 It captures the completeness of the reconstruction, indicating how much of the original information was extracted from the encoded data.
-A high recall implies that the attack is capable of recovering a significant fraction of the original content, even if some incorrect n-grams are also included.
+A high recall implies that the attack is capable of recovering a  fraction of the original content, even if some incorrect n-grams are also included.
 The recall is defined as:
 
 \[
@@ -406,7 +394,7 @@ If both precision and recall are zero, the F1-score is defined as zero.
 
 The \textbf{Dice similarity coefficient}, which is mathematically equivalent to the F1-score for binary sets, is computed as twice the size of the intersection of the predicted and actual n-gram sets divided by the total number of elements in both sets.
 In the \ac{dea} setting, the Dice coefficient serves as an interpretable and robust measure of set overlap.
-It is especially well-suited for evaluating partial reconstructions, where perfect recovery may be infeasible, but significant alignment with the ground truth still reflects successful inference.
+It is especially well-suited for evaluating partial reconstructions, where perfect recovery may be infeasible, but  alignment with the ground truth still reflects successful inference.
 
 Each of these metrics is computed on a \emph{per-record} basis, comparing the predicted and true n-gram sets for every individual sample.
 To evaluate the model's performance on the entire dataset, the scores are then averaged across all records.
@@ -424,13 +412,13 @@ From the attacker's perspective, this choice is strategic, as it directly influe
 
 Optimizing for precision encourages the model to prioritize correctness over completeness.
 In this configuration, the model is incentivized to predict fewer n-grams but with high certainty that each predicted token is truly part of the original plaintext.
-This reduces the risk of false positives, which is especially important when re-identified individuals inform critical downstream actions, such as matching individuals to sensitive health records or triggering fraud investigations.
+This reduces the risk of false positives, which is especially important when re-identified individuals inform downstream actions, such as matching individuals to sensitive health records or triggering fraud investigations.
 A precision-oriented attacker thus obtains fewer, but more reliable, re-identifications, minimizing noise in the reconstructed dataset.
 However, this strategy may overlook harder-to-recover but valid features.
 
 \paragraph{Optimizing for Recall: Aggressive and Broad Coverage}
 
-In contrast, recall optimization emphasizes completeness, seeking to recover as many original n-grams as possible—even at the cost of accuracy.
+In contrast, recall optimization emphasizes completeness, seeking to recover as many original n-grams as possible, even at the cost of accuracy.
 This strategy is advantageous when the attacker aims to maximize information gain, such as in exploratory analysis or probabilistic linkage.
 High recall ensures broader coverage of the encoded dataset and may benefit post-processing or correction steps filtering out wrongly predicted n-grams.
 However, it also increases the risk of false positives, potentially degrading the overall quality of re-identifications.
@@ -438,8 +426,8 @@ However, it also increases the risk of false positives, potentially degrading th
 \paragraph{Optimizing for F1-Score or Dice: Balanced Inference}
 
 The F1-score and the Dice similarity coefficient (which are mathematically equivalent for binary sets) provide a harmonic balance between precision and recall.
-Optimizing for these metrics avoids the extremes of overly conservative or overly permissive predictions.
-Since the attacker typically cannot externally validate predictions, balancing precision and recall mitigates the risk of extreme errors.
+Optimizing for these metrics avoids the of overly conservative or overly permissive predictions.
+Since the attacker typically cannot externally validate predictions, balancing precision and recall mitigates the risk of errors.
 Additionally, the Dice coefficient provides an intuitive and interpretable measure of similarity,
 
 \paragraph{Strategic Consideration}
@@ -453,16 +441,16 @@ Ultimately, the attacker’s choice of optimization metric should reflect the in
 \end{itemize}
 
 In this study, the Dice similarity coefficient was selected as the primary optimization objective during hyperparameter tuning, due to its balanced nature and its interpretability in the context of set overlap.
-This reflects the attacker’s goal of performing broadly effective and consistent reconstructions—maximizing utility while minimizing both false positives and false negatives.
+This reflects the attacker’s goal of performing broadly effective and consistent reconstructions, maximizing utility while minimizing both false positives and false negatives.
 
 
 \subsection{Results}
 
 The result of the \ac{ann} inference is a set of predicted n-grams for each encoded record in the test set.
 These predictions are generated based on the learned patterns from the training data, where the model has been exposed to both the encoded representations and their corresponding plaintext n-grams.
-As a porbabilitiy for each n-gram is output, a threshold is applied to convert the predicted probabilities into binary predictions.
+As a probability for each n-gram is output, a threshold is applied to convert the predicted probabilities into binary predictions.
 This thresholding process determines whether a specific n-gram is considered present in the original plaintext or not.
-The choice of threshold is critical, as it directly influences the precision and recall of the model's predictions.
+The choice of threshold is, as it directly influences the precision and recall of the model's predictions.
 A higher threshold may yield more conservative predictions, resulting in higher precision but lower recall, while a lower threshold may increase recall at the cost of precision.
 The threshold is typically set based on the desired balance between precision and recall, depending on the attacker's objectives.
 
@@ -472,7 +460,7 @@ The predicted n-grams can be used to reconstruct the original plaintext \ac{pii}
 \section{Step 6: Refinement and Reconstruction} \label{sec:refinementandreconstruction}
 
 The subsequent step focuses on reconstructing interpretable plaintext attributes, such as first name, surname, and date of birth, from the sets of overlapping n-grams predicted by the \ac{ann} following a threshold-based filtering process.
-This reconstruction is essential for empirically demonstrating the extent to which encoded identifiers can be reversed into human-readable information, thereby highlighting the severity of privacy vulnerabilities in \ac{pprl} systems.
+This reconstruction is essential for empirically demonstrating the extent to which encoded identifiers can be reversed into human-readable information, thereby highlighting the problem of privacy vulnerabilities in \ac{pprl} systems.
 
 To tackle this task, three distinct reconstruction strategies are explored, each offering different trade-offs in terms of computational complexity, accuracy, and interpretability.
 These strategies are designed to simulate varying levels of attacker sophistication, from basic structural heuristics to dictionary guided and machine learning assisted inference, thereby providing a comprehensive perspective on the practical threat posed by \ac{dea}.
@@ -480,7 +468,7 @@ These strategies are designed to simulate varying levels of attacker sophisticat
 The first method serves as a structural baseline and operates in a fully deterministic manner.
 It constructs a directed graph where each node represents a character, and each edge corresponds to a predicted n-gram that connects the character it starts with to the character it ends with.
 The reconstruction task is framed as finding the longest paths in this graph, under the assumption that sequences incorporating the maximum number of predicted n-grams yield the most complete and meaningful reconstructions.
-The resulting paths are interpreted as candidate substrings that may correspond to personal attributes such as names.
+The resulting paths are interpreted as candidate strings that may correspond to personal attributes such as names.
 
 This approach is computationally efficient and independent of external resources, but it does not resolve ambiguities when multiple equally long or plausible paths exist.
 Moreover, it lacks semantic validation mechanisms to verify whether the reconstructed substrings resemble real-world values, which limits its practical effectiveness in realistic attack scenarios.
@@ -587,13 +575,13 @@ In practice, the values of $g$ are relatively small, as the average number of 2-
 
 
 Overall, this strategy provides a realistic and reproducible method for attackers to reconstruct personal information, particularly in scenarios where the attacker has access to auxiliary data such as population wide name lists or public birthdate datasets.
-By exploiting structural patterns and common token distributions, this method demonstrates how dictionary guided attacks can significantly enhance the re-identification capabilities.
+By exploiting structural patterns and common token distributions, this method demonstrates how dictionary guided attacks can ly enhance the re-identification capabilities.
 
-\subsubsection{Generative Language Model Based Reconstruction}
+\subsection{Generative Language Model Based Reconstruction}
 \label{sec:generative-llm-reconstruction}
 
 The final and most flexible reconstruction strategy explored in this thesis involves leveraging \ac{llm}s to infer original identifiers from predicted n-grams.
-Unlike based approaches, which operate within constrained matching logic, \ac{llm}s can reason over partial, noisy, or ambiguous input and generate semantically coherent completions based on prior knowledge.
+Unlike previous approaches, which operate within constrained matching logic, \ac{llm}s can reason over partial, noisy, or ambiguous input and generate semantically coherent completions based on prior knowledge.
 In this context, the model is prompted with a batch of predicted n-gram sets and asked to reconstruct corresponding attribute values such as given names, surnames, or birthdates.
 
 This approach proves particularly robust in cases where the n-gram predictions are incomplete or include noise.
@@ -645,6 +633,6 @@ The prompt template can be found below and should be considered an integral part
 
 After submitting the prompt, the model typically responds within several seconds, depending on the provider and load conditions.
 The output is then post-processed to extract the structured attribute values and evaluated using standard string similarity metrics.
-While this approach is not used in the final evaluation due to its lack of reproducibility and its dependency on external infrastructure, it represents a powerful direction for future attack strategies, especially in human-in-the-loop or investigative contexts where creative reconstruction is desirable.
+While this approach is not used in the final evaluation due to its lack of reproducibility and its dependency on external infrastructure, it represents a direction for future attack strategies, especially in human-in-the-loop or investigative contexts where creative reconstruction is desirable.
 
 
