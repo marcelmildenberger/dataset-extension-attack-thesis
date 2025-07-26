@@ -39,7 +39,7 @@ Performance is continuously monitored on the validation set to track generalizat
 Once the \ac{ann} is trained, it can be applied to the set of non-re-identified individuals, i.e., records that remained unmapped after the \ac{gma}.
 This dataset serves as the test set during the experimentation phase to evaluate the performance of the attack.
 
-The model outputs a probability distribution over all possible n-grams in the dictionary for each entry, indicating the likelihood of each n-gram being present in the corresponding plaintext data.
+The model outputs a probability distribution over an index that maps to a dictionary of n-grams, indicating the likelihood of each n-gram being present in the corresponding plaintext.
 To refine these predictions, a thresholding mechanism is applied to filter out low-confidence outputs and retain only the most probable n-grams.
 These predicted n-grams are then aggregated and reconstructed into potential \ac{pii}, constituting the final step of the \ac{dea} process.
 
@@ -74,7 +74,7 @@ Consequently, the predictions made by the \ac{dea} are probabilistic rather than
 
 The primary reason the \ac{gma} alone is unable to achieve perfect reconstruction is that it relies solely on structural similarities within the dataset, without attempting to infer direct relationships between encoded values and their plaintext equivalents.
 In contrast, the \ac{dea} enhances the capabilities of the \ac{gma} by enabling the reconstruction of individual plaintext components directly from encoded representations, thereby increasing the overall re-identification potential.
-This novel approach ly improves the effectiveness of the attack, allowing for the re-identification of individuals who were previously unmatchable using graph-based techniques.
+This novel approach improves the effectiveness of the attack, allowing for the re-identification of individuals who were previously unmatchable using graph-based techniques.
 
 
 \section{Attacker Model}
@@ -83,7 +83,7 @@ The attacker in the \ac{dea} scenario is modeled as the linkage unit within a \a
 This aligns with standard threat models in the literature, where the linkage unit is typically assumed to be semi-honest or honest-but-curious executing the prescribed protocol while remaining interested in extracting sensitive information from the encoded data it processes \cite{schaefer2024}.
 
 Following Kerckhoffs’s principle, the attacker is assumed to possess full knowledge of the \ac{pprl} system design, including encoding algorithms (e.g., \ac{bf} construction), parameter settings (e.g., filter length, n-gram size, number of hash functions), and record linkage procedures.
-However, any encdoing specific secrets, such as secrets, random seeds, or salt values, are assumed to be unknown to the attacker.
+However, any encdoing specific parameters, such as secrets, random seeds, or salt values, are assumed to be unknown to the attacker.
 
 In this setting, the attacker is presented with two encoded datasets originating from, for example, two organizations engaging in \ac{pprl}, and aims to re-identify individuals across them.
 
@@ -91,10 +91,10 @@ The attacker is assumed to operate in an offline setting without time constraint
 Given that linkage units are often embedded in national statistical agencies, health departments, or research consortia, it is realistic to assume access to computational resources, including parallel processing and GPU acceleration.
 
 The primary goal of the attacker is to maximize the overall re-identification rate, demonstrating that individuals not re-identified through traditional \ac{gma}s can still be decoded using more advanced techniques.
-To evaluate the effectiveness of the \ac{dea}, its performance is compared to a baseline strategies where to most likely k n-grams are selected based on their frequency in the training data and are predicted for each record.
+To assess the effectiveness of the \ac{dea}, its performance is compared against a baseline strategy that predicts, for each record, the k most frequent n-grams observed in the training data.
 
 This baseline represents a naïve yet plausible strategy.
-A successful \ac{dea} must ly outperform this baseline to substantiate its threat to real-world \ac{pprl} deployments.
+A successful \ac{dea} must outperform this baseline to substantiate its threat to real-world \ac{pprl} deployments.
 
 \section{Modular Design of the \ac{dea}} \label{sec:designandimplementation}
 
@@ -166,7 +166,7 @@ Since \ac{ann}s in PyTorch operate on tensor-based representations, the transfor
 This ensures that both re-identified and not-reidentified individuals are structured in a way that enables efficient training and inference.
 
 To facilitate this transformation, custom PyTorch datasets are implemented.
-These datasets convert encoded representations into input tensors and encode the corresponding n-gram labels in a multi-label classification format, where each n-gram is represented as a binary indicator within a fixed-size label vector.
+These datasets transform the encoded representations into input tensors and represent the associated n-gram labels as binary vectors for multi-label classification, where each position in the label vector indicates the presence or absence of a specific n-gram.
 This approach enables the model to predict the presence of multiple n-grams per encoded record.
 
 The data representation pipeline is modular and accommodates various encoding schemes, each of which necessitates a tailored preprocessing technique.
@@ -214,9 +214,9 @@ Since their \ac{pii} is known along with their corresponding encoded representat
 
 To facilitate this process, a predefined dictionary of all possible n-grams is created. This dictionary includes:
 \begin{itemize}
-   \item Alphabetical n-grams (e.g., for n-grams: \texttt{aa} to \texttt{zz}),
-   \item Numerical n-grams (e.g., for n-grams: \texttt{00} to \texttt{99}),
-   \item Alphanumeric mixed n-grams (e.g., for n-grams: \texttt{a0} to \texttt{z9}).
+   \item Alphabetical n-grams (e.g., for 2-grams: \texttt{aa} to \texttt{zz}),
+   \item Numerical n-grams (e.g., for 2-grams: \texttt{00} to \texttt{99}),
+   \item Alphanumeric mixed n-grams (e.g., for 2-grams: \texttt{a0} to \texttt{z9}).
 \end{itemize}
 
 Since the datasets used in this research primarily contain first names, last names, and birthdates, these character sets are sufficient to cover the vast majority of n-gram occurrences.
@@ -227,10 +227,10 @@ By structuring the data in this way, the \ac{ann} is trained to learn a mapping 
 
 \section{Step 3: Hyperparameter Optimization} \label{sec:hmo}
 
-Hyperparameter tuning plays a  role in achieving optimal model performance.
+Hyperparameter tuning plays an important role in achieving optimal model performance.
 Unlike model parameters that are learned during training (e.g., weights and biases), hyperparameters are defined prior to training and control the structure of the model as well as aspects of the learning algorithm.
 These include architectural choices such as the number of layers as well as training configurations like the learning rate, optimizer, and regularization techniques.
-Careful selection of these values is especially important in complex tasks such as reconstructing plaintext n-grams from encoded representations, where both underfitting and overfitting can lead to substantial performance degradation.
+Careful selection of these values is important in tasks such as reconstructing plaintext n-grams from encoded representations, where both underfitting and overfitting can lead to substantial performance degradation.
 
 To explore the extensive hyperparameter space efficiently, this work employs Ray Tune, a scalable library for distributed hyperparameter tuning.
 Specifically, the Optuna search algorithm is used within Ray Tune to guide the optimization process.
@@ -241,10 +241,11 @@ The hyperparameter search space in this study is designed to be both comprehensi
 Key hyperparameters that define the neural network architecture include:
 
 \begin{itemize}
-    \item \textbf{Number of hidden layers}: varied between 1 and 7, allowing the exploration of both shallow and deep networks.
-    \item \textbf{Hidden layer size}: selected from \{64, 128, 256, 512, 1024, 2048\}, enabling experiments with compact to large-capacity models.
+    \item \textbf{Number of hidden layers}: varied between 1 and 4, allowing the exploration of both shallow and deep networks.
+    \item \textbf{Hidden layer size}: selected from \{128, 256, 512, 1024, 2048\}, enabling experiments with compact to large-capacity models.
     \item \textbf{Dropout rate}: sampled uniformly between 0.1 and 0.4 to promote generalization and mitigate overfitting.
     \item \textbf{Activation function}: treated as a categorical variable with options including \texttt{ReLU}, \texttt{Leaky ReLU}, \texttt{GELU}, \texttt{ELU}, \texttt{SELU}, and \texttt{Tanh}.
+    All of these functions introduce non-linearity and aim to mitigate vanishing gradients, but differ in smoothness, output range, and handling of negative inputs.
 \end{itemize}
 
 These architectural parameters create a flexible and expressive search space for discovering well-performing network structures tailored to the task of the \ac{dea}.
@@ -354,12 +355,12 @@ Throughout this process, the model learns the optimal weights and biases that mi
 \subsection{Performance Evaluation}
 
 Once the \ac{ann} is trained and validated, it can be applied to the non-re-identified individuals, whose encoded representations were not matched during the \ac{gma} step.
-The performance of the \ac{dea} is evaluated on this test set, which consists of the non-re-identified individuals.
+The performance of the \ac{dea} is evaluated on this test set.
 Several metrics are computed to assess the effectiveness of the attack, including precision, recall, F1-score, and the Dice similarity coefficient.
 
 \textbf{Precision} quantifies the proportion of correctly predicted n-grams among all n-grams predicted by the model.
 It reflects the model’s ability to avoid false positives during the reconstruction of plaintext features from encoded representations.
-A high precision value indicates that most of the predicted n-grams are indeed part of the original identity, suggesting a low rate of over-generation.
+A high precision value indicates that most of the predicted n-grams are indeed part of the original \ac{pii}, suggesting a low rate of over-generation.
 This is particularly relevant in the context of \ac{dea}s, where the specificity of reconstructed values is to minimize erroneous inferences.
 Formally, for a given record, let $T$ be the set of true n-grams and $P$ the set of predicted n-grams.
 The precision is defined as:
@@ -383,7 +384,7 @@ where FN represents the number of false negatives (i.e., true n-grams missed by 
 If $|T| = 0$, recall is defined as 0.
 
 \textbf{F1-score} is the harmonic mean of precision and recall, providing a single score that balances both correctness and completeness.
-It is especially informative in scenarios where the number of predicted and ground-truth n-grams may differ substantially, preventing either precision or recall from dominating the performance evaluation.
+It is informative in scenarios where the number of predicted and ground-truth n-grams may differ substantially, preventing either precision or recall from dominating the performance evaluation.
 The F1-score is defined as:
 
 \[
@@ -394,7 +395,7 @@ If both precision and recall are zero, the F1-score is defined as zero.
 
 The \textbf{Dice similarity coefficient}, which is mathematically equivalent to the F1-score for binary sets, is computed as twice the size of the intersection of the predicted and actual n-gram sets divided by the total number of elements in both sets.
 In the \ac{dea} setting, the Dice coefficient serves as an interpretable and robust measure of set overlap.
-It is especially well-suited for evaluating partial reconstructions, where perfect recovery may be infeasible, but  alignment with the ground truth still reflects successful inference.
+It is well-suited for evaluating partial reconstructions, where perfect recovery may be infeasible, but  alignment with the ground truth still reflects successful inference.
 
 Each of these metrics is computed on a \emph{per-record} basis, comparing the predicted and true n-gram sets for every individual sample.
 To evaluate the model's performance on the entire dataset, the scores are then averaged across all records.
@@ -412,7 +413,7 @@ From the attacker's perspective, this choice is strategic, as it directly influe
 
 Optimizing for precision encourages the model to prioritize correctness over completeness.
 In this configuration, the model is incentivized to predict fewer n-grams but with high certainty that each predicted token is truly part of the original plaintext.
-This reduces the risk of false positives, which is especially important when re-identified individuals inform downstream actions, such as matching individuals to sensitive health records or triggering fraud investigations.
+This reduces the risk of false positives, which is important when re-identified individuals inform downstream actions, such as attempting identity theft or inferring sensitive attributes.
 A precision-oriented attacker thus obtains fewer, but more reliable, re-identifications, minimizing noise in the reconstructed dataset.
 However, this strategy may overlook harder-to-recover but valid features.
 
@@ -426,19 +427,16 @@ However, it also increases the risk of false positives, potentially degrading th
 \paragraph{Optimizing for F1-Score or Dice: Balanced Inference}
 
 The F1-score and the Dice similarity coefficient (which are mathematically equivalent for binary sets) provide a harmonic balance between precision and recall.
-Optimizing for these metrics avoids the of overly conservative or overly permissive predictions.
+Optimizing for these metrics helps prevent predictions that are either too conservative or too permissive.
 Since the attacker typically cannot externally validate predictions, balancing precision and recall mitigates the risk of errors.
 Additionally, the Dice coefficient provides an intuitive and interpretable measure of similarity,
 
 \paragraph{Strategic Consideration}
 
-Ultimately, the attacker’s choice of optimization metric should reflect the intended downstream use of the reconstructed data:
-
-\begin{itemize}
-    \item If re-identified tokens are used to trigger sensitive actions, such as flagging potential fraud cases or granting access to confidential information, \textbf{precision} is preferred.
-    \item If the goal is to maximize data leakage or support probabilistic analysis, \textbf{recall} becomes advantageous.
-    \item If general re-identification quality is desired without strong bias, \textbf{F1-score or Dice} offers a robust and interpretable compromise.
-\end{itemize}
+Ultimately, the attacker’s choice of optimization metric should reflect the intended downstream use of the reconstructed data.
+If re-identified tokens are used to trigger sensitive actions, such as identity theft or inferring information about an person, then precision is the preferred metric, as it minimizes the risk of false positives.
+In contrast, when the goal is to maximize overall data leakage or to support probabilistic analyses, recall becomes more advantageous, as it emphasizes completeness over certainty.
+For scenarios that require a balanced evaluation of both precision and recall, particularly when no strong bias toward one type of error exists, metrics such as the F1-score or Dice coefficient provide a robust and interpretable compromise.
 
 In this study, the Dice similarity coefficient was selected as the primary optimization objective during hyperparameter tuning, due to its balanced nature and its interpretability in the context of set overlap.
 This reflects the attacker’s goal of performing broadly effective and consistent reconstructions, maximizing utility while minimizing both false positives and false negatives.
@@ -450,7 +448,7 @@ The result of the \ac{ann} inference is a set of predicted n-grams for each enco
 These predictions are generated based on the learned patterns from the training data, where the model has been exposed to both the encoded representations and their corresponding plaintext n-grams.
 As a probability for each n-gram is output, a threshold is applied to convert the predicted probabilities into binary predictions.
 This thresholding process determines whether a specific n-gram is considered present in the original plaintext or not.
-The choice of threshold is, as it directly influences the precision and recall of the model's predictions.
+The choice of threshold is important, as it directly influences the precision and recall of the model's predictions.
 A higher threshold may yield more conservative predictions, resulting in higher precision but lower recall, while a lower threshold may increase recall at the cost of precision.
 The threshold is typically set based on the desired balance between precision and recall, depending on the attacker's objectives.
 
@@ -462,19 +460,22 @@ The predicted n-grams can be used to reconstruct the original plaintext \ac{pii}
 The subsequent step focuses on reconstructing interpretable plaintext attributes, such as first name, surname, and date of birth, from the sets of overlapping n-grams predicted by the \ac{ann} following a threshold-based filtering process.
 This reconstruction is essential for empirically demonstrating the extent to which encoded identifiers can be reversed into human-readable information, thereby highlighting the problem of privacy vulnerabilities in \ac{pprl} systems.
 
-To tackle this task, three distinct reconstruction strategies are explored, each offering different trade-offs in terms of computational complexity, accuracy, and interpretability.
+To tackle this task, three distinct reconstruction strategies are explored, each offering different trade-offs in terms of computational complexity, accuracy, interpretability, and the level of certainty regarding the correctness of the reconstructed identifiers.
 These strategies are designed to simulate varying levels of attacker sophistication, from basic structural heuristics to dictionary guided and machine learning assisted inference, thereby providing a comprehensive perspective on the practical threat posed by \ac{dea}.
 
-The first method serves as a structural baseline and operates in a fully deterministic manner.
-It constructs a directed graph where each node represents a character, and each edge corresponds to a predicted n-gram that connects the character it starts with to the character it ends with.
-The reconstruction task is framed as finding the longest paths in this graph, under the assumption that sequences incorporating the maximum number of predicted n-grams yield the most complete and meaningful reconstructions.
-The resulting paths are interpreted as candidate strings that may correspond to personal attributes such as names.
+The first method, a graph-based approach, serves as a structural baseline and operates in a fully deterministic manner.
+It constructs a directed graph in which each node represents a character, and each edge corresponds to a predicted n-gram that links the starting character to the ending character.
+The reconstruction task is framed as finding the longest paths through this graph, under the assumption that sequences having the greatest number of predicted n-grams are most likely to represent complete and meaningful strings.
+These paths are then interpreted as candidate identifiers.
 
 This approach is computationally efficient and independent of external resources, but it does not resolve ambiguities when multiple equally long or plausible paths exist.
 Moreover, it lacks semantic validation mechanisms to verify whether the reconstructed substrings resemble real-world values, which limits its practical effectiveness in realistic attack scenarios.
+On the other hand, it offers the highest certainty regarding reconstruction correctness among the evaluated methods, as it relies solely on the predicted n-grams without introducing any additional inference or external assumptions.
+This makes it a transparent and interpretable baseline, particularly suitable for isolating the contribution of the n-gram prediction model itself.
 
 The second approach incorporates prior knowledge through a dictionary-based fuzzy matching technique.
 A curated reference list of known names, comprising frequently occurring first names and surnames, is preprocessed into corresponding sets of n-grams.
+These name lists are sourced from the U.S. Census and the Social Security Administration, providing realistic and demographically representative coverage of common naming patterns.
 For each predicted set of n-grams, candidate names from the dictionary are evaluated using similarity metrics such as the Dice or Jaccard coefficient.
 The top-scoring candidates are selected as reconstruction hypotheses, prioritizing entries with the greatest n-gram overlap.
 
@@ -486,7 +487,7 @@ The third and most flexible strategy employs a generative language model to reco
 In this approach, the unordered collection of n-grams is embedded into a natural language prompt, allowing the model to infer likely combinations of names and birthdates.
 Leveraging its ability to synthesize coherent text and recognize semantic relationships, the language model can resolve ambiguities, infer structural patterns, and even compensate for missing or noisy n-grams.
 
-While this method offers the greatest expressive power and adaptability, it also introduces notable limitations in terms of reproducibility, transparency, and fidelity.
+While this method offers the greatest expressive power and adaptability, it also introduces notable limitations in terms of reproducibility, transparency, and correctness.
 The model may produce outputs that are fluent but factually incorrect (i.e., hallucinations), and there is no guarantee that all input n-grams are represented in the reconstructed response.
 As such, this approach is best employed as a heuristic aid to guide human interpretation, rather than as a deterministic component of the reconstruction pipeline.
 
@@ -501,17 +502,17 @@ The resulting graph is typically simple, though it can be either acyclic or cycl
 Reconstruction is then formulated as a longest path problem within this graph.
 The central assumption is that the longest possible path, in terms of included n-grams, is most likely to represent the most complete and coherent reconstruction of the original plaintext string.
 
-In the case of a Directed Acyclic Graph, the longest path can be computed efficiently using well established graph traversal algorithms.
+In the case of a \ac{dag}, the longest path can be computed efficiently using well established graph traversal algorithms.
 Specifically, this implementation leverages NetworkX’s built-in \texttt{dag\_longest\_path} function, which operates in linear time with respect to the number of nodes and edges (\( \mathcal{O}(V + E) \)), making it suitable for small to moderately sized graphs typical in this setting.
 
 
 When the graph contains cycles, however, the problem becomes more complex, as naive traversal may result in infinite loops.
-To handle this, a custom recursive Depth-First Search strategy is employed.
+To handle this, a custom recursive \ac{dfs} Search strategy is employed.
 The algorithm explores all reachable paths from each starting point while maintaining a set of visited edges to avoid revisiting the same n-gram multiple times within a single path.
 At each step, the current reconstruction string is extended with the next character, and the longest sequence encountered during traversal is stored.
 
 An illustrative example is shown in Figure~\ref{fig:graphreconstruction}, based on the set of 2-grams \texttt{["jo", "oh", "hn", "do", "oe", "be", "ha", "af", "st"]}, which forms a directed graph with eleven nodes.
-Since the graph is cyclic, the algorithm performs a recursive depth-first search, tracking visited edges to prevent infinite loops.
+Since the graph is cyclic, the algorithm performs a recursive \ac{dfs}, tracking visited edges to prevent infinite loops.
 It initiates the search from each node, extending candidate paths by appending the next character at each step.
 The longest path found in this process corresponds to the string \enquote{johndoe}, as all alternative paths result in shorter sequences.
 
@@ -527,7 +528,7 @@ However, it still faces challenges in resolving ambiguities when multiple equall
 Nonetheless, it provides a strong structural baseline that emphasizes maximal use of the predicted n-gram set.
 
 From a computational perspective, this approach is efficient for small graphs, as typically encountered in n-gram-based reconstructions of individual fields such as names.
-For DAGs, the runtime remains linear, and even in the presence of cycles, the DFS-based implementation remains tractable due to the limited number of characters and n-grams per input record.
+For \ac{dag}s, the runtime remains linear, and even in the presence of cycles, the \ac{dfs} based implementation remains tractable due to the limited number of characters and n-grams per input record.
 In practice, most graphs contain fewer than 30 edges, and recursion depth is shallow.
 The approach scales well to batch processing across many records and offers a favorable trade-off between accuracy and runtime, making it a practical first stage reconstruction strategy.
 
@@ -539,10 +540,10 @@ This is performed separately for each attribute, e.g. first name, surname, and b
 The top scoring candidates are selected as reconstruction hypotheses, prioritizing entries with the greatest n-gram overlap as measured by a similarity metric, such as the Dice coefficient.
 
 This approach increases interpretability by grounding predictions in semantically valid and human readable values.
-It is especially robust against noise or partial n-gram sets, as it can still return plausible results even when only a subset of the correct n-grams is present.
+It is robust against noise or partial n-gram sets, as it can still return plausible results even when only a subset of the correct n-grams is present.
 Moreover, by using separate dictionaries for each attribute, the method is capable of multi-field reconstruction, making it more versatile and scalable than methods that only target a single attribute.
 
-Reconstruction is conducted sequentially across multiple fields.
+Reconstruction is conducted sequentially across multiple attributes.
 First, the predicted n-grams are matched e.g. against a list of known first names.
 Once the most likely match is found, its n-grams are removed from the candidate set to avoid double counting when reconstructing the next attribute.
 This is particularly useful in cases where certain attributes like names can appear both as first and last names (e.g., "James").
@@ -586,7 +587,7 @@ In this context, the model is prompted with a batch of predicted n-gram sets and
 
 This approach proves particularly robust in cases where the n-gram predictions are incomplete or include noise.
 Owing to their generative and contextual capabilities, \ac{llm}s can infer plausible attribute values even when important information is missing.
-Additionally, the model can implicitly correct for common errors or insert culturally plausible completions, making it especially attractive for reconstructing personal identifiers under uncertainty.
+Additionally, the model can implicitly correct for common errors or insert culturally plausible completions, making it attractive for reconstructing personal identifiers under uncertainty.
 This flexibility, however, comes at the cost of reproducibility and transparency. Since \ac{llm}s are non-deterministic, their responses may vary across repeated executions, even with identical input.
 Furthermore, hallucinations, plausible but incorrect outputs, can occur when the model overgeneralizes or encounters ambiguous prompts.
 

@@ -25,7 +25,7 @@ This approach protects identities while still facilitating record matching based
 But this also causes the security of \ac{pprl} schemes to be dependent on the encoding techniques used \cite{schaefer2024,vidanage2020graph}.
 
 
-Broadly, \ac{pprl} methods fall into two categories: perturbation based techniques and \ac{smc} based techniques.
+Broadly, \ac{pprl} methods fall into two categories, perturbation based techniques and \ac{smc} based techniques.
 \ac{smc}-based techniques provide strong security guarantees and high accuracy but suffer from computational and communication overheads.
 Conversely, perturbation-based techniques balance linkage quality, scalability, and privacy protection, making them more practical for real-world applications \cite{vidanage2020graph}.
 
@@ -54,7 +54,7 @@ Thus, selecting the optimal threshold is a trade-off that requires careful consi
 A robust \ac{pprl} scheme must satisfy several important criteria to ensure effective and secure linkage.
 First, a similarity function, \(sim(\lambda_r, \lambda_{r'})\), must exist to determine if two records belong to the same entity based on a predefined threshold.
 Second, an encoding scheme \(enc(\lambda)\)  must be applied to \(\lambda\) in such a way that the linkage unit cannot reconstruct the original data.
-Finally, a function \(sim(enc(\lambda_r), enc(\lambda_{r'}))\) must be available that allows similarity computations on encoded data which preserved similarty properties.
+Finally, a function \(sim(enc(\lambda_r), enc(\lambda_{r'}))\) must be available that allows similarity computations on encoded data.
 These requirements ensure both the privacy and the effectiveness of the record linkage process \cite{schaefer2024}.
 
 One common approach for measuring similarity for two quasi identifiers and enabling probabilistic matching on quasi identifieres is using n-grams.
@@ -63,7 +63,7 @@ For example, for the string ``encoding'' with $n=2$, the n-grams are:
 $$ \{\text{en}, \text{nc}, \text{co}, \text{od}, \text{di}, \text{in}, \text{ng} \} $$
 
 The similarity of two sets of n-grams can then be computed using metrics such as the Dice Coefficient where X and Y denotes two sets which are in the case of \ac{pprl} the n-grams for two different pseudo identifiers \cite{schaefer2024}.
-  $$ Dice(X, Y) = \frac{2 \times |X \cap Y|}{|X| + |Y|} $$
+  $$ Dice(X, Y) = \frac{2 \cdot |X \cap Y|}{|X| + |Y|} $$
 The Jaccard Similarity can be used in a similar way \cite{schaefer2024}.
   $$ Jaccard(X, Y) = \frac{|X \cap Y|}{|X \cup Y|} $$
 
@@ -267,7 +267,7 @@ This approach minimizes communication overhead and computational complexity, as 
 In contrast, interactive PPRL methods involve multiple rounds of communication between data owners and the linkage unit to refine matching results or improve accuracy \cite{kum2014privacy}.
 
 In \ac{pprl}, encoded records are linked based on similarity computations.
-Since these similarities serve as identifiers, an attacker with access to both encoded and plaintext data can leverage them to re-identify individuals.
+Since these similarities serve as identifiers, an attacker with access to an encoded dataset can leverage an auxiliary plaintext dataset to re-identify individuals.
 The latest version of the \ac{gma} developed by Schaefer et al. \cite{schaefer2024} overcomes the limitations of the original attack by Vidanage et al. \cite{vidanage2020graph} and enhances success rate and robustness, even under limited knowledge scenarios \cite{schaefer2024}.
 
 In the context of a \ac{gma} on a \ac{pprl} system, the attacker is modeled as the linkage unit and is assumed to have minimal prior knowledge.
@@ -305,7 +305,7 @@ To determine the optimal mapping, the Jonker-Volgenant algorithm is applied, ens
 This algorithm maximizes the total similarity across all matched pairs, effectively revealing the identities of individuals within the encoded dataset \cite{schaefer2024}.
 
 An example of this process is illustrated in Figures~\ref{fig:gmaexampleone} and \ref{fig:gmaexampletwo}, which provide a high-level overview of the \ac{gma} attack applied to a \ac{pprl} approach using \ac{bf} encoding.
-Initially, the two data owners agree on an encoding scheme and encode their respective datasets, for this example using Bloom filters.
+Initially, the two data owners agree on an encoding scheme and encode their respective datasets, for this example using \ac{bf}.
 These encoded datasets are then send to the linkage unit.
 The attack begins at this point, leveraging information inherently available to the linkage unit.
 Specifically, the linkage unit constructs similarity graphs for both the encoded datasets and an auxiliary plaintext dataset.
@@ -328,7 +328,7 @@ By embedding these similarity graphs into a vector space and aligning the embedd
   \label{fig:gmaexampletwo}
 \end{figure}
 
-The novel \ac{gma} approach by Schaefer et al. \cite{schaefer2024} achieves near-perfect re-identification rates when dataset overlap is 100\%.
+The improved \ac{gma} approach by Schaefer et al. \cite{schaefer2024} achieves near-perfect re-identification rates when dataset overlap is 100\%.
 Even for low-overlap scenarios (e.g., 5\%), success rates reach 99.9\% for \ac{tsh} \cite{schaefer2024}.
 The only encoding scheme resistant to \ac{gma}s is \ac{bf}s with diffusion layers, which disrupts similarity preservation for sufficiently high diffusion values \cite{schaefer2024}.
 
@@ -374,7 +374,7 @@ where \(a\) is the neuron’s output, \(\sigma\) is the activation function, \(z
 The depth and size of the hidden layers determine the network's capacity to model relationships, making them a crucial component of deep learning architectures \cite{dongare2012introduction, sharma2024deep}.
 
 Finally, the output layer generates the final predictions based on the processed information.
-The number of neurons in this layer depends on the nature of the task—whether it is a classification problem, where each neuron represents a class, or a regression task, where a single neuron outputs a continuous value \cite{dongare2012introduction}.
+The number of neurons in this layer depends on the nature of the task, whether it is a classification problem, where each neuron represents a class, or a regression task, where a single neuron outputs a continuous value \cite{dongare2012introduction}.
 
 Training an \ac{ann} involves iteratively adjusting its parameters, using a labeled dataset to minimize prediction errors.
 The process begins with forward propagation, where input data flows through the network, passing through multiple layers until it reaches the output layer, generating a prediction.
