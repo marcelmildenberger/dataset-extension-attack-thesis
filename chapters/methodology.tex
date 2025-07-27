@@ -562,7 +562,8 @@ For each of the \( n \) predicted entries, the algorithm performs similarity com
 D = D_{\text{given}} + D_{\text{surname}} + D_{\text{birthday}}.
 \]
 
-The similarity metric used for comparison is the Dice coefficient over n-grams, which can be computed in linear time with respect to the number of n-grams in the compared tokens. Assuming an average of \( g \) n-grams per token, the runtime complexity of computing a single Dice similarity is \( \mathcal{O}(g) = \mathcal{O}(|A| + |B|) \) where \( |A| \) and \( |B| \) are the number of n-grams in the two sets being compared.
+The similarity metric used for comparison is the Dice coefficient over n-grams, which can be computed in linear time with respect to the number of n-grams in the compared tokens.
+Assuming an average of \( g \) n-grams per comparison (i.e., \( |A| + |B| \approx g \)), the runtime complexity of computing a single Dice similarity is \( \mathcal{O}(g) = \mathcal{O}(|A| + |B|) \) where \( |A| \) and \( |B| \) are the number of n-grams in the two sets being compared.
 
 
 Therefore, the overall runtime complexity of the dictionary-based reconstruction attack is
@@ -576,7 +577,7 @@ In practice, the values of $g$ are relatively small, as the average number of 2-
 
 
 Overall, this strategy provides a realistic and reproducible method for attackers to reconstruct personal information, particularly in scenarios where the attacker has access to auxiliary data such as population wide name lists or public birthdate datasets.
-By exploiting structural patterns and common token distributions, this method demonstrates how dictionary guided attacks can ly enhance the re-identification capabilities.
+By exploiting structural patterns and common token distributions, this method demonstrates how dictionary guided attacks can enhance the re-identification capabilities.
 
 \subsection{Generative Language Model Based Reconstruction}
 \label{sec:generative-llm-reconstruction}
@@ -633,7 +634,7 @@ The prompt template can be found below and should be considered an integral part
 
 
 After submitting the prompt, the model typically responds within several seconds, depending on the provider and load conditions.
-The output is then post-processed to extract the structured attribute values and evaluated using standard string similarity metrics.
+The output is then post-processed to extract the structured attribute values.
 While this approach is not used in the final evaluation due to its lack of reproducibility and its dependency on external infrastructure, it represents a direction for future attack strategies, especially in human-in-the-loop or investigative contexts where creative reconstruction is desirable.
 
 

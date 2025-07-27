@@ -180,6 +180,13 @@ In this case, the \ac{dea} is not able to reconstruct any plaintext information.
 This is the case because if there are no re-identified individuals in place, there is no training data for the \ac{dea} available.
 Therefore the results of these experiments are not reported and the corresponding data points are excluded from the analysis and plots.
 
+In total, 131 experiments were conducted to evaluate the attack's effectiveness under varying conditions, including different overlap levels and drop strategies.
+On average, the DEA achieved a re-identification rate of 2.46\% and an F1-score of 0.621, with peak values reaching up to 22.68\% and 0.990, respectively.
+Among the encoding schemes, Two-Step Hash exhibited the highest vulnerability with an average re-identification rate of 3.26\% and the best structural learnability (F1 = 0.682).
+In contrast, Tabulation MinHash yielded the lowest average re-identification rate (1.54\%), indicating greater resilience.
+The following sections analyze these results in detail, focusing on how encoding choices, dataset characteristics, and attack configurations influence the DEA's success.
+
+
 \subsection{\ac{tmh}}
 
 The following subsection focuses on the results obtained using the \ac{tmh} encoding scheme.
@@ -189,282 +196,413 @@ To ensure consistency, the dataset and encoding scheme are fixed, while the eval
 
 \paragraph{Titanic Full}
 
-The \ac{dea} using \ac{tmh} encoding achieves strong F1 scores on the Titanic dataset, with a peak of 0.76 for \texttt{DropFrom = Eve} and 0.68 for \texttt{DropFrom = Both} at overlap 0.9.
-This performance is largely driven by high precision (above 0.9) and improved recall for higher Recall, especially for Eve at 0.8 overlap (0.64).
-Compared to lower overlap scenarios, the model benefits dramatically from increasing training data.
-While Both initially underperforms Eve at 0.7–0.8, the gap narrows at higher overlap values.
+On the \textit{Titanic Full} dataset, the DEA achieves stable and moderate performance using Tabulation MinHash (TMH) encoding. The prediction quality improves consistently with increasing overlap between the auxiliary and target datasets.
 
-No successful re-identifications are observed, neither fuzzy nor greedy matchers identify any records across overlaps.
-Despite solid structural learning, the model remains ineffective at perfectly linking back to individual identities on this dataset.
+For the \texttt{DropFrom = Eve} scenario, the F1-score increases from 0.74 at overlap 0.7 to 0.17 at overlap 0.8, before recovering to 0.73 at overlap 0.9. This dip at 0.8 is reflected in both recall and precision, suggesting a less effective hyperparameter configuration or reduced data utility at that particular overlap. Precision is generally high across all overlaps, peaking at 0.96.
 
-The hyper optimization validation scores slightly underestimate the training F1, but overall performance is close, particularly at higher overlaps.
+In the \texttt{DropFrom = Both} setting, the DEA maintains stable growth in both recall and F1-score. Precision remains above 0.78 at all overlaps and reaches 0.96 at overlap 0.8. At 0.9, the F1-score peaks at 0.72, confirming that even with symmetric data loss, the DEA can learn meaningful patterns in TMH-encoded data.
 
-In summary, \ac{tmh} performs well on the Titanic dataset in terms of predictive accuracy, but fails to achieve individual re-identification under the evaluated conditions.
+Despite good predictive performance, no re-identification is achieved under any overlap or matching strategy. Both fuzzy and greedy matching yield a re-identification rate of zero, underscoring the difficulty of exact record recovery on this small and heterogeneous dataset.
+
+The comparison of trained F1-scores with their corresponding hyperparameter-optimized values indicates slight underestimation by the optimization procedure, particularly at high-performing overlaps. Nonetheless, the overall trend aligns well.
+
+In summary, the DEA demonstrates good structural learning on TMH-encoded Titanic data, particularly at higher overlaps, but fails to produce successful record-level re-identifications in this configuration.
+
 
 
 \paragraph{Fakename 1k}
 
-The \ac{dea} evaluation on the \ac{tmh} encoding for the fakename 1k dataset reveals several trends.
-When using the \texttt{DropFrom = Eve} configuration, the \ac{dea} consistently outperforms the baseline F1 score for overlaps higher than 0.4.
-Specifically, at overlaps of 0.6 and 0.8, the trained F1 score reaches approximately 0.54 and 0.58 respectively, clearly surpassing the baseline of around 0.2.
-This improvement is also reflected in the recall, which increases from about 0.11 at 0.4 overlap to over 0.42 at 0.8.
-Precision remains consistently high for Eve (above 0.95 across all overlaps), indicating that while not all matches are found, those that are predicted are likely correct.
-In contrast, the \texttt{DropFrom = Both} configuration shows weaker performance, only approaching the baseline F1 at the highest overlap (0.8), with notably lower recall and precision in all other settings.
-Interesting is the spike of precision at 0.8 overlap to nearly 0.9.
+On the \textit{fakename 1k} dataset, the DEA demonstrates moderate predictive performance when using Tabulation MinHash (TMH) encoding. The model's ability to recover n-gram patterns improves with increasing overlap, particularly in the \texttt{DropFrom = Eve} setting.
 
-Despite the promising F1 scores, the actual re-identification rate remains at 0\% across all overlaps and drop from strategies.
-None of the applied re-identification methods could recover any individual's true identity, indicating that while the model learns statistical patterns, it does not enable perfect linkage to plaintext identities.
+Under \texttt{DropFrom = Eve}, F1-scores increase from 0.18 at 0.4 overlap to 0.58 at 0.8 overlap. This trend is mainly driven by improved recall, which rises from 0.10 to 0.43, while precision remains consistently high above 0.92. This indicates that the DEA makes accurate predictions on a small but increasing portion of the encoded structure as more re-identified data becomes available.
 
-When comparing trained F1 scores against the F1 score during hyper parameter optimization, all points lie below the $x = y$ line, suggesting that the trained model performs worse then during hyper paraemter optimization.
-This underestimation highlights that the hyper optimization metric may be conservative and not fully reflect the model’s potential when applied to the entire dataset again.
+The \texttt{DropFrom = Both} configuration shows limited performance. Although the F1-score improves from 0.00 to 0.22 between overlaps 0.4 and 0.8, recall stays low (below 0.14), and precision only surpasses 0.85 at the highest overlap. This suggests that the model struggles to generalize well under symmetric data loss conditions on small datasets.
 
-Overall, these results show that the \ac{dea} can exploit structural patterns in \ac{tmh} encodings effectively.
-However, the inability to re-identify individuals directly suggests that while aggregate information can be extracted, privacy at the individual level is maintained under these conditions.
+Despite some structural learning success, the re-identification rate remains at zero across all overlap values and both drop-from strategies. Neither greedy nor fuzzy matching yields any valid mappings to original records.
+
+The comparison between hyperparameter-optimized and trained F1-scores shows a generally accurate trend, with underestimation being most notable in the high-performing runs. This suggests that the chosen Dice score remains a reliable metric during tuning.
+
+Overall, the DEA on TMH-encoded \textit{fakename 1k} data benefits from higher overlap and asymmetric dropout but remains ineffective for precise record-level re-identification.
+
 
 \paragraph{Fakename 2k}
 
-Compared to the 1k dataset, the \ac{dea} performance on the 2k version shows even clearer improvements when using \texttt{DropFrom = Eve}.
-At overlaps of 0.6 and 0.8, the trained F1 reaches 0.58 and 0.72 respectively, again clearly surpassing the baseline.
-Recall increases substantially (up to 0.61 at 0.8), and precision remains high (>0.9) except for a dip at 0.6.
-In contrast, the \texttt{DropFrom = Both} strategy performs poorly across all metrics, with only marginal gains in F1 and recall.
+On the \textit{fakename 2k} dataset, the DEA shows a clear improvement in predictive performance with increasing overlap when using Tabulation MinHash (TMH) encoding. This trend is especially evident under the \texttt{DropFrom = Eve} configuration.
 
-Similar to the 1k case, the re-identification rate remains 0\% for all overlap levels and matching methods, reaffirming that the model exploits structural patterns but fails to link any record back to its plaintext identity.
-The generalization gap observed in the \texttt{hyper optimization vs. Full F1} plot persists, with trained performance consistently exceeding validation scores.
+In the Eve setting, the F1-score increases from 0.10 at 0.4 overlap to 0.57 at 0.6, reaching 0.73 at 0.8. This is driven by steady improvements in recall (from 0.06 to 0.62), while precision remains consistently high (above 0.90 at both 0.4 and 0.8). These results suggest that the DEA learns meaningful structural patterns when sufficient re-identified training data is available.
 
-Overall, the trend confirms that increasing dataset size and overlap improves \ac{dea} effectiveness under the Eve setting, while direct re-identification remains infeasible.
+The \texttt{DropFrom = Both} scenario shows much weaker performance. The F1-score only reaches 0.16 at overlap 0.8, with recall staying below 0.11 and precision peaking at just 0.35. This indicates that symmetric data loss significantly limits the learning signal on smaller datasets, reducing the DEA’s effectiveness.
+
+Re-identification remains unsuccessful across all configurations and overlaps. Neither fuzzy nor greedy matching methods yield any valid re-identifications, which reflects the difficulty of achieving exact plaintext recovery in low-coverage scenarios.
+
+Hyperparameter optimization underestimates the trained F1-scores for all configurations, though the trend is consistent and particularly close for higher-overlap Eve settings. This suggests the tuning metric (Dice score) remains informative for model selection.
+
+In summary, TMH encoding on the \textit{fakename 2k} dataset enables effective n-gram prediction under asymmetric knowledge assumptions, while re-identification remains out of reach under all tested conditions.
+
 
 \paragraph{Fakename 5k}
 
-With the larger fakename 5k dataset, the \ac{dea} achieves its strongest results so far, especially for \texttt{DropFrom = Eve}.
-F1 peaks at 0.87 for overlap 0.6 and remains above 0.7 across higher overlaps.
-Precision nearly saturates at 1.0, while recall reaches 0.79.
-Compared to the 1k and 2k datasets, both the quality and stability of predictions improve.
-Even the \texttt{DropFrom = Both} configuration becomes effective, surpassing the baseline for overlaps $\geq$ 0.6.
+For the \textit{fakename 5k} dataset, the DEA achieves strong performance in reconstructing structural patterns when Tabulation MinHash (TMH) is used. Both \texttt{DropFrom = Eve} and \texttt{DropFrom = Both} settings show substantial improvements in predictive quality with increasing overlap.
 
-For the first time, a small number of re-identifications occur: up to 1.2\% (Eve) and 0.01\% (Both) at overlap 0.6.
-These are still rare, but mark a turning point in the attack’s ability to directly reconstruct individuals.
-The validation F1 (hyper optimization) continues to underestimate final performance, though the gap is narrower than in smaller datasets.
+In the \texttt{DropFrom = Eve} scenario, the F1-score rises from 0.14 at 0.2 overlap to a peak of 0.87 at 0.6. This is supported by a corresponding increase in recall from 0.11 to 0.80, while precision exceeds 0.95 from 0.4 onward. The \texttt{DropFrom = Both} configuration follows a similar trend, achieving an F1-score of 0.77 at 0.6 overlap, with precision of 0.98 and recall around 0.65.
 
-These results indicate that with sufficient data volume and overlap, the \ac{dea} begins to break through into direct re-identification.
+Notably, this is the first setting in which the DEA yields non-zero re-identification rates. In the \texttt{DropFrom = Eve} configuration, a re-identification rate of 1.2\% is observed at 0.6 overlap, with contributions from both fuzzy and greedy matching. The \texttt{DropFrom = Both} setting shows a smaller but non-negligible rate of 0.07\% at the same overlap. These results mark the transition from structural to record-level leakage under favorable training conditions.
+
+Hyperparameter optimization correlates well with final model performance. While the optimized F1-scores slightly underestimate the trained F1, the trends remain aligned and the top-performing models match closely with the best configurations found during tuning.
+
+Overall, this setting demonstrates that the DEA can become effective at re-identification as dataset size and training overlap increase. TMH-encoded PII becomes vulnerable to both structural inference and, under certain conditions, full record re-identification.
+
 
 \paragraph{Fakename 10k}
 
-With 10{,}000 records, the \ac{dea} reaches good performance.
-For \texttt{DropFrom = Eve}, the trained F1 climbs above 0.9 (overlap $\geq$ 0.6), and recall reaches 0.91, far exceeding the baseline.
-Precision saturates at nearly 1.0 across both drop strategies.
-Notably, \texttt{DropFrom = Both} also becomes effective with increasing overlap, achieving an F1 of 0.9 at overlap 0.8.
-Compared to the 5k dataset, all metrics improve further in both quality and consistency.
+The DEA achieves high performance on the \textit{fakename 10k} dataset with Tabulation MinHash (TMH) encoding. Both predictive quality and re-identification effectiveness increase significantly with overlap, particularly under the \texttt{DropFrom = Eve} scenario.
 
-Importantly, re-identification becomes significant: up to 5.3\% for Eve and 2.9\% for Both at overlap 0.8, marking the first clear success in reconstructing individual identities.
-Greedy and fuzzy matching both contribute, with their combined result performing best.
-As in previous experiments, the validation F1 underestimates final performance, though the top points begin to approach the $x = y$ line.
+In the Eve setting, the F1-score improves from 0.51 at 0.2 overlap to 0.93 at 0.6 and 0.92 at 0.8. Precision remains consistently above 0.96, and recall exceeds 0.9 at the two highest overlaps. The model clearly benefits from access to a larger fraction of re-identified training data, leading to near-perfect structural reconstruction.
 
-Overall, this setting shows that the \ac{dea} not only recovers accurate group-level patterns but now also breaches individual privacy when data size and overlap are high.
+The \texttt{DropFrom = Both} configuration follows a similar trend but with slightly lower performance at small overlaps. At 0.8 overlap, it reaches an F1-score of 0.91, with precision of 0.98 and recall of 0.86. Compared to smaller datasets, performance differences between the two dropout strategies become marginal at high overlaps.
+
+For the first time, substantial re-identification rates are observed. Under \texttt{DropFrom = Eve}, the combined re-identification rate reaches 5.45\% at 0.6 overlap and remains above 5\% at 0.8. The \texttt{DropFrom = Both} configuration achieves a lower peak of 2.97\% at 0.8. Both fuzzy and greedy methods contribute to these results, with fuzzy matching consistently recovering more records.
+
+These findings are mirrored in the aggregate relationship between F1-score and re-identification rate, which shows a clear positive correlation. This confirms that structural accuracy translates to successful record-level attacks in larger datasets.
+
+The hyperparameter-optimized F1-scores closely match the trained values, particularly for the high-performing configurations. The Dice score used for tuning appears well-calibrated even in high-dimensional settings.
+
+Overall, the DEA is highly effective on TMH-encoded data when training coverage is sufficient and dataset size enables generalization. The combination of high recall and precision leads to significant re-identification risk at overlap levels of 0.6 and above.
+
 
 \paragraph{Fakename 20k}
 
-On the this dataset so far, the \ac{dea} reaches its highest effectiveness.
-Trained F1 exceeds 0.9 for both \texttt{DropFrom = Eve} and \texttt{DropFrom = Both} at overlap 0.8.
-Recall remains above 0.9 for Eve and 0.86 for Both, with near-perfect precision across all settings.
-Unlike smaller datasets, the Both strategy now reliably outperforms the baseline, even at lower overlap, demonstrating that \ac{dea} benefits from both increased data volume and redundancy.
+The DEA reaches its highest level of effectiveness on the \textit{fakename 20k} dataset when using Tabulation MinHash (TMH) encoding. Both structural reconstruction and re-identification performance scale with dataset size and overlap, confirming the vulnerability of TMH-encoded data under dataset extension attacks.
 
-Re-identification becomes alarmingly effective: Eve strategy enables recovery of up to 13.2\% of individuals at overlap 0.8, while Both strategy yields up to 10.2\%.
-The gap between matching strategies is consistent across all dataset sizes.
-The \emph{greedy} matching always outperforms \emph{fuzzy}, indicating that more confident matches are made based on graph-based reconstruction.
-The generalization gap between validation and full data F1 narrows for high-performing runs, but underfitting remains visible at lower overlaps.
+In the \texttt{DropFrom = Eve} configuration, F1-scores increase from 0.51 at 0.2 overlap to 0.96 at 0.8. Precision and recall both exceed 0.95 at the highest overlap, indicating that the model is able to reconstruct the n-gram distribution with high fidelity. The \texttt{DropFrom = Both} setting follows a similar trajectory, with the F1-score reaching 0.95 at 0.8 and precision nearly identical to the Eve scenario.
 
-In summary, at 20k records, the \ac{dea} no longer just learns structure, it reliably performs direct re-identification.
-The attack is most effective under the Eve strategy with high overlap, but Both is no longer a safe configuration as well.
+The re-identification rates increase sharply with overlap. Under \texttt{DropFrom = Eve}, the combined re-identification rate reaches 13.47\% at 0.8, with greedy and fuzzy matching each contributing a substantial portion. Even in the more conservative \texttt{DropFrom = Both} setting, the rate surpasses 10\% at the highest overlap, confirming that re-identification is possible even without access to a clean subset.
+
+The correlation between F1-score and re-identification rate is stronger than in previous datasets, with a visibly steep upward trend. This suggests that small improvements in structural accuracy have increasingly large effects on re-identification success in large-scale datasets.
+
+The hyperparameter optimization results are tightly aligned with final model performance, particularly for configurations with F1-scores above 0.9. The Dice score remains a reliable proxy for selecting high-performing models in high-dimensional learning scenarios.
+
+In summary, the fakename 20k experiments demonstrate the full potential of the DEA. With high overlap and sufficient data, TMH encoding fails to protect against meaningful reconstruction and record-level compromise.
+
 
 \paragraph{Europerson}
 
-For the euro person dataset, the \ac{dea} again achieves strong results across all overlaps and configurations.
-Trained F1 scores are consistently high, peaking at 0.95 for both \texttt{DropFrom = Eve} and \texttt{Both}, above the baseline.
-Recall and precision also remain high across all settings, suggesting stable and reliable model behavior.
-Unlike the fakename datasets, the Both strategy performs comparably well or even slightly better than Eve in terms of F1, indicating that the model generalizes robustly even when information is dropped symmetrically.
+The \textit{euro person} dataset further confirms the vulnerability of Tabulation MinHash (TMH) encodings under dataset extension attacks. Despite variations in overlap, the DEA consistently achieves high predictive performance and exhibits meaningful re-identification capability.
 
-Re-identification is effective but concentrated at overlap 0.6, reaching 6.7\% for Both and 6.1\% for Eve.
-As in previous datasets, \emph{greedy} matching consistently outperforms \emph{fuzzy}.
-This reaffirms earlier observations that greedy matching is more effective for this task.
-The drop in re-identification rates at overlap 0.8, despite high model performance, suggests potential saturation effects or ambiguity in the match space.
+Across all overlap values, the model maintains high precision (above 0.92), with only moderate variability in recall. In the \texttt{DropFrom = Both} setting, F1-scores exceed 0.87 at all overlaps and peak at 0.94 for overlap 0.4. This reflects stable reconstruction accuracy even in scenarios where neither dataset dominates. The \texttt{DropFrom = Eve} configuration shows more fluctuation, with F1-scores ranging from 0.50 to 0.92, likely due to reduced training set size at lower overlaps.
 
-However, the \texttt{hyper optimization vs. Full F1} plot shows nearly perfect correlation, suggesting excellent validation accuracy and minimal overfitting, marking a notable improvement over previous runs.
+Re-identification rates vary substantially across overlaps. In the \texttt{DropFrom = Both} setting, a peak re-identification rate of 6.85\% is observed at overlap 0.6. Notably, this rate drops to near zero at 0.8, despite similar predictive metrics, indicating the effect of reduced unique reconstruction under high training similarity. The \texttt{DropFrom = Eve} setting shows similar behavior with a maximum re-identification rate of 6.12\% at 0.6 overlap, largely driven by greedy matches.
 
-In summary, the \ac{dea} remains highly effective on the euro person dataset, with robust re-identification capabilities and strong generalization, especially under symmetric drop scenarios.
+The aggregate F1-to-re-identification relationship exhibits a clear positive trend, reinforcing that high structural accuracy translates into privacy loss at the record level. This is further supported by the distribution of fuzzy and greedy re-identifications, with both contributing significantly at intermediate overlaps.
 
-\paragraph{Fakename 50k}
+Hyperparameter optimization yields slightly optimistic F1-scores in some runs, but the trained values remain closely aligned overall. The Dice score again proves to be a stable tuning criterion.
 
+Overall, the euro person dataset reveals that even realistic, multilingual name data encoded via TMH is susceptible to reconstruction and re-identification. The DEA performs reliably across settings, with overlap 0.6 appearing to maximize re-identification success.
+
+
+\paragraph{Summary Across Datasets and Overlap Levels}
+
+Figure XXX illustrates the relationship between overlap and both re-identification rate (left) and F1-score (right), averaged over drop strategies for each dataset. The results highlight how both structural and record-level vulnerabilities evolve with dataset size and training coverage.
+
+Larger datasets such as \textit{fakename 20k}, \textit{fakename 10k}, and \textit{euro person} exhibit clear monotonic trends. As the overlap increases, both F1-scores and re-identification rates improve. For \textit{fakename 20k}, the re-identification rate peaks at nearly 12\% for 0.8 overlap. Similarly, \textit{euro person} reaches its highest F1-score at 0.6 overlap, accompanied by its highest re-identification performance, indicating that structural accuracy enables effective exploitation.
+
+Smaller datasets such as \textit{fakename 1k}, \textit{2k}, and \textit{titanic full} show limited gains in re-identification, regardless of overlap. Their F1-scores increase with overlap, but remain insufficient to enable consistent reconstruction. Notably, \textit{fakename 5k} serves as a transition point: at 0.6 overlap, it achieves a modest re-identification rate and solid F1-score, but both metrics drop again at 0.8 overlap.
+
+Across datasets, the plots reveal that higher overlap generally yields better F1-scores. However, effective re-identification is highly dependent on dataset size and complexity. The correlation between these two metrics is dataset-specific and non-linear, particularly at high F1 values where small increases may lead to steep jumps in re-identification.
+
+These findings reinforce the conclusion that TabMinHash encodings do not provide sufficient protection in high-overlap, large-scale scenarios. While the DEA may remain ineffective on small or disjoint datasets, it becomes increasingly potent as structural learning converges, ultimately compromising encoded identifiers.
+
+\paragraph{Architecture}
+
+Figur XXX presents a distributional analysis of the neural network architectures selected during hyperparameter optimization across all TabMinHash experiments. The results provide insight into which architectural choices consistently yield strong performance in structural reconstruction and re-identification tasks.
+
+The majority of optimized models employ a shallow architecture with a single hidden layer. More complex configurations with two or three layers are rare, suggesting that the DEA can learn effective representations without requiring deep hierarchical abstraction. This is consistent with the relatively structured nature of the prediction task and the compactness of TMH-encoded records.
+
+In terms of hidden size, larger configurations are clearly favored. The most frequent choice is a hidden dimension of 2048, followed by 1024. Smaller sizes below 512 occur infrequently, indicating that wide layers contribute significantly to capturing the necessary n-gram co-occurrence patterns for decoding.
+
+Dropout rates are broadly distributed, with a mean around 0.24. This suggests that regularization is helpful, but not critical; overfitting appears to be limited even with lower dropout. The threshold histogram indicates that models typically settle around a value of 0.44 for binary classification, though a wide range is explored, reflecting dataset-specific optimality.
+
+Activation functions are led by \texttt{elu} and \texttt{selu}, both of which support smooth non-linear transitions and internal normalization. Simpler functions like \texttt{relu} and \texttt{gelu} are used less frequently. This preference for normalized activations may reflect the benefits of stability during training on small gradients.
+
+Among optimizers, \texttt{AdamW} is most commonly selected, followed by \texttt{Adam} and \texttt{RMSprop}. This aligns with the need for stable adaptive learning rates and effective weight decay. Learning rate schedulers are also diverse, with \texttt{ReduceLROnPlateau} and \texttt{CyclicLR} being the most frequent. The inclusion of schedulers reflects their utility in adjusting learning dynamics over the short training windows.
+
+Batch sizes of 8 and 16 dominate, likely due to the small to medium dataset sizes and the use of non-GPU resource constraints during experimentation. Finally, the number of training epochs converges to 20 in nearly all cases, the maximum allowed during tuning, suggesting that performance continues to improve up to the epoch limit.
+
+In summary, the optimal architecture for TMH-encoded DEA models is characterized by a shallow but wide feedforward network, mild regularization, normalized activations, and adaptive optimizers with scheduler support. These configurations are robust across datasets and contribute significantly to the attack's effectiveness.
 
 \subsection{\ac{tsh}}
 
 \paragraph{Titanic Full}
 
-The \ac{tsh} encoding yields consistently strong \ac{dea} performance on the Titanic dataset.
-F1 scores steadily increase with overlap, reaching 0.79 for \texttt{DropFrom = Eve} and 0.80 for \texttt{DropFrom = Both} at 0.9 overlap.
-This balanced performance across both configurations is supported by high precision values, above 0.95 for Both, and recall values climbing to over 0.74.
-Unlike \ac{tmh}, which favored Eve at lower overlaps, \ac{tsh} appears more stable and symmetric in terms of learned patterns.
+On the \textit{Titanic Full} dataset, the DEA performs reliably when using Two-Step Hash (TSH) encoding, achieving stable precision and recall across overlap values. F1-scores range from 0.34 to 0.83, depending on the drop strategy and overlap.
 
-Despite the good predictive performance, re-identification remains unsuccessful.
-No matches are found using fuzzy or greedy strategies, indicating that while structural properties are recoverable, they do not yet support direct re-identification under these conditions.
-The validation to full F1 correlation is especially tight at higher overlaps, with only a minor underestimation in one configuration.
+In the \texttt{DropFrom = Eve} setting, the model consistently achieves high precision (above 0.95) across all tested overlaps. Recall improves with overlap, rising from 0.56 at 0.7 to 0.74 at 0.9. The resulting F1-score increases accordingly, reaching a maximum of 0.83 at 0.9 overlap, indicating robust learning from partially re-identified data even in small datasets.
 
-In conclusion, \ac{tsh} performs reliably on the Titanic dataset, yielding high precision reconstructions but no re-identifications, similar in privacy behavior to the other encoding methods tested.
+The \texttt{DropFrom = Both} configuration shows more variability. At 0.7 overlap, the F1-score remains low at 0.34, reflecting low precision (0.26) despite moderate recall (0.55). However, at 0.8 overlap, both precision and recall improve, yielding an F1-score of 0.72. This suggests that symmetric data loss can be mitigated as overlap increases, but model reliability depends strongly on sample size.
+
+No re-identifications are observed at any overlap level for either drop-from strategy. Both fuzzy and greedy matching yield zero hits, highlighting that accurate structural predictions do not necessarily lead to successful record reconstruction in small datasets like Titanic.
+
+The comparison of trained and optimized F1-scores shows good alignment, with optimization results slightly underestimating final model performance. The Dice score remains a useful surrogate during tuning, especially for mid-range overlaps.
+
+In summary, Two-Step Hash provides solid predictive performance on the Titanic dataset, particularly when Eve’s overlap is high. Nonetheless, the attack remains structurally bounded, and record-level re-identification is not achieved.
+
 
 \paragraph{Fakename 1k}
 
-For the fakename 1k dataset, the \ac{dea} using \ac{tsh} encoding achieves clear improvements over the baseline when overlap increases.
-Under \texttt{DropFrom = Eve}, the trained F1 reaches 0.72 at overlap 0.8, accompanied by a precision of 0.96 and recall of 0.60.
-The \texttt{DropFrom = Both} configuration lags behind at lower overlaps, but catches up by overlap 0.8 with an F1 of 0.65.
-This performance is again driven by strong precision values (0.97) and rising recall.
-Overall, \ac{tsh} enables the model to learn discriminative patterns effectively, even with a relatively small dataset.
+On the \textit{fakename 1k} dataset, the DEA shows measurable improvements in structural prediction performance as the overlap increases, though it fails to achieve any successful re-identifications.
 
-Despite these promising predictive results, no re-identifications were observed for any overlap or drop strategy.
-Both fuzzy and greedy matchers yielded a re-identifcation rate of 0\%, indicating that while the model successfully reconstructs structure, individual identities remain protected in this setting.
+In the \texttt{DropFrom = Eve} setting, F1-scores rise sharply with overlap, starting from 0.11 at 0.4 to 0.74 at 0.8. This trend is driven by improvements in both recall (from 0.06 to 0.62) and precision (from 0.52 to 0.95). The results suggest that the DEA is able to learn useful representations even with a small dataset, provided sufficient re-identified training data is available.
 
-The hyperparameter optimization validation scores follow the full data F1 trend with reasonable alignment, though slightly underestimated at high overlaps.
-These results suggest that even at small scale, \ac{tsh} supports stable and accurate structure reconstruction, but without enabling perfect re-identification.
+The \texttt{DropFrom = Both} configuration performs worse, particularly at lower overlaps. At 0.6 overlap, F1-score remains low (0.07), but rises to 0.66 at 0.8, supported by high precision (0.95) and moderate recall (0.52). This indicates that symmetric data loss is more detrimental at small scale, though sufficient overlap mitigates this effect.
+
+Despite achieving F1-scores over 0.7 in some configurations, re-identification remains at 0\% for all tested overlaps and matching strategies. This underlines the fact that a strong n-gram prediction model does not necessarily translate into record-level success when the dataset size is small.
+
+The comparison between optimized and trained F1-scores is consistent, with only minor deviations. The hyperparameter tuning process based on Dice/F1 remains reliable even in data-scarce settings.
+
+Overall, Two-Step Hash yields competitive structural predictions on small datasets like \textit{fakename 1k}, particularly when the training overlap is high. However, the DEA does not succeed in reconstructing any individual records in this configuration.
+
 
 
 \paragraph{Fakename 2k}
 
-With 2{,}000 records, the \ac{dea} performance improves significantly across both dropout strategies.
-For \texttt{DropFrom = Eve}, the trained F1 reaches 0.77 at overlap 0.6 and 0.82 at 0.8.
-The model achieves precision values above 0.9 while recall steadily increases, indicating that \ac{tsh} enables the model to identify consistent structure as overlap grows.
-Interestingly, the \texttt{DropFrom = Both} configuration, while initially lagging, catches up at overlap 0.8, where it reaches an F1 of 0.84, slightly outperforming Eve in this setting.
+The \textit{fakename 2k} dataset reveals a clear improvement in DEA performance with increasing overlap when Two-Step Hash (TSH) encoding is used. While low-overlap configurations perform poorly, both structural prediction and re-identification become feasible at higher overlaps.
 
-Re-identification remains very limited.
-A few individual matches occur at higher overlaps, with a combined re-identification rate of 0.11\% for Eve at overlap 0.6 and 0.29\% for Both at 0.8.
-These are isolated and do not suggest a systematic breach.
-As seen previously, the successful re-identifications primarily stem from greedy matches, with fuzzy matching contributing marginally or not at all.
+In the \texttt{DropFrom = Eve} setting, the F1-score increases from 0.11 at 0.2 to 0.76 at 0.6, and further to 0.83 at 0.8. Precision remains high throughout (above 0.79), while recall improves substantially with overlap, reaching 0.76 and 0.76 at 0.6 and 0.8, respectively. These results indicate that once a sufficient number of re-identified records are available, the DEA can learn and generalize the underlying encoding structure effectively.
 
-The hyperparameter optimization F1 estimates closely follow the full trained F1 values, particularly for the top-performing settings.
-Overall, the model demonstrates reliable learning behavior with growing structural accuracy, and only marginal re-identification leakage under favorable conditions.
+The \texttt{DropFrom = Both} configuration follows a similar trend but lags slightly. At 0.4 overlap, performance remains negligible (F1 = 0.11), but at 0.8 it rises to 0.83, with both precision (0.97) and recall (0.74) being strong. This confirms that symmetric data loss can be overcome given sufficient overlap.
+
+Unlike on the 1k dataset, the DEA successfully re-identifies individual records at higher overlaps. Under \texttt{DropFrom = Eve}, a small re-identification rate of 0.1\% is achieved at 0.6. In the \texttt{DropFrom = Both} setting, this increases to 0.3\% at 0.8. Although the rates are modest, they demonstrate that re-identification becomes possible as structural accuracy increases.
+
+The trend between F1-score and re-identification rate is consistent, with successful re-identifications only occurring beyond F1 = 0.75. This reflects a threshold-like behavior in the attack's effectiveness.
+
+Hyperparameter tuning correlates well with trained outcomes. In particular, the optimized Dice scores closely match final F1-scores for the best configurations, validating the use of Dice as a selection criterion.
+
+In summary, the fakename 2k dataset shows that TSH encoding provides limited protection once the overlap exceeds 0.6. The DEA can achieve strong predictions and initial re-identifications even in modestly sized datasets.
+
 
 
 \paragraph{Fakename 5k}
 
-On the fakename 5k dataset, the \ac{dea} achieves robust structural reconstruction for both dropout strategies.
-For \texttt{DropFrom = Both}, the trained F1 increases steadily with overlap, peaking at 0.94 at overlap 0.8.
-Eve performs similarly, reaching an F1 of 0.89 at overlap 0.6, followed by a slight drop.
-Precision remains high across all settings (>0.95), while recall shows a consistent upward trend, reflecting stable learning behavior.
+The \textit{fakename 5k} dataset marks the transition point where the DEA begins to yield meaningful re-identification rates under Two-Step Hash (TSH) encoding. Both precision and recall improve steadily with increasing overlap, and re-identification becomes feasible.
 
-Re-identification becomes more prominent in this setting.
-For Eve, the combined re-identification rate reaches 2.1\% at overlap 0.6, with contributions from both greedy and fuzzy matching.
-For Both, the re-identifcation rate peaks at 5.5\% at overlap 0.8, the highest observed so far in this encoding scheme.
-Greedy matching again proves to be the dominant source of correct identifications, though fuzzy matching contributes increasingly at high overlap.
+In the \texttt{DropFrom = Eve} setting, the model achieves an F1-score of 0.10 at 0.2 overlap, but quickly improves to 0.89 at 0.6, with near-perfect precision (0.99) and strong recall (0.82). Interestingly, performance slightly drops at 0.8, suggesting that the increased overlap does not always translate to higher generalization capacity under this drop strategy.
 
-The hyperparameter optimization validation F1 aligns well with full-data F1, especially in the upper range, and reliably tracks the performance trend.
-Overall, \ac{tsh} demonstrates its strongest re-identification capabilities in this setting so farh, especially under symmetric dropout and high overlap, confirming its vulnerability to structure-based leakage under \ac{dea}.
+The \texttt{DropFrom = Both} configuration follows a smoother trajectory. F1-score increases from 0.22 at 0.2 overlap to 0.76 at 0.4, 0.89 at 0.6, and peaks at 0.94 at 0.8. These results are underpinned by consistently high precision and rising recall, indicating the model’s ability to capture TMH-encoded structure even under symmetric data loss.
+
+The first substantial re-identification rates are observed in this dataset. Under \texttt{DropFrom = Eve}, the combined rate reaches 2.1\% at 0.6 but drops again at 0.8. In contrast, \texttt{DropFrom = Both} shows increasing re-identification, reaching 5.52\% at 0.8. This inverse pattern suggests that different dropout strategies interact differently with the learned representations, particularly when Eve's dataset becomes large and less diverse.
+
+The re-identification curve as a function of F1-score shows the expected upward trend, confirming that strong structural prediction is a prerequisite for record-level re-identification.
+
+Hyperparameter optimization is effective across all configurations. Optimized F1-scores are slightly conservative but closely follow the trend of the final trained models.
+
+Overall, the fakename 5k dataset demonstrates that DEA success under TSH encoding is strongly dependent on overlap and dataset size. Once a critical threshold is reached, even structurally obfuscated data becomes vulnerable to reconstruction.
+
 
 
 \paragraph{Fakename 10k}
 
-On the fakename 10k dataset, the \ac{dea} again shows strong structure reconstruction under both dropout strategies.
-The trained F1 exceeds 0.9 for \texttt{DropFrom = Eve} at overlap 0.6 and reaches 0.95 for \texttt{DropFrom = Both} at overlap 0.8.
-Precision values remain consistently high (>0.95), while recall grows steadily, indicating stable learning behavior with increasing overlap.
-An exception occurs at overlap 0.6 under Both, where model performance drops sharply, likely due to instability in hyperparameter selection.
+The DEA achieves consistently high structural prediction performance on the \textit{fakename 10k} dataset when using Two-Step Hash (TSH) encoding. Re-identification becomes substantial, particularly in the \texttt{DropFrom = Eve} configuration at intermediate overlaps.
 
-Re-identification becomes significant in this setting.
-For Eve, the combined re-identifciation rate peaks at 11.1\% at overlap 0.6, with greedy matching again dominating.
-Both also yield a strong re-identifcation rate, reaching 5.6\% at overlap 0.8.
-Fuzzy matching contributes modestly in all settings but never exceeds greedy performance.
+In the Eve setting, F1-scores are strong across all overlaps: 0.87 at 0.2, rising to 0.94 at 0.6, before slightly decreasing to 0.75 at 0.8. These fluctuations are primarily driven by changes in recall, which peaks at 0.90 but drops sharply at 0.8, despite stable precision above 0.96 throughout. This indicates that excessive overlap may not always improve performance due to overfitting or reduced variance in the training set.
 
-Despite the outlier at 0.6 for Both, the hyperparameter optimization F1 generally tracks full-data performance reliably, especially for high-performing configurations.
-These results highlight that \ac{tsh} poses a substantial re-identification risk when enough structural redundancy is present in the data, particularly under asymmetric dropout and moderate-to-high overlap.
+The \texttt{DropFrom = Both} configuration shows more stability at high overlaps. F1-scores increase from 0.76 at 0.2 to 0.91 at 0.4, and finally 0.94 at 0.8. At 0.6, however, the model fails to generalize, with recall collapsing to 0.05 and F1 dropping to 0.10. This suggests a sensitivity to training set composition at this overlap.
+
+Re-identification rates are highest for Eve at 0.6 overlap (10.9\%), coinciding with its peak in F1-score. The \texttt{DropFrom = Both} setup reaches a maximum re-identification rate of 5.6\% at 0.8. Fuzzy and greedy matching contribute similarly to the results, with combined predictions amplifying the attack's effectiveness.
+
+The re-identification rate shows a non-linear but positively correlated relationship with F1-score. The strongest privacy breaches occur in the range F1 > 0.9, highlighting the tipping point at which structural reconstruction translates into record-level compromise.
+
+Hyperparameter optimization continues to perform reliably, with trained F1-scores closely tracking the optimal Dice values across overlaps.
+
+In summary, the fakename 10k dataset confirms that DEA success under TSH encoding scales with dataset size and overlap. However, unexpected performance drops can occur under certain dropout conditions, emphasizing the need for robust model selection.
+
 
 
 \paragraph{Fakename 20k}
 
+The \textit{fakename 20k} dataset confirms the scalability and effectiveness of the DEA when applied to large, TMH-encoded datasets. With Two-Step Hash (TSH), the model reaches near-perfect predictive accuracy and achieves the highest re-identification rates observed across all experiments.
+
+In the \texttt{DropFrom = Eve} configuration, the DEA achieves F1-scores of 0.94 and 0.97 at overlaps 0.2 and 0.4, respectively. Both precision and recall are near 1.0, indicating highly reliable reconstruction of the encoded representations. In the \texttt{DropFrom = Both} case, the model achieves an F1-score of 0.92 at 0.8 overlap with precision of 0.99 and recall of 0.86, again showing strong generalization under symmetric dropout.
+
+Re-identification rates are substantial. Under \texttt{DropFrom = Eve}, the rate increases from 5.73\% at 0.2 overlap to 13.20\% at 0.4. These values represent the most successful attacks observed across the full DEA evaluation. The combined matching strategy benefits from contributions by both fuzzy and greedy methods, peaking at over 13\%.
+
+In the \texttt{DropFrom = Both} setting, the re-identification rate reaches 2.49\% at 0.8 overlap. While lower than in the Eve case, this still represents a notable privacy breach, particularly under conditions where no cleartext subset is available to the attacker.
+
+The positive linear trend between F1-score and re-identification rate is especially clear in this dataset, with a nearly perfect fit across configurations. This reinforces the conclusion that once structural accuracy exceeds 0.9, re-identification becomes a likely outcome.
+
+Hyperparameter optimization results align tightly with final F1-scores. The Dice score again proves to be an effective and well-calibrated tuning metric for large-scale datasets.
+
+In summary, the \textit{fakename 20k} experiments demonstrate the full vulnerability of TSH-encoded databases under dataset extension attacks. Even with minimal overlap, the DEA can achieve both high reconstruction fidelity and impactful re-identification, posing a serious threat to encoded privacy-preserving record linkage.
+
+
 \paragraph{Europerson}
 
-On the euro person dataset, the \ac{dea} yields near-perfect reconstruction performance under both dropout strategies.
-Trained F1 scores exceed 0.98 at overlap 0.6 and 0.8, with both Eve and Both achieving precision and recall values above 0.97.
-This reflects that the \ac{tsh} encoding retains highly discriminative structural patterns when applied to this dataset.
-The strong performance is consistent and stable across overlap values, and the hyperparameter optimization validation scores closely track the final F1, indicating reliable model selection.
+The \textit{euro\_person} dataset yields the highest observed re-identification rates under Two-Step Hash (TSH) encoding. Structural prediction performance is nearly perfect across all overlap values, and re-identification success exceeds 20\% at high overlap.
 
-Re-identification rates are substantial in this setting.
-Under Eve, the combined re-ID rate reaches 23.1\% at both 0.6 and 0.8 overlap.
-For Both, the rate follows closely with 21.9\% at overlap 0.8.
-Greedy matching again contributes the majority of successful matches, but fuzzy matching begins to play a more significant role at higher overlaps.
-These rates indicate that \ac{tsh} not only enables structural reconstruction but also allows for substantial identity recovery when the dataset structure is dense and consistent.
+In the \texttt{DropFrom = Eve} configuration, the model achieves F1-scores above 0.98 for overlaps 0.6 and 0.8. Precision and recall are both near 1.0, indicating that the model captures the encoded structure with high fidelity. Even at 0.2 overlap, the F1-score remains strong at 0.93, supported by a recall of 0.90 and precision of 0.95.
 
-This result confirms that for structurally rich datasets, \ac{tsh} can be highly vulnerable to dataset extension attacks.
-The re-identification potential under both symmetric and asymmetric dropout is pronounced and grows rapidly with overlap.
+The \texttt{DropFrom = Both} setting shows similar behavior. The F1-score rises from 0.68 at 0.2 to 0.98 at 0.6 and 0.99 at 0.8. This suggests that sufficient overlap renders the DEA robust even under symmetric data loss.
 
+Re-identification rates are particularly striking. Under \texttt{DropFrom = Eve}, the combined matching method reaches 22.6\% at 0.6 overlap and remains stable at 22.3\% at 0.8. The corresponding values in the \texttt{DropFrom = Both} setting are 17.8\% and 21.9\%, respectively. These are the highest attack success rates recorded, highlighting the severe privacy risk associated with large, European-style datasets and well-optimized neural architectures.
+
+The re-identification curve versus F1-score shows a near-linear relationship with a steep slope, underscoring the strong coupling between model accuracy and privacy leakage.
+
+Hyperparameter optimization is effective. The predicted F1-scores during tuning closely match the final trained values, and tuning time remains tractable even for large dataset sizes.
+
+In summary, the \textit{euro\_person} dataset illustrates that the combination of Two-Step Hash encoding and realistic, high-quality input data is particularly vulnerable to dataset extension attacks. The DEA can achieve both high prediction fidelity and extensive re-identification success, even with limited initial overlap.
+
+\paragraph{Summary Across Datasets and Overlap Levels}
+
+The summary plots in Figure XXX illustrate the overall relationship between overlap, structural prediction quality, and re-identification success across all evaluated datasets using Two-Step Hash (TSH) encoding.
+
+Across all datasets, F1-scores generally increase with overlap, reflecting improved structural learning by the neural model as more training data becomes available. For small datasets like \textit{titanic full} and \textit{fakename 1k}, the DEA struggles until the overlap reaches 0.8. In contrast, medium-sized datasets such as \textit{fakename 5k} and \textit{10k} show rapid improvement between 0.4 and 0.6. Larger datasets (\textit{fakename 20k} and \textit{euro\_person}) achieve F1-scores above 0.9 even at lower overlaps (0.2 or 0.4), confirming their higher learnability.
+
+Re-identification success remains low in small datasets, regardless of F1-score. In \textit{fakename 1k}, \textit{2k}, and \textit{titanic full}, the DEA fails to re-identify any records. The first meaningful re-identification rates emerge in \textit{fakename 5k}, with up to 5.5\% at high overlap. In \textit{fakename 10k}, the rate peaks at 10.9\% but drops slightly at 0.8. \textit{Fakename 20k} shows a more irregular pattern, with a maximum of 13.2\% at 0.4 but a slight decline thereafter. The \textit{euro\_person} dataset is the most vulnerable, with re-identification rates exceeding 22\% at 0.6 and 0.8.
+
+These results confirm a non-linear but consistent dependency between structural performance and re-identification capability. Notably, some datasets exhibit diminishing returns at very high overlaps, potentially due to reduced variability or model overfitting. Additionally, privacy leakage appears to depend not only on model performance (F1) but also on dataset characteristics such as name structure, token diversity, and size.
+
+Overall, Two-Step Hash poses a clear privacy risk under dataset extension attacks. While encoding obfuscates raw values, neural networks trained on auxiliary data can learn the structural mapping and enable re-identification—especially in realistic, large-scale datasets.
+
+\paragraph{Architecture}
+
+Figure~ XXX shows the distributions of the best-performing neural network configurations for models trained on Two-Step Hash (TSH) encoded datasets. Most models are relatively shallow: the majority use a single hidden layer, indicating that deeper networks are not necessary to capture the structure of the encoding. At the same time, the preferred hidden size is large, with 2048 being the most frequent choice, suggesting that a wide representation is crucial for learning the mapping from encoded inputs to class labels.
+
+In terms of activation functions, \texttt{gelu} and \texttt{selu} are most often selected, while traditional choices like \texttt{relu}, \texttt{tanh}, and \texttt{leaky\_relu} appear less frequently. This preference points to the importance of smooth and differentiable non-linearities that preserve gradient flow, especially when working with hashed inputs. Optimizer selection favors RMSprop, followed by Adam and AdamW. RMSprop’s popularity may be due to its ability to handle sparse and noisy gradients effectively. Learning rate schedulers are used in most cases, with \texttt{None} and \texttt{CyclicLR} dominating. This reflects that both fixed and adaptive schedules can work well depending on dataset size and overlap.
+
+Regularization is handled via dropout, with most selected values ranging between 0.15 and 0.35 (mean: 0.25), indicating a moderate level of regularization is helpful to avoid overfitting to the structure of the extended training data. The decision threshold for classification tends to cluster around 0.39, which reflects the model's calibrated confidence when predicting links. Most models train for around 15–20 epochs, with a noticeable concentration at the upper bound, suggesting that full training cycles are often required to reach convergence. Small batch sizes, particularly 8 and 16, dominate, likely due to their regularizing effect and suitability for noisy structural input.
 
 \subsection{\ac{bf}}
 
 \paragraph{Titanic Full}
 
-The \ac{dea} achieves high trained F1 scores on the Titanic dataset, peaking at 0.83 for \texttt{DropFrom = Both} and 0.81 for \texttt{DropFrom = Eve} at overlap 0.8.
-Precision and recall both exceed 0.9 and 0.7 respectively in these top performing settings, indicating that the model successfully captures structural patterns from \ac{bf} encodings.
-Compared to other datasets, performance is already strong at overlaps 0.7–0.9, and Both performs equally well or slightly better than Eve, suggesting that sufficient redundancy exists even under symmetric dropout.
+Figure~ XX shows the results of the dataset extension attack using Bloom filter encoding on the \texttt{titanic\_full} dataset. The experiment was conducted for high overlaps only (0.8 and 0.9), which is necessary for achieving a sufficient amount of training data.
 
-Despite strong classification results, no successful re-identifications are observed across any setting.
-Both fuzzy and greedy matching produce 0\% re-identifications, showing that although the model generalizes well, it does not achieve individual level deanonymization on this dataset.
+At overlap 0.9, the model reaches an F1-score of 0.83 (DropFrom = Eve), indicating that the structural mapping between encoded and raw data can be learned to a high degree. When training on data dropped from both parties, the model performs slightly worse with an F1-score of 0.81. While the precision is consistently high in both cases (above 0.95), recall increases significantly with higher overlap and is consistently better when training on Eve’s removed data. Still, no successful re-identifications were made, regardless of overlap or re-identification strategy.
 
-Overall, while the model effectively learns link structures in the Titanic data, it falls short of re-identification, likely due to the dataset’s size and feature variability.
+The lower right plot confirms that even strong structural performance does not necessarily lead to privacy leakage in this case. The Bloom filter encoding applied to such a small dataset appears to resist dataset extension attacks, even when structural similarity is effectively captured. This suggests that while Bloom filters may not be secure in general, they provide a sufficient level of obfuscation for small datasets with limited variation and overlap.
+
 
 
 \paragraph{Fakename 1k}
 
-On the fakename 1k dataset, the \ac{dea} using \ac{bf} encoding begins to show effective learning behavior under the \texttt{DropFrom = Eve} setting.
-The trained F1 score improves with overlap, reaching 0.68 at 0.8, far above the baseline.
+On the \texttt{fakename\_1k} dataset, performance varies notably depending on the drop strategy. When training on Eve’s removed data, the model achieves a peak F1-score of 0.67 at an overlap of 0.8, whereas training on data dropped from both parties results in consistently lower performance, with F1-scores never exceeding 0.20. Precision reaches over 0.9 for DropFrom = Eve but remains low for DropFrom = Both. Recall follows a similar trend, confirming that overlap and drop strategy significantly influence learnability.
 
-This increase is driven by a steady rise in recall (from 0.04 to 0.53) and consistently high precision (up to 0.93).
-In contrast, the \texttt{DropFrom = Both} configuration fails to show meaningful improvements, with F1 scores plateauing below 0.2 and recall staying low despite overlap increases.
+Despite this difference in structural performance, no re-identifications are made at any overlap or with any matching method. As before, the attack manages to recover structural patterns when training data is suitable, but Bloom filters at this scale appear to prevent any meaningful semantic reconstruction. The absence of re-identification across all conditions reinforces the notion that Bloom filters introduce sufficient noise or aliasing in small datasets to suppress exploitability.
 
-Despite strong F1 gains, no successful re-identifications are observed across any configuration or overlap.
-Both greedy and fuzzy matching yield 0\% re-identification, indicating that while the model captures structural information, it cannot yet link encoded entries to plaintext identities.
-
-The validation F1 (hyper optimization) underestimates full-data performance, especially for higher overlaps, consistent with trends seen in early-stage \ac{dea} setups.
-In summary, the \ac{bf} \ac{dea} on the 1k dataset demonstrates its first signs of structural reconstruction under Eve only dropout, though without successful individual level re-identification.
 
 \paragraph{Fakename 2k}
 
-With 2{,}000 records, the \ac{dea} shows improvements over the 1k setup, especially for \texttt{DropFrom = Eve}.
-The trained F1 rises sharply with overlap, reaching 0.86 at 0.8.
-Recall increases to 0.8, and precision remains above 0.9, showing the model's growing capacity to identify correct patterns in \ac{bf} encodings.
-In comparison, the \texttt{DropFrom = Both} strategy improves slightly but remains less effective, with F1 peaking at 0.72 and lower recall across all overlaps.
+For the \texttt{fakename\_2k} dataset, the attack reaches an F1-score of 0.86 at overlap 0.8 when trained on Eve’s removed individuals. In contrast, training on DropFrom = Both yields an F1 of 0.72. This discrepancy mirrors the gap in recall and precision between the two conditions. For DropFrom = Eve, both metrics exceed 0.8, while the recall remains below 0.7 for DropFrom = Both.
 
-For the first time, successful re-identifications occur: up to 1.5\% for Eve and 0.3\% for Both at overlap 0.8.
-As observed earlier, \emph{greedy} matching begins to outperform \emph{fuzzy} as overlap increases, indicating stronger exact-match results within the learned representations.
+Unlike previous datasets, Bloom filter encoding begins to show measurable vulnerability. The re-identification rate reaches 1.5\% in the best case (overlap 0.8, DropFrom = Eve), with most successful re-identifications resulting from the fuzzy matching strategy. In this configuration, 30 out of 2000 records were successfully linked, while maintaining a precision of 0.94. Notably, the increase in F1-score is closely followed by a linear rise in re-identification, as visible in the bottom right plot.
 
-The hyper optimization metric still slightly underestimates final F1, but the gap narrows compared to the 1k dataset.
-Overall, the model transitions from pattern learning to early-stage identity reconstruction, particularly under asymmetric dropout and high overlap.
+Overall, Bloom filters applied to \texttt{fakename\_2k} no longer fully prevent semantic reconstruction once a critical amount of training data becomes available. The model is capable of learning robust structural patterns, which results in partial leakage of identity information via dataset extension.
+
+% Optional figure
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{BloomFilter_fakename_2k_metrics.png}
+%    \caption{Bloom Filter — \texttt{fakename\_2k}: Prediction metrics, re-identification rates, and training dynamics.}
+%    \label{fig:bf_2k}
+%\end{figure}
+
 
 
 \paragraph{Fakename 5k}
 
-On the 5{,}000-record dataset, the \ac{dea} shows strong and increasingly stable performance.
-Trained F1 peaks at 0.93 for \texttt{DropFrom = Eve} and 0.91 for \texttt{Both}, both at overlap 0.6, higher than in the 2k setting.
-Precision approaches 0.98–0.99, and recall exceeds 0.85, confirming the model's ability to learn accurate structures from \ac{bf} encodings.
-Interestingly, at overlap 0.8, performance slightly drops for Eve, while Both remains stable, suggesting that excessive overlap might reduce contrast for learning.
+The \texttt{fakename\_5k} dataset exhibits a noticeable rise in vulnerability. At overlap 0.6, the model trained on Eve’s removed individuals achieves an F1-score of 0.93, clearly surpassing the performance of the model trained with DropFrom = Both (F1 = 0.90). For overlap 0.8, the scores diverge more strongly: the F1-score drops to 0.49 for DropFrom = Eve, while it remains high at 0.87 for DropFrom = Both. This inversion suggests a shift in learning dynamics where a larger overlap allows the model trained on Both to generalize better, possibly due to higher variance in the training set.
 
-Re-identification becomes meaningful: the Eve strategy yields up to 5.1\% at overlap 0.6, and Both up to 1.6\%.
-The dominant share of successful re-identifications again comes from \emph{greedy} matching, confirming its higher effectiveness over \emph{fuzzy}.
-These findings mark the transition from merely reconstructing structure to reliably mapping individual identities.
-As with earlier datasets, the hyper optimization validation score slightly underestimates final F1, though the correlation improves—especially for high-performing overlaps.
+The re-identification rate peaks at overlap 0.6, with 5.1\% when trained on Eve’s subset and 1.6\% for DropFrom = Both. This translates to 255 and 80 correctly re-identified individuals respectively. In both cases, the combined matching method yields the majority of successful links, while fuzzy and greedy individually contribute smaller fractions. This further confirms that the neural net learns to separate meaningful latent representations even when trained on partially observed data.
 
-Overall, the 5k setting marks the first consistently successful phase of both structural learning and individual re-identification across dropout strategies.
+Compared to \texttt{fakename\_2k}, the attacker gains more leverage here. While the F1-score improves only slightly, the re-identification rate scales more than threefold, indicating that higher dataset cardinality contributes significantly to exploitability. The bottom-right plot confirms this trend, as re-identification rates scale non-linearly with increasing F1-scores across configurations.
+
+% Optional figure
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{BloomFilter_fakename_5k_metrics.png}
+%    \caption{Bloom Filter — \texttt{fakename\_5k}: Prediction metrics, re-identification rates, and training dynamics.}
+%    \label{fig:bf_5k}
+%\end{figure}
+
 
 
 \paragraph{Fakename 10k}
 
-With 10{,}000 records, the \ac{dea} continues to scale effectively.
-Trained F1 scores reach 0.94 for \texttt{DropFrom = Eve} and 0.91 for \texttt{Both} at overlap 0.6, confirming stable structural learning across both asymmetric and symmetric dropout settings.
-Recall and precision remain very high (above 0.9) in all top-performing configurations.
-Performance slightly drops at overlap 0.8, indicating potential over-saturation in the match space.
+The results on \texttt{fakename\_10k} mark a transition into a regime where the dataset size and model capacity jointly enable highly effective re-identification. The F1-score reaches a peak of 0.95 for DropFrom = Eve and 0.94 for DropFrom = Both at overlap 0.6. For both removal strategies, this overlap corresponds to the best-performing configuration. At overlap 0.8, both models maintain high performance, although DropFrom = Both starts to degrade more steeply (F1 = 0.81 vs. 0.88 for Eve).
 
-Re-identification becomes substantial: Eve yields a combined re-identification rate of 11.1\% and Both up to 7.9\% at overlap 0.6.
-As in earlier datasets, \emph{greedy} matching consistently outperforms \emph{fuzzy}, with both contributing to the combined rate.
-This confirms the dominance of greedy strategies in reliably identifying true matches in \ac{bf} space.
-Interestingly, re-identification performance dips again at 0.8 overlap, despite high F1, suggesting increased ambiguity among highly similar records.
-Validation F1 (hyper optimization) aligns closely with final results in high-performing runs, while low-overlap settings still show significant underestimation.
+Re-identification is most successful at overlap 0.6, with rates of 11.1\% and 7.9\% for DropFrom = Eve and DropFrom = Both, respectively. These correspond to 555 and 395 successfully re-identified records out of the 5\,000 shared individuals. As before, the combined matching method dominates the attribution, while fuzzy and greedy matching alone yield lower recall. The second-best case occurs at overlap 0.4, with roughly half the re-identification rate, further highlighting the sensitivity to overlap.
 
-In summary, the 10k setting demonstrates mature \ac{dea} capabilities on \ac{bf}s: both structure and identity are increasingly recovered, with Eve offering the highest success rates under intermediate overlap conditions.
+The strong predictive performance also reflects in the F1-optimized training dynamics, as evident in the linear alignment between optimal and trained F1-scores. Interestingly, the fitted curve in the bottom-right plot shows a pronounced exponential relation between F1 and re-identification rate, confirming that performance gains increasingly translate to effective attacks beyond a certain threshold.
 
-\subsection{Comparison between Encoding Schemes}
+% Optional figure
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{BloomFilter_fakename_10k_metrics.png}
+%    \caption{Bloom Filter — \texttt{fakename\_10k}: Metrics and re-identification patterns across overlaps.}
+%    \label{fig:bf_10k}
+%\end{figure}
+
+\paragraph{Fakename 20k}
+
+The \texttt{fakename\_20k} dataset represents the upper limit of the evaluation and leads to the highest overall re-identification rates. At overlap~0.8, the trained model achieves F1-scores of 0.97 and 0.96 for DropFrom = Eve and DropFrom = Both, respectively. These near-perfect values are accompanied by precision values above 0.99 and recall values exceeding 0.93. The overall performance of the neural network remains stable across the entire overlap range, starting already at an F1-score of 0.83 for the lowest evaluated overlap of 0.2 (DropFrom = Eve). This consistency reflects the improved data redundancy and separability resulting from the large sample size.
+
+Re-identification rates increase monotonically with overlap. At overlap~0.8, DropFrom = Eve yields a re-identification rate of 19.2\%, corresponding to 1920 re-identified records. DropFrom = Both yields a lower rate of 11.1\%, but even this value is more than five times higher than the maximum rate seen on \texttt{fakename\_5k}. Notably, the increase in re-identification rates follows a non-linear trend that correlates with the F1-score, as shown in the bottom right plot.
+
+Decomposing the re-identification results reveals that the greedy method dominates, followed by fuzzy matching. Combined predictions always yield the highest rates, confirming their complementary nature. DropFrom = Both was only evaluated at overlap~0.8 but still resulted in significant success rates.
+
+Finally, the trained F1-scores align closely with those found during hyperparameter optimization, indicating stable convergence and reliable generalization even in high-dimensional Bloom filter encodings.
+
+% Optional figure
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=\textwidth]{BloomFilter_fakename_20k_metrics.png}
+%    \caption{Bloom Filter — \texttt{fakename\_20k}: Trained performance and re-identification across overlaps.}
+%    \label{fig:bf_20k}
+%\end{figure}
+
+\paragraph{Euro Person}
+
+No results are available for this configuration, as the underlying Graph Matching Attack (GMA) did not converge. Consequently, the Dataset Extension Attack could not be performed on this dataset when using Bloom filter encodings.
+
+\paragraph{Summary Across Datasets and Overlap Levels}
+
+The overall performance of the Dataset Extension Attack with Bloom filter encodings shows clear dependencies on both dataset size and overlap. As visible in the summary plots, larger datasets enable significantly higher re-identification rates and F1-scores. On the \texttt{fakename\_20k} dataset, re-identification reaches up to 18\% at an overlap of 0.6, with F1-scores consistently exceeding 0.95. In contrast, datasets with fewer than 5,000 entities yield only minimal re-identifications, even when model performance is moderately high. The \texttt{fakename\_10k} dataset also exhibits re-identification rates above 9\% at its peak, whereas \texttt{fakename\_5k} remains below 4\% throughout.
+
+A general trend is observable: for all datasets, F1-score improves with increasing overlap. However, re-identification rates do not increase linearly with model performance. Instead, some configurations (e.g., \texttt{fakename\_10k} and \texttt{fakename\_20k}) exhibit a peak at intermediate overlaps, suggesting a trade-off between memorization and generalization during training. For very small datasets, such as \texttt{fakename\_1k} and \texttt{titanic\_full}, no meaningful re-identifications occur, despite the model partially learning structure.
+
+This confirms that Bloom filters remain a robust encoding for small-scale linkage scenarios, but their security deteriorates with scale and overlap, particularly in the presence of sufficient training data and favorable GMA conditions.
+
+\paragraph{Architecture}
+
+The architectural configurations chosen during hyperparameter optimization for Bloom filter encodings reveal a strong preference for compact, shallow networks. The majority of trained models used a single hidden layer, combined with a hidden size of 2048 neurons. Smaller hidden sizes were rarely selected, indicating the need for substantial capacity to decode the bit-level representations typical of Bloom filters.
+
+Dropout rates clustered around 0.27 on average, with moderate variance, suggesting that regularization was important to avoid overfitting. Threshold values after sigmoid activation centered around 0.39, reflecting the relatively conservative decision boundaries necessary when working with noisy encodings.
+
+Activation functions were balanced between \texttt{tanh}, \texttt{elu}, and \texttt{silu}, indicating no clear dominance. However, RMSprop was the most frequently chosen optimizer, reinforcing its robustness in non-convex, sparse-feature learning. Learning rate schedulers skewed toward \texttt{CyclicLR}, while the most frequent batch size was 8.
+
+Training typically converged before or at 20 epochs, with a mean of approximately 16. These trends indicate that while Bloom filter decoding requires large intermediate representations, the training process itself remains stable and efficient, even under early stopping.
+
+\subsection{Comparison of Encoding Schemes}
+
+Figure XXX presents two line charts comparing the performance of the Dataset Extension Attack (DEA) across three encoding schemes: Bloom Filter, Tabulation MinHash, and Two-Step Hash. The $x$-axis represents the dataset overlap between the encoded and auxiliary databases, while the $y$-axes report the re-identification rate (left plot) and F1-score (right plot), respectively. Each line corresponds to one encoding scheme, enabling a direct comparison of DEA effectiveness as a function of the available training data.
+
+\paragraph{Re-identification Rate.} The left panel shows that the re-identification rate increases with overlap for all encoding schemes up to an overlap of $0.6$. This is consistent with the intuition that more overlap provides additional training labels for the supervised neural network, thereby improving its ability to perform accurate inference. Among the schemes, Two-Step Hash exhibits the highest vulnerability. Its re-identification rate peaks at approximately $5.5\%$ at an overlap of $0.6$ and remains high at $0.8$. Bloom Filter shows a comparable peak at $0.6$ but declines sharply at $0.8$, suggesting that excessive overlap may reduce the marginal gain or increase the ambiguity in predictions. Tabulation MinHash yields the lowest re-identification rates throughout, never exceeding $2.5\%$, indicating higher robustness against the DEA.
+
+\paragraph{F1-score.} The right panel reflects the structural reconstruction capability of the DEA in terms of F1-score (Dice coefficient). Here, all schemes show improvement with increasing overlap. Bloom Filter starts with a low F1-score at $0.2$ and $0.4$, followed by a rapid rise above $0.7$ at $0.6$. This behavior mirrors the pattern in the re-identification rate. Tabulation MinHash exhibits steady growth with overlap but levels off around $0.67$, reflecting a stable yet more conservative learning curve. Two-Step Hash consistently outperforms the other encodings, reaching an F1-score of $0.85$ at $0.8$ overlap. This confirms that the model is able to learn expressive and generalizable patterns in this encoding, albeit at the cost of increased re-identification vulnerability.
+
+The comparison highlights that Two-Step Hash is the most susceptible encoding under the DEA, combining high predictive performance with substantial re-identification success. Bloom Filter presents moderate vulnerability, characterized by a sharp performance gain at medium overlap followed by stagnation or decline. Tabulation MinHash emerges as the most resilient encoding scheme in this setting, achieving lower F1-scores and re-identification rates, but offering stronger privacy guarantees under DEA inference. These findings underscore the trade-off between expressiveness and security in similarity-preserving encodings and reinforce the need for careful scheme selection in privacy-preserving record linkage deployments.
+
+Figure XXX summarizes the average DEA performance across datasets for each encoding scheme, comparing the F1/Dice scores aggregated over all overlap levels. Results are shown for both drop strategies (\texttt{Eve} and \texttt{Both}).
+
+Across most datasets, \textbf{Two-Step Hash} consistently achieves the highest F1 scores, particularly on \texttt{fakename 5k}, \texttt{10k}, and \texttt{titanic full}, indicating strong structural learnability. Notably, in the \texttt{euro person} dataset, both encodings perform well with \texttt{Tabulation MinHash} slightly outperforming \texttt{Two-Step Hash}.
+
+\textbf{Bloom Filter} performance is highly variable: it performs well on large datasets such as \texttt{fakename 20k}, but poorly on smaller datasets like \texttt{fakename 1k} and \texttt{2k}, especially under the \texttt{Both} strategy. This suggests that Bloom Filters require sufficient training data to be effectively exploited by the DEA.
+
+\textbf{Tabulation MinHash} consistently shows moderate performance across datasets, with fewer fluctuations. While it rarely yields the highest scores, it is also less sensitive to dataset size or drop strategy, confirming its comparatively higher resilience.
+
+A clear trend is that the \texttt{Eve} strategy generally leads to better results than \texttt{Both}, especially on smaller datasets, due to cleaner training supervision. Exceptions to this are observed on \texttt{euro person} and \texttt{fakename 20k}, where the difference is negligible.
+
+
+
 
 
 
