@@ -1,11 +1,27 @@
-% !TeX root = main.tex
-%%%%%%%%%% SVN Info %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% $Date: 2020-02-05 16:17:49 +0100 (Mi, 05 Feb 2020) $
-%% $Author: cmueller $
-%% $Rev: 5 $
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \chapter{Abstract}
 
-The abstract should serve as an independent piece of information on your Thesis conveying a concise description of the main aspects and most important results.
-It should not be excessively long.
+\ac{pprl} enables the integration of sensitive datasets across institutional boundaries without disclosing \ac{pii}.
+It relies on similarity-preserving encoding schemes such as \ac{bf}s, \ac{tmh}, and \ac{tsh} to transform quasi-identifiers while aiming to protect privacy.
+However, recent advances have shown that these encoding schemes are vulnerable to inference-based attacks that exploit structural properties of the encoded data.
+This thesis introduces the \ac{dea}, a novel two-stage approach that expands the capabilities of the established \ac{gma} by enabling the re-identification of individuals not contained in the intersection of auxiliary and encoded datasets.
+
+The \ac{dea} leverages \ac{ann}s to learn statistical relationships between encoded representations and their underlying plaintext n-grams.
+By training on a subset of re-identified records obtained through a preceding \ac{gma}, the \ac{dea} generalizes to infer n-gram distributions for previously unmatched encoded entries.
+A modular pipeline is developed to support \ac{bf}, \ac{tmh}, and \ac{tsh} encodings, each of which introduces distinct challenges in terms of representation and dimensionality.
+The attack is framed as a multi-label classification problem, where the \ac{ann} predicts the likely presence of n-grams in the original plaintext identifier based on its encoded form.
+
+To reconstruct human interpretable attributes, three refinement strategies are explored: graph-based reconstruction, dictionary-based fuzzy matching, and \ac{llm}-based semantic reconstruction.
+
+Extensive experiments are conducted using synthetic and semi-realistic datasets, systematically varying dataset sizes, encoding schemes, and overlaps between auxiliary and target datasets.
+The \ac{dea} is evaluated using Dice coefficient for prediction quality and exact match reconstruction from predicted n-grams for re-identification performance.
+Results show that the \ac{dea} significantly outperforms frequency-based guessing baselines, achieving over 22\% re-identification on the most favorable configuration, demonstrating a clear privacy risk even when encoding secrets remain unknown to the attacker.
+
+The findings indicate that while \ac{bf} and \ac{tsh} enable efficient similarity computation, they expose recurring patterns exploitable through \ac{ann}s.
+\ac{tmh} shows the highest resilience to the \ac{dea}, though still permitting partial reconstruction under favorable conditions.
+Importantly, the results reveal a non-linear but positively correlated relationship between prediction quality and successful re-identification.
+The attack becomes increasingly effective as the F1-score of the \ac{ann} exceeds 0.9, suggesting a threshold effect where probabilistic reconstructions translate into actionable privacy breaches.
+
+This thesis contributes a scalable and adaptable attack model that highlights structural vulnerabilities in widely deployed \ac{pprl} schemes.
+It underscores the need to reassess current \ac{pprl} protocols and motivates the development of encoding mechanisms that minimize semantic leakage and resist statistical inference.
