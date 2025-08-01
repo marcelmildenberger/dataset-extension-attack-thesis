@@ -1,23 +1,20 @@
 \chapter{Background}  \label{sec:background}
 
 This chapter provides an overview of the key concepts relevant to this thesis, including \ac{pprl}, various encoding techniques used in secure linkage and existing attacks on encodings and \ac{pprl} schemes.
-\ac{pprl} enables different organizations to link records belonging to the same individual across datasets while preserving privacy, making it a crucial tool.
+\ac{pprl} enables different organizations to link records belonging to the same individual across datasets while preserving privacy.
 However, the security of such methods can depend on the encoding techniques used to transform sensitive data into a more privacy-preserving format \cite{vidanage2020graph}.
 
 To understand the vulnerabilities of \ac{pprl} systems, we examine three key encoding techniques: \ac{bf}, \ac{tmh}, and \ac{tsh}, each offering different trade-offs between efficiency, privacy, and robustness against attacks.
 While these methods aim to prevent direct access to plaintext identifiers, they remain susceptible to adversarial techniques designed to infer or reconstruct the original data \cite{vidanage2020graph,schaefer2024}.
+One such adversarial approach is the \ac{gma}, which leverages structural similarities between encoded and non-encoded datasets to re-identify individuals \cite{schaefer2024,vidanage2020graph}.
 
-One such adversarial approach is the \ac{gma}, which leverages structural similarities between encoded and non-encoded datasets to re-identify individuals.
-Although \ac{gma}s are good in reconstructing intersections of datasets, they are limited to the intersection of the two datasets.
-To extend \ac{gma}s beyond known intersections, we explore \ac{ann}s, which can learn complex patterns in encoded data and increase identification rates \cite{schaefer2024,vidanage2020graph}.
-
-By integrating these concepts, this chapter establishes the necessary foundation for understanding the \ac{dea} introduced later in this thesis, demonstrating how machine learning techniques can be employed to bypass existing privacy-preserving mechanisms.
+By integrating these concepts, this chapter establishes the necessary foundation for understanding the \ac{dea} introduced later in this thesis, demonstrating how \ac{ml} techniques can be employed to bypass existing privacy-preserving mechanisms.
 
 \section{Overview of \ac{pprl} }\label{sec:pprl_overview}
 
 \ac{pprl} enables the linkage of records from different databases that refer to the same individual while trying to preserve privacy.
 Traditional record linkage relies on unique identifiers, but these are often unavailable or inconsistent due to variations in formatting, spelling or missing data in a distributed environment.
-Linking records directly on plaintext data poses significant privacy risks.
+Linking records directly on plaintext data poses high privacy risks.
 To mitigate these risks and prevent further threats to individuals, regulations such as the European Union's \ac{gdpr} have been established to govern the handling of \ac{pii} \cite{schaefer2024,vidanage2020graph}.
 
 To enable record linkage using \ac{pii} while trying to preserve privacy, \ac{pprl} employs similarity-preserving encoding on quasi-identifiers, allowing linkage to be performed on encoded representations rather than raw data.
@@ -29,7 +26,7 @@ Broadly, \ac{pprl} methods fall into two categories, perturbation based techniqu
 \ac{smc}-based techniques provide strong security guarantees and high accuracy but suffer from computational and communication overheads.
 Conversely, perturbation-based techniques balance linkage quality, scalability, and privacy protection, making them more practical for real-world applications \cite{vidanage2020graph}.
 
-As seen in Figure~\ref{fig:pprloverview} a typical \ac{pprl} system involves three main parties working together in four steps to enable the linkage while maintaining privacy.
+As seen in Figure~\ref{fig:pprloverview} a typical perturbation-based \ac{pprl} system involves three main parties working together in four steps to enable the linkage while maintaining privacy.
 First data owners, who are responsible for maintaining their respective databases, \(D\) and \(D'\), encode the quasi-identifiers by agreeing on an encoding scheme with the corresponding parameters before then as a second step sharing their respective data sets with the linkage unit.
 The linkage unit, a trusted entity, performs the actual record linkage using only the encoded representations, without access to the original identifiers.
 Once the linkage is completed, the linkage unit assigns unique pseudonyms to the successfully linked records and returns the pseudonymized dataset as a third step to the data owners.
@@ -39,7 +36,7 @@ The data analyst can merge the records based on the identifiers and proceed with
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=1]{img/visualization.pdf}
+  \includegraphics[width=0.6\textwidth, page=1]{img/visualization.pdf}
   \caption{Overview of the \ac{pprl} process.}
   \label{fig:pprloverview}
 \end{figure}
@@ -47,7 +44,7 @@ The data analyst can merge the records based on the identifiers and proceed with
 Based on this scheme, each database record can therefore during the linkage process be represented as $r = (\lambda,  \sigma)$, where $\lambda$ denotes the linkage data which are encoded quasi-identifiers such as names and birthdates and $\sigma$ refers to the remaining microdata like in a health care scenario patient information \cite{schaefer2024}.
 
 Linkage in \ac{pprl} is performed probabilistically, meaning that two records, \(r\) and \(r'\), are considered linked if their similarity score on \(sim(\lambda_r, \lambda_{r'})\) exceeds a predefined threshold.
-The choice of threshold plays a crucial role in balancing the quality of the linkage.
+The choice of threshold plays an important role in balancing the quality of the linkage.
 Lower thresholds tolerate more variation and matches between records but increase the likelihood of false positives, while higher thresholds reduce false positives but may miss legitimate matches.
 Thus, selecting the optimal threshold is a trade-off that requires careful consideration of the specific goals and constraints of the linkage process \cite{schaefer2024}.
 
@@ -106,7 +103,7 @@ An Example for this can be seen in Figure~\ref{fig:bfexample} where the set of 2
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=5]{img/visualization.pdf}
+  \includegraphics[width=0.6\textwidth, page=5]{img/visualization.pdf}
   \caption{Example \ac{bf} for $k = 2$ hash functions on the set of 2-grams for ''encoding''.}
   \label{fig:bfexample}
 \end{figure}
@@ -161,7 +158,7 @@ The final Jaccard similarity estimate is computed based on the number of collisi
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=6]{img/visualization.pdf}
+  \includegraphics[width=0.6\textwidth, page=6]{img/visualization.pdf}
   \caption{Example computing approximate Jaccard similarity using MinHash with \(\pi = 2\) permutations.}
   \label{fig:minhashexample}
 \end{figure}
@@ -185,7 +182,7 @@ The retrieved bit strings are then XORed together to produce the final value for
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=7]{img/visualization.pdf}
+  \includegraphics[width=0.6\textwidth, page=7]{img/visualization.pdf}
   \caption{Simplified \ac{tmh} hasing step for the first lookup table, fourth hash function on the first set element.}
   \label{fig:tabminhashexample}
 \end{figure}
@@ -223,7 +220,7 @@ These steps provide accurate Jaccard similarity calculations while improving pri
 
 In the first step of the \ac{tsh} process, elements of the n-gram set \(S\) are hashed into \(k\) independent \ac{bf}s \(b_i\) of length \(l\), meaning each hash function results in a corresponding bit vector.
 This generates a \(k \times l\) matrix, where each row corresponds to a \ac{bf} created using a unique hash function, and each column represents the bitwise state across all \ac{bf}s for a given position.
-In the second step, after constructing the bit matrix, \ac{tsh} computes column-wise hashes to convert the bit vectors into integer representations .
+In the second step, after constructing the bit matrix, \ac{tsh} computes column-wise hashes to convert the bit vectors into integer representations.
 Each column vector is treated as an input for a hash function, and all-zero columns are skipped to prevent distortion in similarity calculations since they do not encode any n-grams.
 To enhance security and avoid hash collisions between columns with identical bit patterns, a salt value and the column index are concatenated before hashing \cite{ranbaduge2020secure}.
 
@@ -237,14 +234,14 @@ Since the encoded data consists of sets, Jaccard similarity can also be computed
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=8]{img/visualization.pdf}
+  \includegraphics[width=0.6\textwidth, page=8]{img/visualization.pdf}
   \caption{\ac{tsh} example for for two input values ''peter'' and ''pete'' \cite{ranbaduge2020secure}.}
   \label{fig:tshexample}
 \end{figure}
 
-An illustrative example is provided in Figure~\ref{fig:tshexample}, where the set of 2-grams for the words ``\textit{peter}'' and ``\textit{pete}'' is encoded using \ac{tsh} with $k = 4$ hash functions and a Bloom filter length of $l = 8$.
+An illustrative example is provided in Figure~\ref{fig:tshexample}, where the set of 2-grams for the words ``\textit{peter}'' and ``\textit{pete}'' is encoded using \ac{tsh} with $k = 4$ hash functions and a \ac{bf} length of $l = 8$.
 In the first hashing step, each 2-gram is processed using the $k$ hash functions, resulting in a $4 \times 8$ bit matrix.
-Each row of this matrix corresponds to a Bloom filter generated with a distinct hash function, encoding the presence of 2-grams across the $l$ bit positions.
+Each row of this matrix corresponds to a \ac{bf} generated with a distinct hash function, encoding the presence of 2-grams across the $l$ bit positions.
 
 In the second hashing step, the columns of the bit matrix are transformed into integer values.
 This is achieved by applying an additional hash function that incorporates both a salt value and the column index, effectively compressing the binary representation into a fixed-length integer vector.
@@ -314,7 +311,7 @@ By embedding these similarity graphs into a vector space and aligning the embedd
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=10]{img/visualization.pdf}
+  \includegraphics[width=0.6\textwidth, page=10]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
   Two data owners encode their datasets and send them to the linkage unit.}
   \label{fig:gmaexampleone}
@@ -322,7 +319,7 @@ By embedding these similarity graphs into a vector space and aligning the embedd
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=11]{img/visualization.pdf}
+  \includegraphics[width=0.6\textwidth, page=11]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
   The linkage unit mimics the \ac{bf} encoding for the public dataset and creates for both datasets similartie graphs, embeddings and aligns them to perform bipartite matching.}
   \label{fig:gmaexampletwo}
@@ -335,7 +332,7 @@ The only encoding scheme resistant to \ac{gma}s is \ac{bf}s with diffusion layer
 
 \section{\ac{ann}} \label{sec:nn}
 
-\ac{ann}s are a class of machine learning models inspired by the structure and function of biological neural systems.
+\ac{ann}s are a class of \ac{ml} models inspired by the structure and function of biological neural systems.
 They consist of interconnected layers of artificial neurons that process input data and extract meaningful patterns through iterative learning.
 \ac{ann}s have been widely applied in various fields, including image recognition, natural language processing, and classification tasks.
 Neural networks are particularly effective for complex tasks because they automatically identify and refine patterns in data through multiple layers of processing, removing the need for manual feature engineering, which can be difficult and time-consuming \cite{dongare2012introduction}.
@@ -346,7 +343,7 @@ The number of neurons in this layer corresponds directly to the number of input 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=16]{img/visualization.pdf}
+  \includegraphics[width=0.4\textwidth, page=16]{img/visualization.pdf}
   \caption{\ac{ann} consisting of multiple input neurons (input layer), hidden layers and output neurons (output layer) \cite{annimage}.}
   \label{fig:annexample}
 \end{figure}
@@ -357,7 +354,7 @@ Each neuron in a layer applies a weighted sum operation to its inputs, followed 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.66\textwidth, page=17]{img/visualization.pdf}
+  \includegraphics[width=0.4\textwidth, page=17]{img/visualization.pdf}
   \caption{Sketch of an single artifical neuron in an \ac{ann} \cite{neuronimage}.}
   \label{fig:neuronexample}
 \end{figure}
@@ -371,7 +368,7 @@ Mathematically, this operation is represented as
 \end{equation}
 
 where \(a\) is the neuron’s output, \(\sigma\) is the activation function, \(z\) is the weighted sum, \(w_i\) are the weights, \(x_i\) are the inputs, and \(b\) is the bias term \cite{neuronimage}.
-The depth and size of the hidden layers determine the network's capacity to model relationships, making them a crucial component of deep learning architectures \cite{dongare2012introduction, sharma2024deep}.
+The depth and size of the hidden layers determine the network's capacity to model relationships, making them an important component of deep learning architectures \cite{dongare2012introduction, sharma2024deep}.
 
 Finally, the output layer generates the final predictions based on the processed information.
 The number of neurons in this layer depends on the nature of the task, whether it is a classification problem, where each neuron represents a class, or a regression task, where a single neuron outputs a continuous value \cite{dongare2012introduction}.
@@ -393,7 +390,7 @@ In traditional single-label or binary classification problems, each instance is 
 To achieve this, the network's output layer typically uses a Softmax activation function, which converts the raw output scores into a probability distribution over all possible classes.
 The model can be trained using the Cross-Entropy Loss function, which penalizes incorrect classifications by measuring the difference between the predicted probability distribution and the actual class label \cite{russell2016artificial,herrera2016multilabel}.
 
-In contrast, multi-label classification allows an instance to belong to multiple categories at the same time.
+In contrast, multi-label classification allows an instance to belong to multiple categories (labels) at the same time.
 Instead of a single categorical output, the network produces independent predictions for each possible label.
 The output layer can then as an example apply sigmoid activations for each label, transforming the raw scores into independent probabilities indicating the presence or absence of each class.
 Since each label is treated as a separate binary classification problem, Binary Cross-Entropy (BCE) Loss is commonly used to optimize the model, ensuring accurate predictions across multiple labels \cite{russell2016artificial,herrera2016multilabel}.
@@ -410,25 +407,7 @@ When dealing with sequential data, Recurrent \ac{ann}s (RNNs) and their advanced
 These architectures introduce recurrent connections, enabling them to maintain memory of previous inputs and recognize patterns over time.
 This makes them well-suited for natural language processing, speech recognition, and time series forecasting \cite{medsker2001recurrent}.
 
-\subsection{PyTorch for Training \ac{ann}} \label{sec:pytorch}
-
-Training \ac{ann}s in PyTorch involves defining and optimizing a model through iterative learning, leveraging GPU acceleration for efficient computation.
-PyTorch offers a flexible and modular framework for designing and training neural networks, making it a widely adopted tool in deep learning research and applications \cite{pytorchPyTorch}.
-
-The process begins with defining the model architecture using the `torch.nn.Module` class, where users specify layers, activation functions, and parameters.
-This approach provides full control over the forward propagation process.
-Additionally, a task appropriate loss function is selected \cite{pytorchPyTorch}.
-
-After defining the model and loss function, an optimizer is chosen to adjust the model's weights during training.
-Training is conducted over multiple epochs, during which the dataset is processed in successive iterations to improve model accuracy.
-To enhance computational efficiency and stabilize gradient updates, the dataset is divided into mini-batches, enabling partial processing instead of loading the full dataset into memory \cite{pytorchPyTorch}.
-
-
-One of PyTorch’s key advantages is its support for GPU acceleration via `torch.cuda`, which significantly reduces training time for large datasets.
-By moving tensors and models to a GPU, computations are performed in parallel, leading to substantial performance gains compared to CPU-based training.
-Additionally, PyTorch's autograd engine enables automatic differentiation, simplifying the backpropagation process and making model optimization more efficient \cite{pytorchPyTorch}.
-
-Despite their success, \ac{ann}s present several challenges that must be carefully managed to ensure robust and efficient learning.
+Despite their success, \ac{ann}s present several challenges that must be managed to ensure robust and efficient learning.
 One of the most common issues is overfitting, where a model becomes too specialized in learning patterns from the training data, capturing possible noise rather than generalizable features.
 This leads to poor performance on unseen data.
 Techniques such as dropout regularization, L2 weight decay, and early stopping are commonly used to mitigate overfitting and improve generalization \cite{pytorchPyTorch,glorot2010understanding}.
@@ -453,11 +432,10 @@ Leaky ReLU, an activation function, mitigates the vanishing gradient problem by 
 The computational complexity of deep learning models is another major concern, as large-scale \ac{ann}s require extensive memory and processing power.
 Training deep networks on large datasets can be prohibitively slow on CPUs, necessitating the use of GPUs or specialized hardware like TPUs (Tensor Processing Units) to accelerate training.
 Efficient data-loading techniques and mixed-precision training can further optimize computational efficiency.
-PyTorch leverages this by utilizing its `torch.utils.data.DataLoader` class to efficiently load and preprocess data by using multiple workers.
 Mixed-precision training is a technique that partly uses lower-precision floating-point numbers to reduce memory usage and speed up computations, while still maintaining model accuracy \cite{pytorchPyTorch}.
 
-Lastly, hyperparameter tuning plays a critical role in model performance.
+Lastly, hyperparameter tuning plays an important role in model performance.
 Selecting the right learning rate, batch size, number of layers, and optimization algorithm requires experimentation and fine-tuning.
 Automated methods such as grid search, random search, and Bayesian optimization can assist in finding optimal configurations, but these processes are computationally expensive.
-Addressing these challenges effectively is crucial for developing high-performing \ac{ann}s that generalize well across different datasets and tasks \cite{pytorchPyTorch}.
+Addressing these challenges effectively is important for developing high-performing \ac{ann}s that generalize well across different datasets and tasks \cite{pytorchPyTorch}.
 

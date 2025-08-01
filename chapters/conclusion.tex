@@ -45,33 +45,32 @@ The attacker is assumed to possess no cryptographic secrets or salts but may exp
 To translate predicted n-grams into human interpretable identifiers, three reconstruction strategies were developed.
 The first method builds a directed graph from the predicted n-grams and attempts to find the longest coherent path through the character transitions.
 The second leverages auxiliary dictionaries of common first names, surnames, and birthdates to identify plausible matches via similarity scoring.
-The third strategy, based on large language models, uses a prompt based generative approach to reconstruct full identifiers from the predicted tokens.
+The third strategy, based on \ac{llm}s, uses a prompt based generative approach to reconstruct full identifiers from the predicted tokens.
 While powerful, the latter was excluded from the main evaluation due to its high variability, external dependencies, and limited reproducibility.
 
 Each reconstruction strategy represents a different level of attacker sophistication, from deterministic heuristics to semantic matching.
-Together, they illustrate the extent to which encoded identifiers can be reversed into intelligible personal data using only structural and statistical clues, even when access to exact encoding parameters is restricted.
+Together, they illustrate the extent to which encoded identifiers can be reversed into personal data using only structural and statistical clues, even when access to encoding secrets is restricted.
 
 The comprehensive experimental evaluation of the \ac{dea} across multiple datasets, encoding schemes, and overlap configurations revealed significant vulnerabilities in widely deployed \ac{pprl} systems.
-In total, 160 experiments were conducted, systematically varying dataset sizes from 1,000 to 26,625 records, overlap ratios from 20\% to 90\%, and three different encoding schemes (\ac{bf}, \ac{tmh}, and \ac{tsh}).
+In total, 180 experiments were conducted, systematically varying dataset sizes from 1,000 to 26,625 records, overlap ratios from 20\% to 80\%, and three different encoding schemes (\ac{bf}, \ac{tmh}, and \ac{tsh}).
 
-The results demonstrate that the \ac{dea} consistently outperforms baseline frequency-based guessing methods, achieving an average re-identification rate of 2.46\% across all experiments, with peak performance reaching 22.68\% under optimal conditions.
-The attack's effectiveness scales strongly with both dataset size and overlap ratio, with larger datasets enabling more sophisticated pattern learning and higher overlaps providing richer training signals.
+The results demonstrate that the \ac{dea} consistently outperforms baseline frequency-based guessing methods, achieving an average re-identification rate of 2.95\% across all experiments, with peak performance reaching 28.75\% under optimal conditions.
+The attack's effectiveness scales strongly with both dataset size and overlap ratio, with larger datasets enabling more sophisticated pattern learning and higher overlaps providing richer training data.
 
-Among the three encoding schemes evaluated, \ac{tsh} exhibited the highest vulnerability, achieving an average re-identification rate of 3.26\% and the best structural learnability with an average F1-score of 0.682.
+Among the three encoding schemes evaluated, \ac{tsh} exhibited the highest vulnerability, achieving an average re-identification rate of 3.26\% and the best structural learnability with an average F1-score of 0.688.
 This vulnerability stems from \ac{tsh}'s deterministic encoding structure, which preserves more statistical regularities than the other schemes.
-The \ac{bf} encoding showed moderate vulnerability with an average re-identification rate of 2.46\% and F1-score of 0.621, while \ac{tmh} demonstrated the highest resilience with the lowest average re-identification rate (1.54\%) and F1-score of 0.621.
+The \ac{bf} encoding showed moderate vulnerability with an average re-identification rate of 3.8\% and F1-score of 0.606, while \ac{tmh} demonstrated the highest resilience with the lowest average re-identification rate (1.54\%) and F1-score of 0.593.
 
-The relationship between structural reconstruction quality (F1-score) and re-identification success revealed a critical threshold effect: when the F1-score exceeded 0.9, the \ac{dea} achieved disproportionately higher re-identification rates.
-This threshold behavior was particularly evident in larger datasets such as \textit{fakename 20k} and \textit{euro\_person}, where F1-scores above 0.95 consistently translated to re-identification rates exceeding 10\%.
+The relationship between structural reconstruction quality (F1-score) and re-identification success revealed a threshold effect: when the F1-score exceeded 0.9, the \ac{dea} achieved disproportionately higher re-identification rates.
+This threshold behavior was particularly evident in larger datasets such as \texttt{fakename\_20k} and \texttt{euro\_person}, where F1-scores above 0.95 consistently translated to re-identification rates exceeding 10\%.
 
 Dataset size emerged as a crucial factor in attack effectiveness.
 Small datasets (1,000-2,000 records) showed limited vulnerability, with re-identification rates typically below 1\% even under high overlap conditions.
 However, medium-sized datasets (5,000-10,000 records) marked a transition point where the \ac{dea} began achieving meaningful re-identification success, with rates ranging from 2\% to 11\%.
-Large datasets (20,000+ records) demonstrated the highest vulnerability, with re-identification rates reaching 13-22\% under favorable conditions.
+Large datasets (20,000+ records) demonstrated the highest vulnerability, with re-identification rates reaching 13-28\% under favorable conditions.
 
-The overlap ratio between auxiliary and target datasets proved to be the most critical parameter affecting attack success.
+The overlap ratio between auxiliary and target datasets proved to an important parameter affecting attack success.
 Low overlap scenarios (20-40\%) generally resulted in poor performance due to insufficient training data, while high overlap scenarios (60-80\%) enabled the \ac{dea} to achieve its maximum effectiveness.
-Interestingly, very high overlap ratios (90\%) sometimes led to performance degradation, suggesting a trade-off between training data quantity and diversity.
 
 The experimental results also revealed important differences between the two drop-from strategies employed.
 The \texttt{DropFrom = Eve} strategy, where the auxiliary dataset is a strict subset of the target dataset, generally yielded better performance than the \texttt{DropFrom = Both} strategy, particularly on smaller datasets.
@@ -80,10 +79,10 @@ This difference diminished on larger datasets, where both strategies achieved co
 Notably, the \ac{dea} demonstrated high precision across all experiments, often exceeding 0.95, even when recall remained modest.
 This high precision is particularly concerning from a privacy perspective, as it means that the n-grams the model does predict are usually correct, enabling human analysts or automated systems to reconstruct partial identifiers with minimal noise.
 
-The results also highlighted the practical feasibility of the attack: the \ac{dea} pipeline operated efficiently on standard hardware, with hyperparameter optimization typically completing within reasonable timeframes and inference scaling linearly with dataset size.
+The results also highlighted the practical feasibility of the attack: the \ac{dea} pipeline operated efficiently on standard hardware, with hyperparameter optimization typically completing within reasonable time and inference scaling linearly with dataset size.
 This accessibility, combined with the attack's effectiveness, underscores the urgent need for more robust \ac{pprl} mechanisms.
 
-The findings and design of this thesis underscore a critical insight: even without access to cryptographic secrets or exact encoding parameters, an attacker can exploit structural patterns and statistical regularities within \ac{pprl} encoded data to perform effective re-identification.
+The findings and design of this thesis underscore an interesting insight: even without access to cryptographic secrets or exact encoding parameters, an attacker can exploit structural patterns and statistical regularities within \ac{pprl} encoded data to perform effective re-identification.
 The \ac{dea} demonstrates how partial re-identifications obtained via a \ac{gma} can serve as a springboard for broader inference, ultimately undermining the core privacy guarantees of non-interactive, similarity-preserving linkage protocols.
 
 This threat is particularly acute in real-world deployments where auxiliary data sources are abundant and overlap with target datasets is likely.
@@ -99,20 +98,17 @@ Moreover, the use of accessible deep learning frameworks and off-the-shelf hardw
 While the \ac{dea} presented in this thesis establishes a practical and effective pipeline for reconstructing identifiers from encoded representations, several opportunities remain for future exploration, particularly in improving robustness under more challenging conditions.
 One of the central limitations of the current approach lies in its dependence on supervised learning, which requires labeled data produced by the \ac{gma}.
 In low-overlap scenarios, however, the number of successfully re-identified individuals becomes too small to support effective training, limiting the applicability of the \ac{dea}.
-
-To address this, future work could explore unsupervised or semi-supervised learning strategies.
-For example, autoencoders or contrastive learning frameworks may be employed to learn latent representations of encoded records without relying on explicit labels.
-Alternatively, weak supervision through heuristics or synthetic data generation could help bootstrap model training in the absence of high \ac{gma} results.
-These approaches could increase the practical applicability of the \ac{dea}, particularly in real-world settings where overlap between auxiliary and target datasets can be low.
+Future work could explore alternative approaches to increase the practical applicability of the \ac{dea}, particularly in real-world settings where overlap between auxiliary and target datasets can be low.
 
 Another line of research could involve reversing the modeling direction altogether.
 Instead of predicting plaintext n-grams from encoded representations, one could design a model that learns to predict the corresponding encoded representation from a given set of n-grams.
+
 This would effectively invert the learning task, enabling a greedy reconstruction attack wherein an attacker iteratively constructs candidate plaintexts by adding one n-gram at a time.
 At each step, the model would generate a candidate encoding from the current n-gram set, and the attacker would retain the combination that maximizes similarity to the target encoded record.
 By fixing one n-gram and expanding the set greedily, the attacker could approximate the original encoding through iterative refinement, even in the absence of a direct mapping from encoding to n-grams.
 
 In parallel, a reversed variant of the \ac{dea} could be explored, in which the attacker does not attempt to infer plaintext from encoded data directly, but rather aims to test specific hypotheses about potential individuals.
-In this setting, the attacker begins with a curated list of plausible names or identifiers—either generated using an \ac{llm}, derived from auxiliary datasets, or constructed via combinatorial enumeration.
+In this setting, the attacker begins with a curated list of plausible names or identifiers, either generated using an \ac{llm}, derived from auxiliary datasets, or constructed via combinatorial enumeration.
 These candidates are then re-encoded using the trained model, and their encodings are compared against the set of unreidentified records using similarity metrics.
 This enables targeted queries such as: ``Is a particular individual part of the dataset?'' or ``Which of these candidate names best matches the encoded record?''
 
@@ -157,33 +153,4 @@ This naturally motivates a call for stronger privacy-preserving mechanisms and m
 Current encoding schemes often lack formal guarantees against inference attacks, especially when the encoded data must remain linkable and non-interactive.
 Future research could explore ways to strengthen existing \ac{pprl} protocols through techniques such as probabilistic obfuscation, hybrid interactive schemes, or encoding structures designed to minimize semantic leakage.
 Ultimately, by highlighting concrete vulnerabilities and proposing paths toward mitigation, this line of work aims not only to critique existing systems, but also to contribute to the development of more robust and transparent \ac{pprl} technologies.
-
-
-% ✅ Suggest deeper investigation of model design:
-% - Try other model architectures: transformers, LSTM, attention-based models.
-% - Explore unsupervised or semi-supervised learning (especially when \ac{gma} labels are sparse).
-% - Investigate reversed approach: Input for model would be the 2-grams of the entry and the output would be the predicted correspondng encoding. Then an greedy approach could be employed, where trying out with different 2-grams and 2-grams combination the attacker could try to best reconstruct the given encoding she has. So First one 2-gram would be fixed, and the resulting encoding with the highest similarty to the given encoding would be stored. Then a second 2-gram would be fixed, which increases the similarity further. Therefore greedy approach
-% - The architecture of the neural nets could be tried to be estimated mathematically based on the structure of the encoding scheme, as the process of putting an encoding and producing 2-grams can be seen as matrice multiplication problem. This could make the hyperparaemteroptimization obsolete.
-
-% ✅ Propose algorithmic improvements:
-% - Integrate \ac{dea} and \ac{gma} more tightly (e.g., iterative improvement).
-% - Use confidence thresholds to support human-in-the-loop attacks or ensemble methods.
-
-% ✅ Suggest evaluating the \ac{dea} against defenses:
-% - Add noise, n-gram dropout, Bloom filter salting, or differential privacy, especially focusing on Bloomfilter with diffusion, even though the results of the gma are already proven to be bad so there is training data for the dea available
-% - Test robustness of the \ac{dea} under different defensive conditions.
-% - Try different encoding schemes
-
-% ✅ Dataset-related suggestions:
-% - Use real-world datasets with natural noise and typos.
-% - Include multilingual datasets or names from different cultures, current focus is strongly on western names.
-
-% ✅ Cost-effectiveness and LLM-based strategies:
-% - Investigate low-cost use of LLMs (prompt tuning, distillation, or constrained decoding).
-% - Explore reversed \ac{dea}: generate and re-encode candidate names to find matches.
-
-% ✅ Broader impact and ethical implications:
-% - Discuss use of \ac{dea} for auditing existing \ac{pprl} systems.
-% - Call for stronger privacy-preserving mechanisms or standardized risk evaluations.
-% - Try to improve existing pprl schemes to be more robust agains inference based attacks
 
