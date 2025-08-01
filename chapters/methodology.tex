@@ -83,7 +83,7 @@ The attacker in the \ac{dea} scenario is modeled as the linkage unit within a \a
 This aligns with standard threat models in the literature, where the linkage unit is typically assumed to be semi-honest or honest-but-curious executing the prescribed protocol while remaining interested in extracting sensitive information from the encoded data it processes \cite{schaefer2024}.
 
 Following Kerckhoffs’s principle, the attacker is assumed to possess full knowledge of the \ac{pprl} system design, including encoding algorithms (e.g., \ac{bf} construction), parameter settings (e.g., filter length and n-gram size), and record linkage procedures.
-However, any encdoing specific secrets, such as random seeds and salt values, are assumed to be unknown to the attacker.
+However, any encoding specific secrets, such as random seeds and salt values, are assumed to be unknown to the attacker.
 
 In this setting, the attacker is presented with two encoded datasets originating from, for example, two organizations engaging in \ac{pprl}, and aims to re-identify individuals across them.
 

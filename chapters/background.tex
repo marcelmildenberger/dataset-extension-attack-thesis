@@ -183,7 +183,7 @@ The retrieved bit strings are then XORed together to produce the final value for
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\textwidth, page=7]{img/visualization.pdf}
-  \caption{Simplified \ac{tmh} hasing step for the first lookup table, fourth hash function on the first set element.}
+  \caption{Simplified \ac{tmh} hashing step for the first lookup table, fourth hash function on the first set element.}
   \label{fig:tabminhashexample}
 \end{figure}
 
@@ -235,7 +235,7 @@ Since the encoded data consists of sets, Jaccard similarity can also be computed
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.6\textwidth, page=8]{img/visualization.pdf}
-  \caption{\ac{tsh} example for for two input values ''peter'' and ''pete'' \cite{ranbaduge2020secure}.}
+  \caption{\ac{tsh} example for two input values ''peter'' and ''pete'' \cite{ranbaduge2020secure}.}
   \label{fig:tshexample}
 \end{figure}
 
@@ -321,7 +321,7 @@ By embedding these similarity graphs into a vector space and aligning the embedd
   \centering
   \includegraphics[width=0.6\textwidth, page=11]{img/visualization.pdf}
   \caption{High-level overview of the \ac{gma} attack process.
-  The linkage unit mimics the \ac{bf} encoding for the public dataset and creates for both datasets similartie graphs, embeddings and aligns them to perform bipartite matching.}
+  The linkage unit mimics the \ac{bf} encoding for the public dataset and creates for both datasets similarity graphs, embeddings and aligns them to perform bipartite matching.}
   \label{fig:gmaexampletwo}
 \end{figure}
 
@@ -416,12 +416,12 @@ Dropout regularization is a technique used to prevent overfitting by randomly se
 This forces the network to learn more robust features by preventing it to rely too heavily on a single neuron to perform well.
 L2 weight decay is another regularization method that penalizes large weights by adding a regularization term to the loss function.
 It tries to prevent the network from applying too much importance to a single feature, encouraging it to learn more generalizable patterns.
-Early stopping is a simple yet effective technique that stops training when the model's performance on a validation set starts to degrade below a certain threshhold, preventing overfitting \cite{pytorchPyTorch,glorot2010understanding}.
+Early stopping is a simple yet effective technique that stops training when the model's performance on a validation set starts to degrade below a certain threshold, preventing overfitting \cite{pytorchPyTorch,glorot2010understanding}.
 
 Another fundamental challenge is the vanishing and exploding gradient problem, which occurs in deep networks during backpropagation.
 When gradients become too small (vanishing), weight updates diminish, leading to slow or stalled learning.
 This can happen because gradients are the product of multiple derivatives, which can cause them to shrink exponentially as they propagate through the network.
-This can happen especially using activiation functions that saturate for extreme values.
+This can happen especially using activation functions that saturate for extreme values.
 Conversely, when gradients grow too large (exploding), unstable updates cause erratic training behavior.
 Solutions such as batch normalization, gradient clipping, and advanced activation functions like Leaky ReLU help address these issues \cite{pytorchPyTorch,glorot2010understanding}.
 
