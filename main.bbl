@@ -1,0 +1,1091 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{anyt/global//global/global}
+  \entry{armknecht2023strengthening}{article}{}
+    \name{author}{3}{}{%
+      {{hash=AF}{%
+         family={Armknecht},
+         familyi={A\bibinitperiod},
+         given={Frederik},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=HY}{%
+         family={Heng},
+         familyi={H\bibinitperiod},
+         given={Youzhe},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=SR}{%
+         family={Schnell},
+         familyi={S\bibinitperiod},
+         given={Rainer},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AFHYSR1}
+    \strng{fullhash}{AFHYSR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{AHS23}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{title}{Strengthening privacy-preserving record linkage using
+  diffusion}
+    \field{journaltitle}{Proceedings on Privacy Enhancing Technologies}
+    \field{year}{2023}
+  \endentry
+
+  \entry{annimage}{article}{}
+    \name{author}{3}{}{%
+      {{hash=BF}{%
+         family={Bre},
+         familyi={B\bibinitperiod},
+         given={Facundo},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=GJ}{%
+         family={Gimenez},
+         familyi={G\bibinitperiod},
+         given={Juan},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=FV}{%
+         family={Fachinotti},
+         familyi={F\bibinitperiod},
+         given={Víctor},
+         giveni={V\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BFGJFV1}
+    \strng{fullhash}{BFGJFV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{BGF17}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1016/j.enbuild.2017.11.045
+    \endverb
+    \field{title}{Prediction of wind pressure coefficients on building surfaces
+  using Artificial Neural Networks}
+    \field{volume}{158}
+    \field{journaltitle}{Energy and Buildings}
+    \field{month}{11}
+    \field{year}{2017}
+  \endentry
+
+  \entry{bloom1970space}{article}{}
+    \name{author}{1}{}{%
+      {{hash=BBH}{%
+         family={Bloom},
+         familyi={B\bibinitperiod},
+         given={Burton\bibnamedelima H},
+         giveni={B\bibinitperiod\bibinitdelim H\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {ACM New York, NY, USA}%
+    }
+    \strng{namehash}{BBH1}
+    \strng{fullhash}{BBH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Blo70}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{number}{7}
+    \field{pages}{422\bibrangedash 426}
+    \field{title}{Space/time trade-offs in hash coding with allowable errors}
+    \field{volume}{13}
+    \field{journaltitle}{Communications of the ACM}
+    \field{year}{1970}
+  \endentry
+
+  \entry{broder1997resemblance}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=BAZ}{%
+         family={Broder},
+         familyi={B\bibinitperiod},
+         given={Andrei\bibnamedelima Z},
+         giveni={A\bibinitperiod\bibinitdelim Z\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {IEEE}%
+    }
+    \strng{namehash}{BAZ1}
+    \strng{fullhash}{BAZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Bro97}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{booktitle}{Proceedings. Compression and Complexity of SEQUENCES
+  1997}
+    \field{pages}{21\bibrangedash 29}
+    \field{title}{On the resemblance and containment of documents}
+    \field{year}{1997}
+  \endentry
+
+  \entry{dongare2012introduction}{article}{}
+    \true{moreauthor}
+    \true{morelabelname}
+    \name{author}{3}{}{%
+      {{hash=DA}{%
+         family={Dongare},
+         familyi={D\bibinitperiod},
+         given={AD},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=KR}{%
+         family={Kharde},
+         familyi={K\bibinitperiod},
+         given={RR},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=KAD}{%
+         family={Kachare},
+         familyi={K\bibinitperiod},
+         given={Amit\bibnamedelima D},
+         giveni={A\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Citeseer}%
+    }
+    \strng{namehash}{DAKRKAD+1}
+    \strng{fullhash}{DAKRKAD+1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{DKK+12}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \field{number}{1}
+    \field{pages}{189\bibrangedash 194}
+    \field{title}{Introduction to artificial neural network}
+    \field{volume}{2}
+    \field{journaltitle}{International Journal of Engineering and Innovative
+  Technology (IJEIT)}
+    \field{year}{2012}
+  \endentry
+
+  \entry{fellegi1969theory}{article}{}
+    \name{author}{2}{}{%
+      {{hash=FIP}{%
+         family={Fellegi},
+         familyi={F\bibinitperiod},
+         given={Ivan\bibnamedelima P},
+         giveni={I\bibinitperiod\bibinitdelim P\bibinitperiod},
+      }}%
+      {{hash=SAB}{%
+         family={Sunter},
+         familyi={S\bibinitperiod},
+         given={Alan\bibnamedelima B},
+         giveni={A\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Taylor \& Francis}%
+    }
+    \strng{namehash}{FIPSAB1}
+    \strng{fullhash}{FIPSAB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{FS69}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{number}{328}
+    \field{pages}{1183\bibrangedash 1210}
+    \field{title}{A theory for record linkage}
+    \field{volume}{64}
+    \field{journaltitle}{Journal of the American Statistical Association}
+    \field{year}{1969}
+  \endentry
+
+  \entry{pytorchPyTorch}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=FTL}{%
+         family={Foundation},
+         familyi={F\bibinitperiod},
+         given={The\bibnamedelima Linux},
+         giveni={T\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FTL1}
+    \strng{fullhash}{FTL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Fou}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{howpublished}{\url{https://pytorch.org}}
+    \field{note}{[Accessed 12-03-2025]}
+    \field{title}{{P}y{T}orch --- pytorch.org}
+  \endentry
+
+  \entry{glorot2010understanding}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=GX}{%
+         family={Glorot},
+         familyi={G\bibinitperiod},
+         given={Xavier},
+         giveni={X\bibinitperiod},
+      }}%
+      {{hash=BY}{%
+         family={Bengio},
+         familyi={B\bibinitperiod},
+         given={Yoshua},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \list{organization}{2}{%
+      {JMLR Workshop}%
+      {Conference Proceedings}%
+    }
+    \strng{namehash}{GXBY1}
+    \strng{fullhash}{GXBY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{GB10}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{booktitle}{Proceedings of the thirteenth international conference on
+  artificial intelligence and statistics}
+    \field{pages}{249\bibrangedash 256}
+    \field{title}{Understanding the difficulty of training deep feedforward
+  neural networks}
+    \field{year}{2010}
+  \endentry
+
+  \entry{neuronimage}{article}{}
+    \name{author}{6}{}{%
+      {{hash=GF}{%
+         family={Ghorbani},
+         familyi={G\bibinitperiod},
+         given={Fardin},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Shabanpour},
+         familyi={S\bibinitperiod},
+         given={Javad},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=BS}{%
+         family={Beyraghi},
+         familyi={B\bibinitperiod},
+         given={Sina},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=SH}{%
+         family={Soleimani},
+         familyi={S\bibinitperiod},
+         given={Hossein},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=OH}{%
+         family={Oraizi},
+         familyi={O\bibinitperiod},
+         given={Homayoon},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Soleimani},
+         familyi={S\bibinitperiod},
+         given={M.},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GFSJBSSHOHSM1}
+    \strng{fullhash}{GFSJBSSHOHSM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{GSB+21}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \verb{doi}
+    \verb 10.1007/s00339-021-05030-6
+    \endverb
+    \field{pages}{869}
+    \field{title}{A deep learning approach for inverse design of the
+  metasurface for dual-polarized waves}
+    \field{volume}{127}
+    \field{journaltitle}{Applied Physics A}
+    \field{month}{11}
+    \field{year}{2021}
+  \endentry
+
+  \entry{herrera2016multilabel}{book}{}
+    \name{author}{8}{}{%
+      {{hash=HF}{%
+         family={Herrera},
+         familyi={H\bibinitperiod},
+         given={Francisco},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=CF}{%
+         family={Charte},
+         familyi={C\bibinitperiod},
+         given={Francisco},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=RAJ}{%
+         family={Rivera},
+         familyi={R\bibinitperiod},
+         given={Antonio\bibnamedelima J},
+         giveni={A\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=DJMJ}{%
+         family={Del\bibnamedelima Jesus},
+         familyi={D\bibinitperiod\bibinitdelim J\bibinitperiod},
+         given={Mar{\'\i}a\bibnamedelima J},
+         giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=HF}{%
+         family={Herrera},
+         familyi={H\bibinitperiod},
+         given={Francisco},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=CF}{%
+         family={Charte},
+         familyi={C\bibinitperiod},
+         given={Francisco},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=RAJ}{%
+         family={Rivera},
+         familyi={R\bibinitperiod},
+         given={Antonio\bibnamedelima J},
+         giveni={A\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=dJMJ}{%
+         prefix={del},
+         prefixi={d\bibinitperiod},
+         family={Jesus},
+         familyi={J\bibinitperiod},
+         given={Mar{\'\i}a\bibnamedelima J},
+         giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{HFCFRAJDJMJHFCFRAJJMJd1}
+    \strng{fullhash}{HFCFRAJDJMJHFCFRAJJMJd1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{HCR+16}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{title}{Multilabel classification}
+    \field{year}{2016}
+  \endentry
+
+  \entry{herzog2007data}{book}{}
+    \name{author}{3}{}{%
+      {{hash=HTN}{%
+         family={Herzog},
+         familyi={H\bibinitperiod},
+         given={Thomas\bibnamedelima N},
+         giveni={T\bibinitperiod\bibinitdelim N\bibinitperiod},
+      }}%
+      {{hash=SFJ}{%
+         family={Scheuren},
+         familyi={S\bibinitperiod},
+         given={Fritz\bibnamedelima J},
+         giveni={F\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=WWE}{%
+         family={Winkler},
+         familyi={W\bibinitperiod},
+         given={William\bibnamedelima E},
+         giveni={W\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{HTNSFJWWE1}
+    \strng{fullhash}{HTNSFJWWE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{HSW07}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{title}{Data quality and record linkage techniques}
+    \field{volume}{1}
+    \field{year}{2007}
+  \endentry
+
+  \entry{isaak2018user}{article}{}
+    \name{author}{2}{}{%
+      {{hash=IJ}{%
+         family={Isaak},
+         familyi={I\bibinitperiod},
+         given={Jim},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=HMJ}{%
+         family={Hanna},
+         familyi={H\bibinitperiod},
+         given={Mina\bibnamedelima J},
+         giveni={M\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {IEEE}%
+    }
+    \strng{namehash}{IJHMJ1}
+    \strng{fullhash}{IJHMJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{IH18}
+    \field{sortinit}{I}
+    \field{sortinithash}{I}
+    \field{number}{8}
+    \field{pages}{56\bibrangedash 59}
+    \field{title}{User data privacy: Facebook, Cambridge Analytica, and privacy
+  protection}
+    \field{volume}{51}
+    \field{journaltitle}{Computer}
+    \field{year}{2018}
+  \endentry
+
+  \entry{kum2014privacy}{article}{}
+    \name{author}{5}{}{%
+      {{hash=KHC}{%
+         family={Kum},
+         familyi={K\bibinitperiod},
+         given={Hye-Chung},
+         giveni={H\bibinithyphendelim C\bibinitperiod},
+      }}%
+      {{hash=KA}{%
+         family={Krishnamurthy},
+         familyi={K\bibinitperiod},
+         given={Ashok},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=MA}{%
+         family={Machanavajjhala},
+         familyi={M\bibinitperiod},
+         given={Ashwin},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=RMK}{%
+         family={Reiter},
+         familyi={R\bibinitperiod},
+         given={Michael\bibnamedelima K},
+         giveni={M\bibinitperiod\bibinitdelim K\bibinitperiod},
+      }}%
+      {{hash=AS}{%
+         family={Ahalt},
+         familyi={A\bibinitperiod},
+         given={Stanley},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {BMJ Publishing Group BMA House, Tavistock Square, London}%
+    }
+    \strng{namehash}{KHCKAMARMKAS1}
+    \strng{fullhash}{KHCKAMARMKAS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{KKM+14}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{number}{2}
+    \field{pages}{212\bibrangedash 220}
+    \field{title}{Privacy preserving interactive record linkage (PPIRL)}
+    \field{volume}{21}
+    \field{journaltitle}{Journal of the American Medical Informatics
+  Association}
+    \field{year}{2014}
+  \endentry
+
+  \entry{king2024rethinking}{misc}{}
+    \name{author}{2}{}{%
+      {{hash=KJ}{%
+         family={King},
+         familyi={K\bibinitperiod},
+         given={Jennifer},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=MC}{%
+         family={Meinhardt},
+         familyi={M\bibinitperiod},
+         given={Caroline},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KJMC1}
+    \strng{fullhash}{KJMC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{KM24}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{note}{White Paper, Stanford University Institute for Human-Centered
+  Artificial Intelligence (HAI)}
+    \field{title}{Rethinking Privacy in the AI Era: Policy Provocations for a
+  Data-Centric World}
+    \verb{url}
+    \verb http://www.darkpatternstipline.org
+    \endverb
+    \field{year}{2024}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{medsker2001recurrent}{article}{}
+    \true{moreauthor}
+    \true{morelabelname}
+    \name{author}{2}{}{%
+      {{hash=MLR}{%
+         family={Medsker},
+         familyi={M\bibinitperiod},
+         given={Larry\bibnamedelima R},
+         giveni={L\bibinitperiod\bibinitdelim R\bibinitperiod},
+      }}%
+      {{hash=JL}{%
+         family={Jain},
+         familyi={J\bibinitperiod},
+         given={Lakhmi},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MLRJL+1}
+    \strng{fullhash}{MLRJL+1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{MJ+01}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{number}{64-67}
+    \field{pages}{2}
+    \field{title}{Recurrent neural networks}
+    \field{volume}{5}
+    \field{journaltitle}{Design and Applications}
+    \field{year}{2001}
+  \endentry
+
+  \entry{manheim2019artificial}{article}{}
+    \name{author}{2}{}{%
+      {{hash=MK}{%
+         family={Manheim},
+         familyi={M\bibinitperiod},
+         given={Karl},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=KL}{%
+         family={Kaplan},
+         familyi={K\bibinitperiod},
+         given={Lyric},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {HeinOnline}%
+    }
+    \strng{namehash}{MKKL1}
+    \strng{fullhash}{MKKL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{MK19}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{pages}{106}
+    \field{title}{Artificial intelligence: Risks to privacy and democracy}
+    \field{volume}{21}
+    \field{journaltitle}{Yale JL \& Tech.}
+    \field{year}{2019}
+  \endentry
+
+  \entry{o2015introduction}{article}{}
+    \name{author}{2}{}{%
+      {{hash=OK}{%
+         family={O'shea},
+         familyi={O\bibinitperiod},
+         given={Keiron},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=NR}{%
+         family={Nash},
+         familyi={N\bibinitperiod},
+         given={Ryan},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{OKNR1}
+    \strng{fullhash}{OKNR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{ON15}
+    \field{sortinit}{O}
+    \field{sortinithash}{O}
+    \field{title}{An introduction to convolutional neural networks}
+    \field{journaltitle}{arXiv preprint arXiv:1511.08458}
+    \field{year}{2015}
+  \endentry
+
+  \entry{pathak2024privacy}{article}{}
+    \true{moreauthor}
+    \true{morelabelname}
+    \name{author}{10}{}{%
+      {{hash=PA}{%
+         family={Pathak},
+         familyi={P\bibinitperiod},
+         given={Aditi},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=SL}{%
+         family={Serrer},
+         familyi={S\bibinitperiod},
+         given={Laina},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=ZD}{%
+         family={Zapata},
+         familyi={Z\bibinitperiod},
+         given={Daniela},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=KR}{%
+         family={King},
+         familyi={K\bibinitperiod},
+         given={Raymond},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=MLB}{%
+         family={Mirel},
+         familyi={M\bibinitperiod},
+         given={Lisa\bibnamedelima B},
+         giveni={L\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+      {{hash=ST}{%
+         family={Sukalac},
+         familyi={S\bibinitperiod},
+         given={Thomas},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Srinivasan},
+         familyi={S\bibinitperiod},
+         given={Arunkumar},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=BP}{%
+         family={Baier},
+         familyi={B\bibinitperiod},
+         given={Patrick},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=BM}{%
+         family={Bhalla},
+         familyi={B\bibinitperiod},
+         given={Meera},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=DFC}{%
+         family={David-Ferdon},
+         familyi={D\bibinithyphendelim F\bibinitperiod},
+         given={Corinne},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Oxford University Press}%
+    }
+    \strng{namehash}{PASLZDKRMLBSTSABPBMDFC+1}
+    \strng{fullhash}{PASLZDKRMLBSTSABPBMDFC+1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{PSZ+24}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{number}{11}
+    \field{pages}{2605\bibrangedash 2612}
+    \field{title}{Privacy preserving record linkage for public health action:
+  opportunities and challenges}
+    \field{volume}{31}
+    \field{journaltitle}{Journal of the American Medical Informatics
+  Association}
+    \field{year}{2024}
+  \endentry
+
+  \entry{ranbaduge2020secure}{inproceedings}{}
+    \name{author}{3}{}{%
+      {{hash=RT}{%
+         family={Ranbaduge},
+         familyi={R\bibinitperiod},
+         given={Thilina},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=CP}{%
+         family={Christen},
+         familyi={C\bibinitperiod},
+         given={Peter},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=SR}{%
+         family={Schnell},
+         familyi={S\bibinitperiod},
+         given={Rainer},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{RTCPSR1}
+    \strng{fullhash}{RTCPSR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{RCS20}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{booktitle}{Advances in Knowledge Discovery and Data Mining: 24th
+  Pacific-Asia Conference, PAKDD 2020, Singapore, May 11--14, 2020,
+  Proceedings, Part II 24}
+    \field{pages}{139\bibrangedash 151}
+    \field{title}{Secure and accurate two-step hash encoding for
+  privacy-preserving record linkage}
+    \field{year}{2020}
+  \endentry
+
+  \entry{russell2016artificial}{book}{}
+    \name{author}{2}{}{%
+      {{hash=RSJ}{%
+         family={Russell},
+         familyi={R\bibinitperiod},
+         given={Stuart\bibnamedelima J},
+         giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=NP}{%
+         family={Norvig},
+         familyi={N\bibinitperiod},
+         given={Peter},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {pearson}%
+    }
+    \strng{namehash}{RSJNP1}
+    \strng{fullhash}{RSJNP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{RN16}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{title}{Artificial intelligence: a modern approach}
+    \field{year}{2016}
+  \endentry
+
+  \entry{schaefer2024}{inproceedings}{}
+    \name{author}{3}{}{%
+      {{hash=SJ}{%
+         family={Sch{\"a}fer},
+         familyi={S\bibinitperiod},
+         given={Jochen},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=AF}{%
+         family={Armknecht},
+         familyi={A\bibinitperiod},
+         given={Frederik},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=HY}{%
+         family={Heng},
+         familyi={H\bibinitperiod},
+         given={Youzhe},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {IEEE}%
+    }
+    \strng{namehash}{SJAFHY1}
+    \strng{fullhash}{SJAFHY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{SAH24}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{booktitle}{2024 Annual Computer Security Applications Conference
+  (ACSAC)}
+    \field{pages}{699\bibrangedash 715}
+    \field{title}{R+ R: Revisiting Graph Matching Attacks on Privacy-Preserving
+  Record Linkage}
+    \field{year}{2024}
+  \endentry
+
+  \entry{schnell2009privacy}{article}{}
+    \name{author}{3}{}{%
+      {{hash=SR}{%
+         family={Schnell},
+         familyi={S\bibinitperiod},
+         given={Rainer},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=BT}{%
+         family={Bachteler},
+         familyi={B\bibinitperiod},
+         given={Tobias},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=RJ}{%
+         family={Reiher},
+         familyi={R\bibinitperiod},
+         given={J{\"o}rg},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{SRBTRJ1}
+    \strng{fullhash}{SRBTRJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{SBR09}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{pages}{1\bibrangedash 11}
+    \field{title}{Privacy-preserving record linkage using Bloom filters}
+    \field{volume}{9}
+    \field{journaltitle}{BMC medical informatics and decision making}
+    \field{year}{2009}
+  \endentry
+
+  \entry{sharma2024deep}{book}{}
+    \name{author}{4}{}{%
+      {{hash=SVS}{%
+         family={Sharma},
+         familyi={S\bibinitperiod},
+         given={Vivek\bibnamedelima S},
+         giveni={V\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=MS}{%
+         family={Mahajan},
+         familyi={M\bibinitperiod},
+         given={Shubham},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=NA}{%
+         family={Nayyar},
+         familyi={N\bibinitperiod},
+         given={Anand},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=PAK}{%
+         family={Pandit},
+         familyi={P\bibinitperiod},
+         given={Amit\bibnamedelima Kant},
+         giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {CRC Press}%
+    }
+    \strng{namehash}{SVSMSNAPAK1}
+    \strng{fullhash}{SVSMSNAPAK1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{SMNP24}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{title}{Deep Learning in Engineering, Energy and Finance: Principals
+  and Applications}
+    \field{year}{2024}
+  \endentry
+
+  \entry{sharma2017activation}{article}{}
+    \name{author}{3}{}{%
+      {{hash=SS}{%
+         family={Sharma},
+         familyi={S\bibinitperiod},
+         given={Sagar},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=SS}{%
+         family={Sharma},
+         familyi={S\bibinitperiod},
+         given={Simone},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=AA}{%
+         family={Athaiya},
+         familyi={A\bibinitperiod},
+         given={Anidhya},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{SSSSAA1}
+    \strng{fullhash}{SSSSAA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{SSA17}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{number}{12}
+    \field{pages}{310\bibrangedash 316}
+    \field{title}{Activation functions in neural networks}
+    \field{volume}{6}
+    \field{journaltitle}{Towards Data Sci}
+    \field{year}{2017}
+  \endentry
+
+  \entry{smith2016examining}{book}{}
+    \name{author}{1}{}{%
+      {{hash=STT}{%
+         family={Smith},
+         familyi={S\bibinitperiod},
+         given={Tanshanika\bibnamedelima T},
+         giveni={T\bibinitperiod\bibinitdelim T\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Walden University}%
+    }
+    \strng{namehash}{STT1}
+    \strng{fullhash}{STT1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Smi16}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{title}{Examining data privacy breaches in healthcare}
+    \field{year}{2016}
+  \endentry
+
+  \entry{smith2017secure}{article}{}
+    \name{author}{1}{}{%
+      {{hash=SD}{%
+         family={Smith},
+         familyi={S\bibinitperiod},
+         given={Duncan},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Elsevier}%
+    }
+    \strng{namehash}{SD1}
+    \strng{fullhash}{SD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{Smi17}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{pages}{271\bibrangedash 279}
+    \field{title}{Secure pseudonymisation for privacy-preserving probabilistic
+  record linkage}
+    \field{volume}{34}
+    \field{journaltitle}{Journal of Information Security and Applications}
+    \field{year}{2017}
+  \endentry
+
+  \entry{vidanage2020graph}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=VA}{%
+         family={Vidanage},
+         familyi={V\bibinitperiod},
+         given={Anushka},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=CP}{%
+         family={Christen},
+         familyi={C\bibinitperiod},
+         given={Peter},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=RT}{%
+         family={Ranbaduge},
+         familyi={R\bibinitperiod},
+         given={Thilina},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=SR}{%
+         family={Schnell},
+         familyi={S\bibinitperiod},
+         given={Rainer},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{VACPRTSR1}
+    \strng{fullhash}{VACPRTSR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{VCRS20}
+    \field{sortinit}{V}
+    \field{sortinithash}{V}
+    \field{booktitle}{Proceedings of the 29th ACM International Conference on
+  Information \& Knowledge Management}
+    \field{pages}{1485\bibrangedash 1494}
+    \field{title}{A graph matching attack on privacy-preserving record linkage}
+    \field{year}{2020}
+  \endentry
+
+  \entry{vatsalan2017privacy}{article}{}
+    \name{author}{4}{}{%
+      {{hash=VD}{%
+         family={Vatsalan},
+         familyi={V\bibinitperiod},
+         given={Dinusha},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=SZ}{%
+         family={Sehili},
+         familyi={S\bibinitperiod},
+         given={Ziad},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=CP}{%
+         family={Christen},
+         familyi={C\bibinitperiod},
+         given={Peter},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=RE}{%
+         family={Rahm},
+         familyi={R\bibinitperiod},
+         given={Erhard},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{VDSZCPRE1}
+    \strng{fullhash}{VDSZCPRE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelalpha}{VSCR17}
+    \field{sortinit}{V}
+    \field{sortinithash}{V}
+    \field{pages}{851\bibrangedash 895}
+    \field{title}{Privacy-preserving record linkage for big data: Current
+  approaches and research challenges}
+    \field{journaltitle}{Handbook of big data technologies}
+    \field{year}{2017}
+  \endentry
+\enddatalist
+\endinput

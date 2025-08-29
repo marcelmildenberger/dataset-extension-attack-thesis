@@ -1,0 +1,95 @@
+\acswitchoff 
+\babel@toc {american}{}\relax 
+\contentsline {chapter}{\nonumberline Abstract}{ii}{chapter*.1}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Motivation}{4}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Related Work}{5}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Contribution}{6}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Organization of this Thesis}{7}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Background}{8}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Overview of \ac {pprl}}{8}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Key Encoding Techniques}{10}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}\ac {bf}}{11}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}\ac {tmh}}{12}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}\ac {tsh}}{14}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}\ac {gma}}{16}{section.2.3}%
+\contentsline {section}{\numberline {2.4}\ac {ann}}{18}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Methodology}{23}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Problem Definition}{24}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Attacker Model}{25}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Modular Design of the \ac {dea}}{26}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Step 1: \ac {gma}}{26}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Running the \ac {gma}}{26}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Modifications to the \ac {gma}}{27}{subsection.3.4.2}%
+\contentsline {section}{\numberline {3.5}Step 2: Data Representation}{28}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}\ac {bf} Encoding}{28}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}\ac {tmh} Encoding}{29}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}\ac {tsh} Encoding}{29}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Re-Identified Individuals as Labeled Training Data}{29}{subsection.3.5.4}%
+\contentsline {section}{\numberline {3.6}Step 3: Hyperparameter Optimization}{30}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Step 4: Model Training and \ac {ann} Architecture}{32}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Foundations of Neural Network Success in \ac {dea}}{32}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Training the Model}{33}{subsection.3.7.2}%
+\contentsline {section}{\numberline {3.8}Step 5: Application to Encoded Data}{33}{section.3.8}%
+\contentsline {subsection}{\numberline {3.8.1}Performance Evaluation}{33}{subsection.3.8.1}%
+\contentsline {subsection}{\numberline {3.8.2}Choosing the Right Metric for Hyperparameter Optimization}{35}{subsection.3.8.2}%
+\contentsline {paragraph}{\nonumberline Optimizing for Precision: Conservative but High-Confidence Inference}{35}{paragraph*.6}%
+\contentsline {paragraph}{\nonumberline Optimizing for Recall: Aggressive and Broad Coverage}{35}{paragraph*.8}%
+\contentsline {paragraph}{\nonumberline Optimizing for F1-Score or Dice: Balanced Inference}{35}{paragraph*.10}%
+\contentsline {paragraph}{\nonumberline Strategic Consideration}{35}{paragraph*.12}%
+\contentsline {section}{\numberline {3.9}Step 6: Refinement and Reconstruction}{36}{section.3.9}%
+\contentsline {subsection}{\numberline {3.9.1}Directed Graph Based Reconstruction}{37}{subsection.3.9.1}%
+\contentsline {subsection}{\numberline {3.9.2}Dictionary Based Reconstruction}{38}{subsection.3.9.2}%
+\contentsline {subsection}{\numberline {3.9.3}Generative Language Model Based Reconstruction}{39}{subsection.3.9.3}%
+\contentsline {chapter}{\numberline {4}Results}{41}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Experiments}{41}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Evaluation Metrics}{44}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Analysis}{46}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}\ac {tmh}}{47}{subsection.4.3.1}%
+\contentsline {paragraph}{\nonumberline Titanic Full}{47}{paragraph*.14}%
+\contentsline {paragraph}{\nonumberline Fakename 1k}{47}{paragraph*.16}%
+\contentsline {paragraph}{\nonumberline Fakename 2k}{48}{paragraph*.18}%
+\contentsline {paragraph}{\nonumberline Fakename 5k}{48}{paragraph*.20}%
+\contentsline {paragraph}{\nonumberline Fakename 10k}{48}{paragraph*.22}%
+\contentsline {paragraph}{\nonumberline Fakename 20k}{49}{paragraph*.24}%
+\contentsline {paragraph}{\nonumberline Europerson}{50}{paragraph*.26}%
+\contentsline {paragraph}{\nonumberline Summary Across Datasets and Overlap Levels}{50}{paragraph*.28}%
+\contentsline {paragraph}{\nonumberline Architecture}{51}{paragraph*.30}%
+\contentsline {subsection}{\numberline {4.3.2}\ac {tsh}}{51}{subsection.4.3.2}%
+\contentsline {paragraph}{\nonumberline Titanic Full}{51}{paragraph*.32}%
+\contentsline {paragraph}{\nonumberline Fakename 1k}{52}{paragraph*.34}%
+\contentsline {paragraph}{\nonumberline Fakename 2k}{52}{paragraph*.36}%
+\contentsline {paragraph}{\nonumberline Fakename 5k}{53}{paragraph*.38}%
+\contentsline {paragraph}{\nonumberline Fakename 10k}{53}{paragraph*.40}%
+\contentsline {paragraph}{\nonumberline Fakename 20k}{54}{paragraph*.42}%
+\contentsline {paragraph}{\nonumberline Europerson}{54}{paragraph*.44}%
+\contentsline {paragraph}{\nonumberline Summary Across Datasets and Overlap Levels}{55}{paragraph*.46}%
+\contentsline {paragraph}{\nonumberline Architecture}{55}{paragraph*.48}%
+\contentsline {subsection}{\numberline {4.3.3}\ac {bf}}{56}{subsection.4.3.3}%
+\contentsline {paragraph}{\nonumberline Titanic Full}{56}{paragraph*.50}%
+\contentsline {paragraph}{\nonumberline Fakename 1k}{56}{paragraph*.52}%
+\contentsline {paragraph}{\nonumberline Fakename 2k}{57}{paragraph*.54}%
+\contentsline {paragraph}{\nonumberline Fakename 5k}{57}{paragraph*.56}%
+\contentsline {paragraph}{\nonumberline Fakename 10k}{57}{paragraph*.58}%
+\contentsline {paragraph}{\nonumberline Fakename 20k}{58}{paragraph*.60}%
+\contentsline {paragraph}{\nonumberline Euro Person}{58}{paragraph*.62}%
+\contentsline {paragraph}{\nonumberline Summary Across Datasets and Overlap Levels}{59}{paragraph*.64}%
+\contentsline {paragraph}{\nonumberline Architecture}{59}{paragraph*.66}%
+\contentsline {subsection}{\numberline {4.3.4}Comparison of Encoding Schemes}{60}{subsection.4.3.4}%
+\contentsline {paragraph}{\nonumberline F1-score.}{60}{paragraph*.68}%
+\contentsline {paragraph}{\nonumberline Re-identification Rate.}{60}{paragraph*.70}%
+\contentsline {section}{\numberline {4.4}Discussion}{61}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Methodological Considerations and Setup Validity}{61}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Interpretation of Results}{62}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Limitations and Practical Usefulness}{63}{subsection.4.4.3}%
+\contentsline {chapter}{\numberline {5}Conclusion}{65}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Summary}{65}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Future Work}{68}{section.5.2}%
+\contentsline {chapter}{\nonumberline Bibliography}{71}{chapter*.71}%
+\contentsline {chapter}{\numberline {A}Auxiliary Information}{74}{appendix.A}%
+\contentsline {section}{\numberline {A.1}\ac {tmh}: \ac {dea} Results}{74}{section.A.1}%
+\contentsline {section}{\numberline {A.2}\ac {tsh}: \ac {dea} Results}{79}{section.A.2}%
+\contentsline {section}{\numberline {A.3}\ac {bf}: \ac {dea} Results}{84}{section.A.3}%
+\contentsline {section}{\numberline {A.4}Encoding Scheme Comparison: \ac {dea} Results}{89}{section.A.4}%
+\contentsline {chapter}{\nonumberline Eidesstattliche Erklärung}{91}{chapter*.72}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

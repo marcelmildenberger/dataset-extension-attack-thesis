@@ -1,0 +1,53 @@
+\acswitchoff 
+\babel@toc {american}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Overview of the \ac {pprl} process.}}{9}{figure.2.1}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Example \ac {bf} for $k = 2$ hash functions on the set of 2-grams for ''encoding''.}}{11}{figure.2.2}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Example computing approximate Jaccard similarity using MinHash with \(\pi = 2\) permutations.}}{13}{figure.2.3}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Simplified \ac {tmh} hashing step for the first lookup table, fourth hash function on the first set element.}}{14}{figure.2.4}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces \ac {tsh} example for two input values ''peter'' and ''pete'' \blx@tocontentsinit {0}\cite {ranbaduge2020secure}.}}{15}{figure.2.5}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces High-level overview of the \ac {gma} attack process. Two data owners encode their datasets and send them to the linkage unit.}}{18}{figure.2.6}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces High-level overview of the \ac {gma} attack process. The linkage unit mimics the \ac {bf} encoding for the public dataset and creates for both datasets similarity graphs, embeddings and aligns them to perform bipartite matching.}}{18}{figure.2.7}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces \ac {ann} consisting of multiple input neurons (input layer), hidden layers and output neurons (output layer) \blx@tocontentsinit {0}\cite {annimage}.}}{19}{figure.2.8}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Sketch of an single artifical neuron in an \ac {ann} \blx@tocontentsinit {0}\cite {neuronimage}.}}{19}{figure.2.9}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Overview of the \ac {dea} attack pipeline.}}{23}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Example reconstruction using the Directed Graph based approach.}}{38}{figure.3.2}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Evaluation of the baseline performance on the \texttt {fakename} dataset: For each dataset size, the prediction quality of the 20 most frequent 2-grams is shown in terms of \textbf {precision}, \textbf {recall}, and \textbf {F1-score}. The average entry length is 21 characters.}}{45}{figure.4.1}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {A.1}{\ignorespaces \ac {tmh} results on the \texttt {titanic\_full} dataset.}}{74}{figure.A.1}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces \ac {tmh} results on the \texttt {fakename\_1k} dataset.}}{74}{figure.A.2}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces \ac {tmh} results on the \texttt {fakename\_2k} dataset.}}{75}{figure.A.3}%
+\contentsline {figure}{\numberline {A.4}{\ignorespaces \ac {tmh} results on the \texttt {fakename\_5k} dataset.}}{75}{figure.A.4}%
+\contentsline {figure}{\numberline {A.5}{\ignorespaces \ac {tmh} results on the \texttt {fakename\_10k} dataset.}}{76}{figure.A.5}%
+\contentsline {figure}{\numberline {A.6}{\ignorespaces \ac {tmh} results on the \texttt {fakename\_20k} dataset.}}{76}{figure.A.6}%
+\contentsline {figure}{\numberline {A.7}{\ignorespaces \ac {tmh} results on the \texttt {euro\_person} dataset.}}{77}{figure.A.7}%
+\contentsline {figure}{\numberline {A.8}{\ignorespaces Comparison of re-identification rates and F1 scores across all datasets with \ac {tmh} encoding as a function of overlap.}}{77}{figure.A.8}%
+\contentsline {figure}{\numberline {A.9}{\ignorespaces Distribution of selected neural network architecture parameters during hyperparameter optimization for the \ac {tmh} encoding.}}{78}{figure.A.9}%
+\contentsline {figure}{\numberline {A.10}{\ignorespaces \ac {tsh} results on the \texttt {titanic\_full} dataset.}}{79}{figure.A.10}%
+\contentsline {figure}{\numberline {A.11}{\ignorespaces \ac {tsh} results on the \texttt {fakename\_1k} dataset.}}{79}{figure.A.11}%
+\contentsline {figure}{\numberline {A.12}{\ignorespaces \ac {tsh} results on the \texttt {fakename\_2k} dataset.}}{80}{figure.A.12}%
+\contentsline {figure}{\numberline {A.13}{\ignorespaces \ac {tsh} results on the \texttt {fakename\_5k} dataset.}}{80}{figure.A.13}%
+\contentsline {figure}{\numberline {A.14}{\ignorespaces \ac {tsh} results on the \texttt {fakename\_10k} dataset.}}{81}{figure.A.14}%
+\contentsline {figure}{\numberline {A.15}{\ignorespaces \ac {tsh} results on the \texttt {fakename\_20k} dataset.}}{81}{figure.A.15}%
+\contentsline {figure}{\numberline {A.16}{\ignorespaces \ac {tsh} results on the \texttt {euro\_person} dataset.}}{82}{figure.A.16}%
+\contentsline {figure}{\numberline {A.17}{\ignorespaces Comparison of re-identification rates and F1 scores across all datasets with \ac {tsh} encoding as a function of overlap.}}{82}{figure.A.17}%
+\contentsline {figure}{\numberline {A.18}{\ignorespaces Distribution of selected neural network architecture parameters during hyperparameter optimization for the \ac {tsh} encoding.}}{83}{figure.A.18}%
+\contentsline {figure}{\numberline {A.19}{\ignorespaces \ac {bf} results on the \texttt {titanic\_full} dataset.}}{84}{figure.A.19}%
+\contentsline {figure}{\numberline {A.20}{\ignorespaces \ac {bf} results on the \texttt {fakename\_1k} dataset.}}{84}{figure.A.20}%
+\contentsline {figure}{\numberline {A.21}{\ignorespaces \ac {bf} results on the \texttt {fakename\_2k} dataset.}}{85}{figure.A.21}%
+\contentsline {figure}{\numberline {A.22}{\ignorespaces \ac {bf} results on the \texttt {fakename\_5k} dataset.}}{85}{figure.A.22}%
+\contentsline {figure}{\numberline {A.23}{\ignorespaces \ac {bf} results on the \texttt {fakename\_10k} dataset.}}{86}{figure.A.23}%
+\contentsline {figure}{\numberline {A.24}{\ignorespaces \ac {bf} results on the \texttt {fakename\_20k} dataset.}}{86}{figure.A.24}%
+\contentsline {figure}{\numberline {A.25}{\ignorespaces \ac {bf} results on the \texttt {euro\_person} dataset.}}{87}{figure.A.25}%
+\contentsline {figure}{\numberline {A.26}{\ignorespaces Comparison of re-identification rates and F1 scores across all datasets with \ac {bf} encoding as a function of overlap.}}{87}{figure.A.26}%
+\contentsline {figure}{\numberline {A.27}{\ignorespaces Distribution of selected neural network architecture parameters during hyperparameter optimization for the \ac {bf} encoding.}}{88}{figure.A.27}%
+\contentsline {figure}{\numberline {A.28}{\ignorespaces Line plots of mean re-identification rate and F1 score across encoding schemes as a function of overlap.}}{89}{figure.A.28}%
+\contentsline {figure}{\numberline {A.29}{\ignorespaces Comparison of \ac {dea} F1 scores for \ac {bf}, \ac {tmh}, and \ac {tsh} across all datasets, averaged over overlap values and separated by DropFrom strategy (Eve vs. Both).}}{90}{figure.A.29}%
+\addvspace {10\p@ }
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
