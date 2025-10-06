@@ -11,26 +11,27 @@
 \maketitle
 
 \section{Motivation and Research Questions}
-The growing demand for cross-institutional data sharing in healthcare, official statistics, and scientific research has made \ac{pprl} a critical enabling technology. 
-\ac{pprl} enables the integration of datasets across organizational boundaries while ensuring that sensitive \ac{pii} remains protected during probabilistic record linkage process. 
-Privacy enhancing encodings such as \ac{bf} are widely adopted because they preserve similarity relationships between records while preventing exposure of raw \ac{pii} during linkage. 
+The growing demand for cross-institutional data sharing in healthcare, official statistics, and scientific research has made \ac{pprl} an important enabling framework. 
+\ac{pprl} enables the integration of datasets across organizational boundaries on quasi-identifiers while ensuring that sensitive \ac{pii} remains protected during probabilistic record linkage. 
+Privacy enhancing encodings such as \ac{bf} encodings are adopted because they preserve similarity relationships between records while preventing exposure of raw \ac{pii} during linkage. 
 However, practical deployments increasingly face attackers equipped with new strategies. 
 This thesis examines how attackers can exploit previously leaked matches, such as those obtained through a \ac{gma}, to compromise additional records that were previously unidentifiable. 
+
 The central research questions are threefold: 
 (i) to what extent can the capabilities of current state-of-the-art \ac{gma}s be extended through subsequent attacks, 
 (ii) how effectively can \ac{ann}-based models learn the structural regularities of encoded identifiers, 
 and (iii) which encoding strategies demonstrate resilience against such attacks under realistic conditions, and which remain particularly vulnerable.
 
-The relevance of this analysis lies in the practical risks associated with the potential re-identification of encoded sensitive data such as health care data.
+The relevance of this thesis lies in the practical risks associated with the potential re-identification of encoded sensitive data such as health care data.
 The combination of graph-based and pattern-learning attacks introduces new and largely unexplored attack surfaces. 
-While prior research has primarily focused on vulnerabilities in \ac{bf}-based linkage and graph-matching techniques, little empirical evidence has addressed the feasibility of extending re-identification beyond this scope. 
+While prior research has primarily focused on vulnerabilities in \ac{bf} based linkage and graph-matching techniques, little empirical evidence has addressed the feasibility of extending re-identification beyond this scope. 
 This thesis closes that gap by proposing and evaluating the \ac{dea}, a two-stage attack that employs neural models to infer plaintext n-grams from encoded representations. 
-Through systematic evaluation across varying dataset overlaps and realistic conditions, this work provides an empirically grounded assessment of the privacy risks faced by current \ac{pprl} deployments.
+Through systematic evaluation across varying datasets and realistic conditions, this work provides an empirically grounded assessment of the privacy risks faced by current \ac{pprl} deployments.
 
 \section{Foundations of Privacy-Preserving Record Linkage}
 
 \subsection{Threat Model and Similarity-Preserving Encodings}
-The thesis considers a classical \ac{pprl} scenario involving two data holders and a linkage unit. 
+This thesis considers a classical non-interactive \ac{pprl} scenario involving two data holders and a linkage unit. 
 One data holder, Alice, maintains a database of encoded records $D_e$ that she intends to link with another party without revealing any underlying \ac{pii}. 
 The linkage unit, Eve, performs the record linkage on behalf of both data holders but is modeled as an honest-but-curious attacker.
 She follows the prescribed protocol correctly, with full knowledge of the encoding parameters but without access to any secret values, while simultaneously attempting to infer and re-identify records in $D_e$.
@@ -39,10 +40,10 @@ To this end, Eve leverages an auxiliary plaintext dataset $D_p$ that partially o
 This auxiliary dataset may originate from publicly available information, previously leaked data, or other external sources. 
 Eve’s objective is to maximize the number of records in $D_e$ that she can re-identify by employing attacks such as the \ac{gma} and the proposed \ac{dea}.
 
-The study focuses on the three most used encoding schemes in \ac{pprl} to assess their respective vulnerabilities. 
-\ac{bf} encoding maps n-grams into a fixed-length binary vector using multiple hash functions. 
-\ac{tmh} employs tabulation-based MinHashing to generate fixed-length binary vectors with improved resistance to frequency-based attacks. 
-\ac{tsh} first encodes data using \ac{bf}s and subsequently applies an additional hashing layer to produce integer vectors, trying to enhance obfuscation while preserving similarity relationships.
+This study focuses on the three most used encoding schemes in \ac{pprl} to assess their respective vulnerabilities. 
+\ac{bf} encodes overlapping n-grams into a fixed-length binary vector using multiple hash functions. 
+\ac{tmh} applies tabulation-based MinHashing to generate fixed-length binary vectors with better resistance to frequency-based attacks. 
+\ac{tsh} first transforms data into \ac{bf}s and then applies an additional hashing layer to produce integer vectors, aiming to increase obfuscation while maintaining similarity relationships.
 
 Prior research has shown that \ac{bf}s leak co-occurrence patterns that can be exploited by frequency-based attacks. 
 \ac{tmh} mitigates some of these weaknesses but still leaks statistical dependencies between hashed values, allowing an attacker to infer recurring n-gram patterns.
@@ -52,12 +53,12 @@ All three encoding schemes remain susceptible to graph-based attacks that levera
 
 Nevertheless, the \ac{gma} alone can only recover identities that appear in both $D_e$ and the auxiliary plaintext dataset $D_p$, leaving non-overlapping records unmapped. 
 The central idea behind the \ac{dea} is to leverage the subset of records re-identified by the \ac{gma} as labeled examples that link encoded representations to plaintext n-grams. 
-Effectively exploiting this labeled subset with supervised models forms the core of the \ac{dea} pipeline and enables inference beyond the original overlap.
+Effectively exploiting this labeled subset with supervised models forms the core of the \ac{dea} pipeline and enables re-identification beyond the original overlap.
 
 \subsection{Baseline Frequency-Based Guesser}
 Before introducing the \ac{dea}, we establish a simple, informed baseline that the \ac{dea} must outperform. 
 The baseline predicts, for each record, the $k$ most frequent overlapping n-grams (with $k$ set to the dataset specific average record length minus one). 
-Although naive, this frequency-based guesser yields non-trivial performance: $F1 \approx 0.23$ on the \texttt{fakename} and \texttt{euro\_person} datasets, and $F1 \approx 0.29$ on the more heterogeneous \texttt{titanic\_full}.
+Although naive, this frequency-based guesser yields non-trivial performance: $F1 \approx 0.23$ on the \texttt{fakename} and \texttt{euro\_person} datasets, and $F1 \approx 0.29$ on the more heterogeneous \texttt{titanic\_full} dataset.
 
 This strategy is intentionally simplistic yet plausible. 
 An attacker with access to the global n-gram distribution can perform this guessing strategy across the dataset without any per-record information. 
@@ -66,24 +67,24 @@ Because personal names and dates yield strongly skewed n-gram frequencies, predi
 \section{Dataset Extension Attack Methodology}
 
 \subsection{Attack Pipeline Overview}
-The \ac{dea} orchestrates a pipeline that leverages partial re-identifications into broader privacy compromises. 
+The \ac{dea} orchestrates a pipeline that leverages partial re-identifications into broader deanonymization. 
 First, the attacker runs the improved \ac{gma} implementation by Schäfer et al. to obtain an initial set of confirmed plaintext–encoding pairs. 
 These pairs constitute labeled training data for a multi-label classifier. 
 Each encoded record is represented as a fixed-length vector after preprocessing based on the encoding scheme, while the target labels indicate the presence of n-grams in the plaintext. 
 The trained classifier predicts, for each unseen encoded record, the probability that a given n-gram appears in its plaintext.
-Model selection and hyperparameter tuning optimize the Dice coefficient of prediticons to balance precision and recall for reconstructed n-grams, which are subsequently post-processed to generate candidate plaintext reconstructions.
+Model selection and hyperparameter tuning optimize the Dice coefficient of predictions to balance precision and recall for reconstructed n-grams, which are subsequently post-processed to generate candidate plaintext reconstructions.
 
 During reconstruction of a complete identifier, the predicted n-grams are leveraged in three reconstruction strategies. 
 The first, greedy reconstruction, uses a graph-based approach in which nodes represent characters and directed edges correspond to predicted n-grams.
 The second strategy, fuzzy dictionary matching, compares the set of predicted n-grams against a large lookup table of candidate identifiers and ranks matches using the Dice similarity. 
-The third, semantic reconstruction, applies an \ac{llm}-based technique to reconstruct identifiers. 
+The third strategy applies a \ac{llm} based technique to reconstruct identifiers. 
 Taken together, these strategies enable the attacker to either directly reconstruct plaintext identifiers or produce high-confidence candidate lists that can be cross-referenced against additional sources.
 
 \subsection{Hyperparameter Optimization and Model Selection}
 A key component of the \ac{dea} is an extensive hyperparameter optimization designed to ensure optimal performance in different attacker scenarios. 
 For each experiment trial performed the \ac{dea} performs 125 trials using the Optuna framework. 
-The search space includes model depth (1–3 layers), hidden dimension sizes (64–4096), dropout regularization (0–0.5), activation functions (\texttt{ReLU}, \texttt{ELU}, \texttt{SELU}, \texttt{GELU}), optimizers (\texttt{Adam}, \texttt{AdamW}, \texttt{RMSprop}), learning-rate schedulers, batch sizes, and decision thresholds for n-gram prediction. 
-Each trial trains for up to 20 epochs with early stopping (patience of five epochs, minimum validation-loss improvement of $10^{-4}$). 
+The search space includes model depth, hidden dimension sizes, dropout regularization, activation functions, optimizers, learning-rate schedulers, batch sizes, and decision thresholds for n-gram prediction. 
+Each trial trains for up to 20 epochs with early stopping. 
 The Dice coefficient on a held-out validation set guides the optimization process. 
 After convergence, the best-performing configuration is retrained on the full training data to generate predictions on the test set.
 
@@ -92,16 +93,11 @@ After convergence, the best-performing configuration is retrained on the full tr
 The evaluation comprises 180 unique experiments across three datasets (\texttt{fakename} with 1k, 2k, 5k, 10k, and 20k records, \texttt{euro\_person}, and \texttt{titanic\_full}), three encoding schemes, overlap ratios between 20\% and 80\%, and two drop-from strategies for the \ac{gma}. 
 The ``DropFrom = Eve'' configuration models an optimistic scenario in which Eve’s auxiliary dataset is a strict subset of Alice’s database, thereby maximizing overlap quality. 
 In contrast, the ``DropFrom = Both'' configuration represents a more realistic deployment, where both parties possess unique records, leading to noisier graph structures and weaker training signals for the \ac{gma}. 
-For each experiment, the \ac{gma} provides the labeled training set, while the remaining encoded records serve as test data for the \ac{dea}. 
+For each experiment, the \ac{gma} provides the labeled training set, while the remaining unmapped records serve as test data for the \ac{dea}. 
+
 Performance is evaluated in terms of structural prediction quality (precision, recall, F1-score, and Dice coefficient) as well as the downstream perfect re-identification rate obtained after fuzzy and greedy reconstruction. 
 Experiments in which the \ac{gma} fails to identify any matches are excluded, as the \ac{dea} cannot operate without labeled training data in such cases.
-To ensure comparability, encoding parameters mirror those used in contemporary \ac{pprl} studies.
-
-Hyperparameter optimization reveals distinct architectural preferences for each encoding scheme. 
-For \ac{tmh}, shallow but wide feedforward networks (1024–2048 hidden units) with moderate dropout ($\approx 0.25$), \texttt{ELU}/\texttt{SELU} activations, and \texttt{AdamW} optimization perform best. 
-\ac{tsh} favors slightly deeper architectures with stronger regularization and cyclic learning-rate schedules, reflecting more complex feature interactions from its two-step hashing. 
-\ac{bf} encodings perform optimally with balanced activations and \texttt{RMSprop} combined with cyclic schedules, indicating sensitivity to adaptive, oscillating learning rates. 
-Across all schemes, small batch sizes (8–16) and long training durations highlight the need to fully exploit the limited labeled data provided by the \ac{gma}.
+To ensure comparability, encoding parameters align with configurations commonly adopted in \ac{pprl} research..
 
 \section{Empirical Findings}
 
@@ -112,59 +108,65 @@ On the smallest datasets (\texttt{fakename\_1k} and \texttt{fakename\_2k}), F1-s
 A turning point appears at \texttt{fakename\_5k}, where the \ac{dea} surpasses an F1-score of 0.85 and achieves the first measurable re-identification rate (1.2\%) at 0.6 overlap. 
 Larger datasets amplify this effect: \texttt{fakename\_10k} reaches near-perfect structural reconstruction (F1~$\approx$~0.93) with re-identification rates above 5\% for overlaps of 0.6 and higher, while \texttt{fakename\_20k} peaks at 12\% re-identification for 0.8 overlap. 
 The more realistic \texttt{euro\_person} dataset exhibits similar behavior, with F1-scores exceeding 0.9 and re-identification rates up to 6.85\%. 
-Overall, these results highlight a pronounced non-linear relationship between structural reconstruction accuracy and deanonymization success: once F1-scores exceed roughly 0.9, even minor gains can trigger steep increases in the number of re-identified individuals.
+Overall, these results highlight a non-linear relationship between structural reconstruction quality and deanonymization success. 
+Once F1-scores exceed roughly 0.9, even minor gains can trigger steep increases in the number of perfect re-identified individuals.
 
 \subsection{Two-Step Hashing}
 \ac{tsh} emerges as the most vulnerable encoding overall. 
 Even on the modest \texttt{titanic\_full} dataset, F1-scores between 0.56 and 0.83 are observed for overlaps of 0.7–0.9, with consistent re-identifications once the overlap exceeds 0.8. 
-The synthetic \texttt{fakename} datasets exhibit even faster leakage: \texttt{fakename\_2k} already achieves F1~=~0.71 and a 1.3\% re-identification rate at 0.6 overlap under ``DropFrom = Eve''. 
-Scaling to \texttt{fakename\_20k} under favorable overlaps yields near-perfect reconstruction (F1~$\approx$~0.99) and peak re-identification rates of 28.75\%—the highest across all experiments. 
-The \texttt{euro\_person} dataset confirms this trend, with structural accuracy around 0.96 and re-identification rates up to 12.5\%. 
+The synthetic \texttt{fakename} datasets exhibit even faster leakage: \texttt{fakename\_2k} already achieves F1$\approx$0.71 and a 1.3\% re-identification rate at 0.6 overlap under ``DropFrom = Eve''. 
+Scaling to \texttt{fakename\_20k} under favorable overlaps yields near-perfect reconstruction (F1 $\approx$ 0.99). Also peak re-identification rates of 28.75\% are achieved, the highest across all experiments. 
+The \texttt{euro\_person} dataset confirms this trend, with F1 scores around 0.96 and re-identification rates up to 12.5\%. 
 The additional hashing layer in \ac{tsh} fails to sufficiently disrupt the statistical dependencies exploited by the \ac{dea}, indicating that the chained representation still leaks predictable co-occurrence patterns. 
-Overall, these findings demonstrate that, despite being proposed as a more secure successor to \ac{bf}s, \ac{tsh} becomes the weakest link.
+Overall, these findings demonstrate that, despite being proposed as a more secure successor to \ac{bf} encoding, \ac{tsh} encoding is the weakest in terms of the \ac{dea}.
 
 \subsection{Bloom Filter Encoding}
 
-\ac{bf}s occupy a middle ground: they are more resilient than \ac{tsh} but considerably weaker than \ac{tmh} once dataset size and overlap increase. 
+\ac{bf}s are more robust than \ac{tsh} but substantially weaker than \ac{tmh} as dataset size and overlap increase.
 On \texttt{fakename\_1k}, \ac{dea} performance remains close to the frequency baseline, with F1-scores below 0.3 and no successful re-identifications. 
-At \texttt{fakename\_5k}, however, the \ac{dea} surpasses the critical F1~=~0.8 threshold at 0.6 overlap under ``DropFrom = Eve'', leading to re-identification rates approaching 4\%. 
-Larger instances amplify this effect: \texttt{fakename\_20k} exhibits average re-identification rates around 9\%, with peaks near 15\% at 0.8 overlap. 
-The \texttt{euro\_person} dataset follows a similar trajectory, reaching F1~=~0.91 and up to 6.4\% re-identification in high-overlap settings. 
-These results indicate that, while \ac{bf}s degrade gracefully under moderate overlap, their vulnerability increases sharply once sufficient labeled samples enable the \ac{dea} to generalize structural patterns across encodings. 
+At \texttt{fakename\_5k}, the \ac{dea} exceeds an F1 score of 0.8 at 0.6 overlap under ``DropFrom = Eve'', resulting in re-identification rates approaching 4\%.
+Larger datasets prove this effect, \texttt{fakename\_20k} exhibits average re-identification rates around 9\%, with peaks near 15\% at 0.8 overlap. 
+The \texttt{euro\_person} dataset follows a similar trend, reaching F1 scores of 0.91 and up to 6.4\% re-identification in high-overlap settings. 
+These results indicate that, while \ac{bf}s degrade under moderate overlap, their vulnerability increases sharply once sufficient labels are available. 
 This finding challenges the common perception of \ac{bf}s as a ``best practice'' solution for \ac{pprl} and instead positions them as a high-risk choice in environments where attackers can obtain even limited auxiliary overlap data.
 
 
-\subsection{Aggregate Trends and Correlations}
+\subsection{Cross Encoding Scheme Findings}
 Aggregating results across all experiments reveals several consistent patterns. 
-First, overlap size is the primary determinant of \ac{dea} success: every encoding shows a monotonic increase in both F1-score and re-identification rate as overlap grows, with the steepest gains occurring between 0.4 and 0.6. 
-Second, dataset size amplifies leakage, as larger datasets provide richer training signals and more homogeneous feature distributions, enabling the neural model to generalize more effectively. 
-Third, the drop-from strategy influences outcomes mainly at low overlaps; once overlap exceeds 0.6, the gap between ``DropFrom = Eve'' and ``DropFrom = Both'' narrows considerably, indicating that realistic auxiliary noise offers little protection. 
-Finally, structural accuracy and re-identification follow a sigmoidal relationship: below F1~=~0.7, re-identification remains negligible; between 0.7 and 0.9, leakage rises gradually; and beyond 0.9, small F1 improvements can double or triple the number of compromised records. 
-These dynamics highlight practical thresholds at which defensive monitoring and countermeasures become critical.
+First, overlap size is the primary determinant of \ac{dea} success.
+Every encoding shows a monotonic increase in both F1 score and re-identification rate as overlap grows, with the steepest gains occurring between 0.4 and 0.6. 
+Second, dataset size improves effectiveness, as larger datasets provide richer training signals and more homogeneous feature distributions, enabling the neural model to generalize more effectively. 
+Third, the drop-from strategy influences outcomes mainly at low overlaps.
+Once overlap exceeds 0.6, the gap between ``DropFrom = Eve'' and ``DropFrom = Both'' narrows considerably. 
+Finally, structural accuracy and re-identification follow a sigmoidal relationship.
+For F1 scores below 0.7, re-identification remains negligible. 
+Between 0.7 and 0.9, leakage rises gradually, beyond 0.9, small F1 improvements can double or triple the number of re-identified records. 
+These dynamics highlight practical thresholds at which perfect re-identification becomes critical.
 
 \section{Implications and Recommendations}
 The evaluation demonstrates that all three encoding schemes become vulnerable to the \ac{dea} once an attacker obtains even a modest training set from the \ac{gma}. 
 The resulting privacy implications are twofold. 
-First, the long-standing assumption that non-overlapping records remain safe no longer holds: \ac{dea}s can reconstruct \(n\)-gram structures with high fidelity and translate them into identifiable plaintext strings. 
-Second, the accessibility of modern hyperparameter optimization frameworks and neural toolkits substantially lowers the barrier for adversaries. 
+First, the assumption that non-overlapping records remain safe no longer holds.
+The \ac{dea} can reconstruct n-gram structures with high confidence and translate them into identifiable plaintext strings. 
+Second, the accessibility of modern hyperparameter optimization frameworks and neural toolkits substantially lowers the barrier for attackers. 
 Training hundreds of models across 180 scenarios remained computationally feasible within academic resources, implying that well-funded attackers could easily scale and automate such attacks. 
 
 To mitigate these risks, several countermeasures are discussed. 
-Increasing the entropy of encoding outputs through diffusion or salting can disrupt the deterministic mappings exploited by the \ac{dea}. 
-Integrating cryptographic methods such as secure multi-party computation or homomorphic encryption can decouple similarity computation from direct exposure of encodings, albeit at increased computational cost. 
-However, the findings suggest that incremental adjustments to existing encodings are unlikely to provide meaningful protection; a shift toward cryptographically rigorous linkage protocols may be required for high-stakes applications.
+Increasing the security of encoding outputs through diffusion or salting can disrupt the deterministic mappings exploited by the \ac{dea}. 
+Integrating cryptographic methods such as secure multi-party computation or homomorphic encryption can decouple similarity computation from direct exposure of encodings, but at increased computational cost. 
+All improvements in terms of security must be balanced against the need for efficient and accurate linkage, as overly complex schemes may hinder practical adoption and lower linkage quality. 
 
 \section{Conclusion and Outlook}
 
-This summary consolidates the thesis' main contributions: the formalization of the \ac{dea} threat model, the implementation of a comprehensive neural attack pipeline, and the empirical demonstration of vulnerabilities in widely adopted \ac{pprl} encodings under realistic conditions. 
+This summary consolidates the main contributions of this thesis: the formalization of the \ac{dea} threat model, the implementation of a comprehensive neural attack pipeline, and the empirical demonstration of vulnerabilities in widely adopted \ac{pprl} encodings under realistic conditions. 
 The results show that \ac{tsh} is the most susceptible scheme, \ac{bf}s offer only moderate resistance, and \ac{tmh}, while comparatively resilient, remains vulnerable when sufficient overlap and training data are available. 
-Across 180 experiments, the \ac{dea} achieves peak re-identification rates of 28.75\% and maintains average structural F1-scores above 0.6, substantially outperforming naive frequency-based baselines. 
-These findings demonstrate that privacy assurances relying solely on obscurity or limited overlap are no longer sustainable.
+Across 180 experiments, the \ac{dea} achieves peak re-identification rates of 28.75\% and F1-scores above 0.9, substantially outperforming naive frequency-based baselines. 
+These findings demonstrate that even limited auxiliary information can enable attackers to compromise the privacy at record-level, challenging the foundational assumptions of \ac{pprl}.
 
 Future research should advance along three directions. 
-First, defensive measures should establish principled bounds on information leakage from similarity-preserving encodings, for instance by integrating differential privacy or cryptographic commitments. 
-Second, future attackers may extend the \ac{dea} through generative modeling, adversarial learning, or transfer learning to generalize across domains, emphasizing the need for proactive mitigation strategies. 
-Third, policy and governance frameworks should mandate formal risk assessments before deploying \ac{pprl} systems in sensitive domains. 
-By exposing the dataset-extension threat, this work provides both a cautionary perspective and a foundation for developing the next generation of privacy-preserving linkage protocols.
+First, defensive strategies must be researched and evaluated, focusing on encoding schemes that balance privacy, efficiency, and linkage quality.
+Second, the integration of differential privacy mechanisms into \ac{pprl} protocols could provide formal privacy guarantees against adaptive attackers.
+Third, the performance of the \ac{dea} should be assessed in real-world deployments, considering factors such as data quality, heterogeneity, and operational constraints.
+By exposing the \ac{dea} as a threat, this work provides both a cautionary perspective and a foundation for developing more robust \ac{pprl} systems.
 
 \end{document}
